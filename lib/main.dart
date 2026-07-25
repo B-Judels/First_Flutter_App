@@ -8,7 +8,9 @@ void main() {
           title: const Center(child: Text("Expence Tracker")),
           backgroundColor: Colors.teal[300],
         ),
-        body: const Center(child: Text("My first attempt at flutter!")),
+        body: const Center(
+          child: Image(image: AssetImage('images/automatic-payment.png')),
+        ),
         backgroundColor: Colors.teal[100],
       ),
     ),
