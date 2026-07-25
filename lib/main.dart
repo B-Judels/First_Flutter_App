@@ -19,9 +19,9 @@ class MyWidget extends StatelessWidget {
         body: SafeArea(
           child: Center(
             child: Container(
-              color: Colors.amber[100],
-              width: 400.0,
-              height: 400.0,
+              // color: Colors.amber[100],
+              width: double.infinity,
+              // height: 100,
               child: Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -29,22 +29,52 @@ class MyWidget extends StatelessWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                        Container(
-                          color: Colors.pink[100],
-                          height: 150.0,
-                          width: 150.0,
-                          padding: EdgeInsets.all(10.0),
+                        Expanded(
+                          child: Center(
+                            child: Container(
+                              padding: const EdgeInsets.all(10.0),
+                              decoration: BoxDecoration(
+                                color: Colors.pink[100],
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              child: Column(
+                                children: [
+                                  Text("Monthly Debit Orders"),
 
-                          child: Text("Monthly Debit Orders"),
+                                  SizedBox(height: 20),
+
+                                  OutlinedButton(
+                                    onPressed: () {},
+                                    child: const Text("Cancel"),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
                         ),
 
-                        Container(
-                          color: Colors.pink[100],
-                          height: 150.0,
-                          width: 150.0,
-                          padding: EdgeInsets.all(10.0),
+                        Expanded(
+                          child: Center(
+                            child: Container(
+                              padding: const EdgeInsets.all(10.0),
+                              decoration: BoxDecoration(
+                                color: Colors.pink[100],
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              child: Column(
+                                children: [
+                                  Text("Monthly Debit Orders"),
 
-                          child: Text("Monthly Debit Orders"),
+                                  SizedBox(height: 20),
+
+                                  OutlinedButton(
+                                    onPressed: () {},
+                                    child: const Text("Cancel"),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
                         ),
                       ],
                     ),
@@ -52,22 +82,52 @@ class MyWidget extends StatelessWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                        Container(
-                          color: Colors.pink[100],
-                          height: 150.0,
-                          width: 150.0,
-                          padding: EdgeInsets.all(10.0),
+                        Expanded(
+                          child: Center(
+                            child: Container(
+                              padding: const EdgeInsets.all(10.0),
+                              decoration: BoxDecoration(
+                                color: Colors.pink[100],
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              child: Column(
+                                children: [
+                                  Text("Monthly Debit Orders"),
 
-                          child: Text("Dayly Habit Costs"),
+                                  SizedBox(height: 20),
+
+                                  OutlinedButton(
+                                    onPressed: () {},
+                                    child: const Text("Cancel"),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
                         ),
 
-                        Container(
-                          color: Colors.pink[100],
-                          height: 150.0,
-                          width: 150.0,
-                          padding: EdgeInsets.all(10.0),
+                        Expanded(
+                          child: Center(
+                            child: Container(
+                              padding: const EdgeInsets.all(10.0),
+                              decoration: BoxDecoration(
+                                color: Colors.pink[100],
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              child: Column(
+                                children: [
+                                  Text("Monthly Debit Orders"),
 
-                          child: Text("Monthly Debit Orders"),
+                                  SizedBox(height: 20),
+
+                                  OutlinedButton(
+                                    onPressed: () {},
+                                    child: const Text("Cancel"),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
                         ),
                       ],
                     ),
