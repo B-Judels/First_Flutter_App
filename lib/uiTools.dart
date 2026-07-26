@@ -5,6 +5,7 @@ class Uitools {
 
   Container imgBtnTitleContainer(String title, String imgDir) {
     return Container(
+      width: double.maxFinite,
       padding: const EdgeInsets.all(10.0),
       decoration: BoxDecoration(
         color: Colors.pink[100],

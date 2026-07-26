@@ -16,123 +16,129 @@ class MyWidget extends StatelessWidget {
       home: Scaffold(
         backgroundColor: Colors.teal[100],
         appBar: AppBar(
-          title: const Center(child: Text("Expence Tracker")),
-          backgroundColor: Colors.teal[300],
+          title: Center(
+            child: Text(
+              style: TextStyle(color: Colors.pink[200]),
+              "Monthly Expence Tracker: ",
+            ),
+          ),
+          backgroundColor: Colors.teal[700],
         ),
         body: SafeArea(
-          child: Center(
-            child: Column(
-              children: [
-                Container(height: 40),
+          child: Column(
+            children: [
+              Container(
+                margin: EdgeInsets.all(10.0),
+                width: double.maxFinite,
 
-                SizedBox(height: 10),
-
-                Container(
-                  // color: Colors.amber[100],
-                  width: double.infinity,
-
-                  child: Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                padding: const EdgeInsets.all(10.0),
+                decoration: BoxDecoration(
+                  color: Colors.teal[300],
+                  borderRadius: BorderRadius.circular(5),
+                ),
+                child: Row(
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.start,
                       children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            Expanded(
-                              child: Center(
-                                child: uiTools.imgBtnTitleContainer(
-                                  "Monthly Debit Orders",
-                                  "images/automatic-payment.png",
-                                ),
-                              ),
-                            ),
-
-                            Expanded(
-                              child: Center(
-                                child: Container(
-                                  padding: const EdgeInsets.all(10.0),
-                                  decoration: BoxDecoration(
-                                    color: Colors.pink[100],
-                                    borderRadius: BorderRadius.circular(20),
-                                  ),
-                                  child: Column(
-                                    children: [
-                                      Text("Monthly Debit Orders"),
-
-                                      SizedBox(height: 20),
-
-                                      OutlinedButton(
-                                        onPressed: () {},
-                                        child: const Text("Cancel"),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
+                        Text(
+                          style: TextStyle(color: Colors.black),
+                          "Current Monthly Income: ",
                         ),
-
-                        SizedBox(height: 10),
-
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            Expanded(
-                              child: Center(
-                                child: Container(
-                                  padding: const EdgeInsets.all(10.0),
-                                  decoration: BoxDecoration(
-                                    color: Colors.pink[100],
-                                    borderRadius: BorderRadius.circular(20),
-                                  ),
-                                  child: Column(
-                                    children: [
-                                      Text("Monthly Debit Orders"),
-
-                                      SizedBox(height: 20),
-
-                                      OutlinedButton(
-                                        onPressed: () {},
-                                        child: const Text("Cancel"),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ),
-
-                            Expanded(
-                              child: Center(
-                                child: Container(
-                                  padding: const EdgeInsets.all(10.0),
-                                  decoration: BoxDecoration(
-                                    color: Colors.pink[100],
-                                    borderRadius: BorderRadius.circular(20),
-                                  ),
-                                  child: Column(
-                                    children: [
-                                      Text("Monthly Debit Orders"),
-
-                                      SizedBox(height: 20),
-
-                                      OutlinedButton(
-                                        onPressed: () {},
-                                        child: const Text("Cancel"),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
+                        Text("Current Monthly Expences: "),
+                        Text("End of Month Prediction: "),
                       ],
                     ),
+                  ],
+                ),
+              ),
+
+              Container(
+                // color: Colors.amber[100],
+                width: double.infinity,
+                padding: const EdgeInsets.all(10.0),
+
+                child: Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          Expanded(
+                            child: Center(
+                              child: uiTools.imgBtnTitleContainer(
+                                "Monthly Debit Orders",
+                                "images/automatic-payment.png",
+                              ),
+                            ),
+                          ),
+
+                          SizedBox(width: 10),
+
+                          Expanded(
+                            child: Center(
+                              child: uiTools.imgBtnTitleContainer(
+                                "Daily habit costs",
+                                "images/24-hours-service.png",
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+
+                      SizedBox(height: 10),
+
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          Expanded(
+                            child: Center(
+                              child: uiTools.imgBtnTitleContainer(
+                                "Healthcare",
+                                "images/healthcare.png",
+                              ),
+                            ),
+                          ),
+
+                          SizedBox(width: 10),
+
+                          Expanded(
+                            child: Center(
+                              child: uiTools.imgBtnTitleContainer(
+                                "Monthly Services",
+                                "images/attendant.png",
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
                   ),
                 ),
-              ],
-            ),
+              ),
+
+              Container(
+                margin: EdgeInsets.all(10.0),
+                width: double.maxFinite,
+
+                padding: const EdgeInsets.all(10.0),
+                decoration: BoxDecoration(
+                  color: Colors.teal[300],
+                  borderRadius: BorderRadius.circular(5),
+                ),
+                child: Row(
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [],
+                    ),
+                  ],
+                ),
+              ),
+            ],
           ),
         ),
       ),
