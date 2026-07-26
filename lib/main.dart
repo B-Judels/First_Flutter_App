@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:first_flutter_app/uiTools.dart';
+import 'package:first_flutter_app/StartUpPage.dart';
 
 void main() {
   runApp(MyWidget());
@@ -18,7 +19,7 @@ class MyWidget extends StatelessWidget {
         appBar: AppBar(
           title: Center(
             child: Text(
-              style: TextStyle(color: Colors.pink[200]),
+              style: TextStyle(color: Colors.blueGrey[50]),
               "Monthly Expence Tracker: ",
             ),
           ),
@@ -49,6 +50,17 @@ class MyWidget extends StatelessWidget {
                         Text("Current Monthly Expences: "),
                         Text("End of Month Prediction: "),
                       ],
+                    ),
+
+                    const Spacer(),
+
+                    Container(
+                      child: Column(
+                        children: [
+                          Text("Edit Income"),
+                          uiTools.btn1("images/recieve.png"),
+                        ],
+                      ),
                     ),
                   ],
                 ),

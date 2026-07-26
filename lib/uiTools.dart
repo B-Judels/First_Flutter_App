@@ -8,8 +8,9 @@ class Uitools {
       width: double.maxFinite,
       padding: const EdgeInsets.all(10.0),
       decoration: BoxDecoration(
-        color: Colors.pink[100],
+        color: Colors.grey[300],
         borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: Colors.black, width: 1.0),
       ),
       child: Column(
         children: [Text(title), SizedBox(height: 10), btn1(imgDir)],
@@ -20,7 +21,7 @@ class Uitools {
   OutlinedButton btn1(String imgDir) {
     return OutlinedButton(
       style: OutlinedButton.styleFrom(
-        backgroundColor: Colors.teal[50],
+        backgroundColor: Colors.teal[100],
         padding: const EdgeInsets.all(12),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
       ),
