@@ -1,156 +1,100 @@
+import 'package:first_flutter_app/home.dart';
 import 'package:flutter/material.dart';
-import 'package:first_flutter_app/uiTools.dart';
 import 'package:first_flutter_app/StartUpPage.dart';
 
 void main() {
-  runApp(MyWidget());
+  runApp(const MyApp());
 }
 
-class MyWidget extends StatelessWidget {
-  MyWidget({super.key});
-
-  final uiTools = Uitools();
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: Scaffold(
-        backgroundColor: Colors.teal[100],
-        appBar: AppBar(
-          title: Center(
-            child: Text(
-              style: TextStyle(color: Colors.blueGrey[50]),
-              "Monthly Expence Tracker: ",
-            ),
+      debugShowCheckedModeBanner: false,
+      title: "Monthly Expense Tracker",
+      home: const NewMain(),
+    );
+  }
+}
+
+class NewMain extends StatelessWidget {
+  const NewMain({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.teal[100],
+      appBar: AppBar(
+        backgroundColor: Colors.teal[700],
+        title: Center(
+          child: Text(
+            "Monthly Expense Tracker",
+            style: TextStyle(color: Colors.blueGrey[50]),
           ),
-          backgroundColor: Colors.teal[700],
         ),
-        body: SafeArea(
-          child: Column(
-            children: [
-              Container(
-                margin: EdgeInsets.all(10.0),
-                width: double.maxFinite,
-
-                padding: const EdgeInsets.all(10.0),
-                decoration: BoxDecoration(
-                  color: Colors.teal[300],
-                  borderRadius: BorderRadius.circular(5),
-                ),
-                child: Row(
-                  children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Text(
-                          style: TextStyle(color: Colors.black),
-                          "Current Monthly Income: ",
+      ),
+      body: SafeArea(
+        child: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(10),
+            child: Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(10),
+              decoration: BoxDecoration(
+                color: Colors.teal[300],
+                borderRadius: BorderRadius.circular(5),
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  SizedBox(
+                    width: double.infinity,
+                    height: 80,
+                    child: OutlinedButton(
+                      style: OutlinedButton.styleFrom(
+                        backgroundColor: Colors.grey[200],
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(15),
                         ),
-                        Text("Current Monthly Expences: "),
-                        Text("End of Month Prediction: "),
-                      ],
+                      ),
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const StartUpPage(),
+                          ),
+                        );
+                      },
+                      child: const Text("Start New"),
                     ),
-
-                    const Spacer(),
-
-                    Container(
-                      child: Column(
-                        children: [
-                          Text("Edit Income"),
-                          uiTools.btn1("images/recieve.png"),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-
-              Container(
-                // color: Colors.amber[100],
-                width: double.infinity,
-                padding: const EdgeInsets.all(10.0),
-
-                child: Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          Expanded(
-                            child: Center(
-                              child: uiTools.imgBtnTitleContainer(
-                                "Monthly Debit Orders",
-                                "images/automatic-payment.png",
-                              ),
-                            ),
-                          ),
-
-                          SizedBox(width: 10),
-
-                          Expanded(
-                            child: Center(
-                              child: uiTools.imgBtnTitleContainer(
-                                "Daily habit costs",
-                                "images/24-hours-service.png",
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-
-                      SizedBox(height: 10),
-
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          Expanded(
-                            child: Center(
-                              child: uiTools.imgBtnTitleContainer(
-                                "Healthcare",
-                                "images/healthcare.png",
-                              ),
-                            ),
-                          ),
-
-                          SizedBox(width: 10),
-
-                          Expanded(
-                            child: Center(
-                              child: uiTools.imgBtnTitleContainer(
-                                "Monthly Services",
-                                "images/attendant.png",
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
                   ),
-                ),
-              ),
 
-              Container(
-                margin: EdgeInsets.all(10.0),
-                width: double.maxFinite,
+                  const SizedBox(height: 20),
 
-                padding: const EdgeInsets.all(10.0),
-                decoration: BoxDecoration(
-                  color: Colors.teal[300],
-                  borderRadius: BorderRadius.circular(5),
-                ),
-                child: Row(
-                  children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [],
+                  SizedBox(
+                    width: double.infinity,
+                    height: 80,
+                    child: OutlinedButton(
+                      style: OutlinedButton.styleFrom(
+                        backgroundColor: Colors.lightBlue[100],
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(15),
+                        ),
+                      ),
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => Home()),
+                        );
+                      },
+                      child: const Text("Continue"),
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
-            ],
+            ),
           ),
         ),
       ),
