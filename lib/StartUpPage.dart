@@ -5,6 +5,8 @@ void main() {
   runApp(StartUpPage());
 }
 
+final List<String> services = [];
+
 class StartUpPage extends StatelessWidget {
   const StartUpPage({super.key});
 
@@ -76,55 +78,86 @@ class StartUpPage extends StatelessWidget {
                   color: Colors.teal[300],
                   borderRadius: BorderRadius.circular(5),
                 ),
-                child: Row(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Container(
-                          margin: const EdgeInsets.all(10),
-                          padding: const EdgeInsets.all(10),
-                          decoration: BoxDecoration(
-                            color: Colors.teal[300],
-                            borderRadius: BorderRadius.circular(5),
+                    Container(
+                      margin: const EdgeInsets.all(10),
+                      padding: const EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                        color: Colors.teal[300],
+                        borderRadius: BorderRadius.circular(5),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text(
+                            "Monthly Services",
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const Text(
-                                "Monthly Services",
-                                style: TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
+
+                          Expanded(
+                            child: Column(
+                              children: [
+                                const TextField(
+                                  decoration: InputDecoration(
+                                    labelText: "Service Name",
+                                    hintText: "Enter your monthly income",
+                                    border: OutlineInputBorder(),
+                                  ),
                                 ),
-                              ),
 
-                              const SizedBox(height: 10),
-
-                              TextField(
-                                decoration: const InputDecoration(
-                                  labelText: "Service Name",
-                                  border: OutlineInputBorder(),
+                                const TextField(
+                                  decoration: InputDecoration(
+                                    labelText: "Monthly Expence",
+                                    hintText:
+                                        "Enter the ecpence for the service per month",
+                                    border: OutlineInputBorder(),
+                                  ),
                                 ),
-                              ),
 
-                              const SizedBox(height: 20),
-                            ],
+                                Expanded(
+                                  child: SizedBox(
+                                    child: OutlinedButton(
+                                      style: OutlinedButton.styleFrom(
+                                        backgroundColor: Colors.teal[100],
+                                        padding: const EdgeInsets.all(12),
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(
+                                            25,
+                                          ),
+                                        ),
+                                      ),
+
+                                      onPressed: () {},
+
+                                      child: Text("Add Service"),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
-                        ),
-                      ],
-                    ),
-                    Expanded(
-                      child: SizedBox(
-                        height: 200,
-                        child: ListView(
-                          children: const [
-                            ListTile(title: Text("Netflix")),
-                            ListTile(title: Text("Spotify")),
-                            ListTile(title: Text("Adobe Creative Cloud")),
-                          ],
-                        ),
+
+                          const SizedBox(height: 15),
+
+                          Center(
+                            child: DataTable(
+                              columns: const [
+                                DataColumn(label: Text("Service Name")),
+                              ],
+                              rows: services.map((service) {
+                                return DataRow(
+                                  cells: [DataCell(Text(service))],
+                                );
+                              }).toList(),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ],
