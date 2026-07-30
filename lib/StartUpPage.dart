@@ -1,3 +1,4 @@
+import 'package:first_flutter_app/DebitOrdersPage.dart';
 import 'package:flutter/material.dart';
 import 'package:first_flutter_app/home.dart';
 import 'package:first_flutter_app/uiTools.dart';
@@ -11,7 +12,7 @@ class StartUpPage extends StatefulWidget {
 
 class _StartUpPageState extends State<StartUpPage> {
   final List<String> services = [];
-  final List<String> debitOrders = [];
+  final List<DebitOrdersPage> debitOrders = [];
 
   @override
   Widget build(BuildContext context) {
@@ -159,9 +160,17 @@ class _StartUpPageState extends State<StartUpPage> {
                               ),
                               columns: const [
                                 DataColumn(label: Text("Debit Order Name")),
+                                DataColumn(label: Text("Debit Order Cost")),
                               ],
                               rows: debitOrders.map((order) {
-                                return DataRow(cells: [DataCell(Text(order))]);
+                                return DataRow(
+                                  cells: [
+                                    DataCell(Text(order.getName)),
+                                    DataCell(
+                                      Text(order.getDebitCost as String),
+                                    ),
+                                  ],
+                                );
                               }).toList(),
                             ),
                           ),
@@ -321,7 +330,9 @@ class _StartUpPageState extends State<StartUpPage> {
                             DataColumn(label: Text("Debit Order Name")),
                           ],
                           rows: debitOrders.map((order) {
-                            return DataRow(cells: [DataCell(Text(order))]);
+                            return DataRow(
+                              cells: [DataCell(Text(order.getName))],
+                            );
                           }).toList(),
                         ),
                       ),

@@ -1,24 +1,24 @@
 import 'package:flutter/material.dart';
 
-class DebitOrdersPage extends StatelessWidget {
+class DailyHabits extends StatelessWidget {
   final String name;
-  final double costDebit;
+  final double costDHabit;
 
   // Changed to named optional parameters inside curly braces {}
   // Added 'required' to ensure the data is passed when navigating
-  const DebitOrdersPage({
+  const DailyHabits({
     super.key, // Standard best practice for Flutter widget keys
     required this.name,
-    required this.costDebit,
+    required this.costDHabit,
   });
 
-  double get getDebitCost => costDebit;
+  double get getServiceCost => costDHabit;
   String get getName => name;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Monthly Debit Orders")),
+      appBar: AppBar(title: const Text("Monthly Services")),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -27,7 +27,7 @@ class DebitOrdersPage extends StatelessWidget {
             const SizedBox(height: 10),
             // Displaying your final constructor variables safely in the UI
             Text("Account Name: $name"),
-            Text("Cost: R${costDebit.toStringAsFixed(2)}"),
+            Text("Cost: R${costDHabit.toStringAsFixed(2)}"),
           ],
         ),
       ),
