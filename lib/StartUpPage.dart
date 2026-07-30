@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:first_flutter_app/home.dart';
 import 'package:first_flutter_app/uiTools.dart';
 import 'package:first_flutter_app/Services.dart';
+import 'package:first_flutter_app/DailyHabits.dart';
 
 class StartUpPage extends StatefulWidget {
   const StartUpPage({super.key});
@@ -14,9 +15,14 @@ class StartUpPage extends StatefulWidget {
 class _StartUpPageState extends State<StartUpPage> {
   final List<Services> services = [];
   final List<DebitOrdersPage> debitOrders = [];
+  final List<DailyHabits> dHabits = [];
+  double dailyTotal = 0;
 
   final TextEditingController incomeController = TextEditingController();
   final TextEditingController medicalAidController = TextEditingController();
+
+  final TextEditingController dailyHabitNameController =
+      TextEditingController();
   final TextEditingController dailyHabitController = TextEditingController();
 
   final TextEditingController debitNameController = TextEditingController();
@@ -86,17 +92,6 @@ class _StartUpPageState extends State<StartUpPage> {
                       ),
 
                       SizedBox(height: 10.0),
-
-                      TextField(
-                        controller: dailyHabitController,
-                        keyboardType: TextInputType.number,
-                        decoration: InputDecoration(
-                          labelText: "Daily Habit Expences",
-                          hintText:
-                              "Enter your frequent everyday spendage cost. (per day)",
-                          border: OutlineInputBorder(),
-                        ),
-                      ),
                     ],
                   ),
                 ),
@@ -342,30 +337,44 @@ class _StartUpPageState extends State<StartUpPage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const Text(
-                        "Monthly Debit Orders",
+                        "Daily Habit Costs",
                         style: TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
+                      Text(
+                        "Current daily total: R ${dailyTotal.toStringAsFixed(2)}",
+                        style: TextStyle(
+                          fontSize: 10,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+
+                      SizedBox(height: 10.0),
 
                       Column(
                         children: [
-                          const TextField(
+                          TextField(
+                            controller: dailyHabitNameController,
+                            keyboardType: TextInputType.text,
                             decoration: InputDecoration(
-                              labelText: "Debit Order Name",
-                              hintText: "Enter the name for the debit order",
+                              labelText: "Daily Cost Name",
+                              hintText:
+                                  "Enter the name for the item/activity you get/do daily",
                               border: OutlineInputBorder(),
                             ),
                           ),
 
                           SizedBox(height: 10.0),
 
-                          const TextField(
+                          TextField(
+                            controller: dailyHabitController,
+                            keyboardType: TextInputType.number,
                             decoration: InputDecoration(
-                              labelText: "Monthly Expence",
+                              labelText: "Daily Expence",
                               hintText:
-                                  "Enter the ecpence for the service per month",
+                                  "Enter the expence for the item/action that you get/do daily",
                               border: OutlineInputBorder(),
                             ),
                           ),
@@ -375,9 +384,28 @@ class _StartUpPageState extends State<StartUpPage> {
                           SizedBox(
                             width: double.infinity,
                             child: OutlinedButton(
-                              onPressed: () {},
+                              onPressed: () {
+                                String habitName =
+                                    dailyHabitNameController.text;
+                                double habitCost = double.parse(
+                                  dailyHabitController.text,
+                                );
 
-                              child: Text("Add Debit Order"),
+                                DailyHabits hab1 = new DailyHabits(
+                                  name: habitName,
+                                  costDHabit: habitCost,
+                                );
+
+                                setState(() {
+                                  dHabits.add(hab1);
+                                  dailyTotal = dailyTotal + habitCost;
+                                });
+
+                                dailyHabitNameController.clear();
+                                dailyHabitController.clear();
+                              },
+
+                              child: Text("Add Daily Habit"),
                               style: OutlinedButton.styleFrom(
                                 backgroundColor: Colors.teal[100],
                                 padding: const EdgeInsets.all(12),
@@ -399,11 +427,19 @@ class _StartUpPageState extends State<StartUpPage> {
                           ),
                           dataRowColor: WidgetStateProperty.all(Colors.cyan),
                           columns: const [
-                            DataColumn(label: Text("Debit Order Name")),
+                            DataColumn(label: Text("Daily Habit Name")),
+                            DataColumn(label: Text("Daily Habit Cost")),
                           ],
-                          rows: debitOrders.map((order) {
+                          rows: dHabits.map((hab) {
                             return DataRow(
-                              cells: [DataCell(Text(order.getName))],
+                              cells: [
+                                DataCell(Text(hab.getName)),
+                                DataCell(
+                                  Text(
+                                    "R ${hab.costDHabit.toStringAsFixed(2)}",
+                                  ),
+                                ),
+                              ],
                             );
                           }).toList(),
                         ),

@@ -12,7 +12,7 @@ class DailyHabits extends StatelessWidget {
     required this.costDHabit,
   });
 
-  double get getServiceCost => costDHabit;
+  double get getHabitCost => costDHabit;
   String get getName => name;
 
   @override
