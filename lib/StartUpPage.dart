@@ -1,10 +1,9 @@
-import 'package:first_flutter_app/DebitOrdersPage.dart';
+import 'package:first_flutter_app/models/DebitOrder.dart';
 import 'package:flutter/material.dart';
 import 'package:first_flutter_app/home.dart';
-import 'package:first_flutter_app/uiTools.dart';
-import 'package:first_flutter_app/Services.dart';
-import 'package:first_flutter_app/DailyHabits.dart';
-import 'package:first_flutter_app/MedicalAid.dart';
+import 'package:first_flutter_app/models/Service.dart';
+import 'package:first_flutter_app/models/DailyHabit.dart';
+import 'package:first_flutter_app/models/MedicalAid.dart';
 
 class StartUpPage extends StatefulWidget {
   const StartUpPage({super.key});
@@ -14,9 +13,9 @@ class StartUpPage extends StatefulWidget {
 }
 
 class _StartUpPageState extends State<StartUpPage> {
-  final List<Services> services = [];
+  final List<Service> services = [];
 
-  final List<DebitOrdersPage> debitOrders = [];
+  final List<DebitOrder> debitOrders = [];
 
   final List<MedicalAid> medAids = [];
 
@@ -153,9 +152,9 @@ class _StartUpPageState extends State<StartUpPage> {
                                         ) ??
                                         0;
 
-                                    DebitOrdersPage order = new DebitOrdersPage(
+                                    DebitOrder order = new DebitOrder(
                                       name: debitName,
-                                      costDebit: debitCost,
+                                      cost: debitCost,
                                     );
                                     setState(() {
                                       debitOrders.add(order);
@@ -198,7 +197,7 @@ class _StartUpPageState extends State<StartUpPage> {
                                     DataCell(Text(orderer.getName)),
                                     DataCell(
                                       Text(
-                                        "R ${orderer.getDebitCost.toStringAsFixed(2)}",
+                                        "R ${orderer.getCost.toStringAsFixed(2)}",
                                       ),
                                     ),
                                   ],
@@ -381,9 +380,9 @@ class _StartUpPageState extends State<StartUpPage> {
                                   serviceCostController.text,
                                 );
 
-                                Services serve = new Services(
-                                  name: serviceName,
-                                  costService: serviceCost,
+                                Service serve = new Service(
+                                  serviceName: serviceName,
+                                  serviceCost: serviceCost,
                                 );
 
                                 setState(() {
@@ -425,7 +424,7 @@ class _StartUpPageState extends State<StartUpPage> {
                                 DataCell(Text(service.getName)),
                                 DataCell(
                                   Text(
-                                    "R ${service.getServiceCost.toStringAsFixed(2)}",
+                                    "R ${service.getCost.toStringAsFixed(2)}",
                                   ),
                                 ),
                               ],
