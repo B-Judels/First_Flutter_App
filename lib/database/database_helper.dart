@@ -4,6 +4,7 @@ import 'package:first_flutter_app/models/DebitOrder.dart';
 import 'package:first_flutter_app/models/Service.dart';
 import 'package:first_flutter_app/models/MedicalAid.dart';
 import 'package:first_flutter_app/models/DailyHabit.dart';
+import 'package:first_flutter_app/models/UserSettings.dart';
 
 class DatabaseHelper {
   static final DatabaseHelper instance = DatabaseHelper._init();
@@ -33,7 +34,14 @@ class DatabaseHelper {
     );
   }
 
-  Future _createDB(Database db, int version) async {
+  Future<void> _createDB(Database db, int version) async {
+    await db.execute('''
+  CREATE TABLE user_settings (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    income REAL NOT NULL
+  )
+''');
+
     await db.execute('''
       CREATE TABLE debit_orders (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -70,7 +78,21 @@ class DatabaseHelper {
 
   Future<void> close() async {
     final db = await instance.database;
-    db.close();
+    await db.close();
+  }
+
+  Future<int> insertUserSettings(UserSettings settings) async {
+    final db = await database;
+
+    return await db.insert('user_settings', settings.toMap());
+  }
+
+  Future<List<UserSettings>> getUserSettings() async {
+    final db = await database;
+
+    final maps = await db.query('user_settings');
+
+    return maps.map((map) => UserSettings.fromMap(map)).toList();
   }
 
   Future<int> insertDebitOrder(DebitOrder order) async {
