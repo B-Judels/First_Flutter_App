@@ -19,7 +19,7 @@ class _StartUpPageState extends State<StartUpPage> {
 
   final List<MedicalAid> medAids = [];
 
-  final List<DailyHabits> dHabits = [];
+  final List<DailyHabit> dHabits = [];
   double dailyTotal = 0;
 
   final TextEditingController incomeController = TextEditingController();
@@ -501,7 +501,7 @@ class _StartUpPageState extends State<StartUpPage> {
                                   dailyHabitController.text,
                                 );
 
-                                DailyHabits hab1 = new DailyHabits(
+                                DailyHabit hab1 = new DailyHabit(
                                   name: habitName,
                                   costDHabit: habitCost,
                                 );

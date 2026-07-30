@@ -1,36 +1,24 @@
-import 'package:flutter/material.dart';
-
-class DailyHabits extends StatelessWidget {
+class DailyHabit {
+  final int? id;
   final String name;
   final double costDHabit;
 
-  // Changed to named optional parameters inside curly braces {}
-  // Added 'required' to ensure the data is passed when navigating
-  const DailyHabits({
-    super.key, // Standard best practice for Flutter widget keys
-    required this.name,
-    required this.costDHabit,
-  });
+  DailyHabit({this.id, required this.name, required this.costDHabit});
 
-  double get getHabitCost => costDHabit;
+  int? get getId => id;
   String get getName => name;
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text("Monthly Services")),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Text("Welcome to the Debit Orders page!"),
-            const SizedBox(height: 10),
-            // Displaying your final constructor variables safely in the UI
-            Text("Account Name: $name"),
-            Text("Cost: R${costDHabit.toStringAsFixed(2)}"),
-          ],
-        ),
-      ),
+  double get getCost => costDHabit;
+
+  Map<String, dynamic> toMap() {
+    return {'id': id, 'name': name, 'cost': costDHabit};
+  }
+
+  factory DailyHabit.fromMap(Map<String, dynamic> map) {
+    return DailyHabit(
+      id: map['id'],
+      name: map['name'],
+      costDHabit: (map['cost'] as num).toDouble(),
     );
   }
 }
