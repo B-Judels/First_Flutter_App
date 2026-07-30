@@ -2,6 +2,7 @@ import 'package:first_flutter_app/DebitOrdersPage.dart';
 import 'package:flutter/material.dart';
 import 'package:first_flutter_app/home.dart';
 import 'package:first_flutter_app/uiTools.dart';
+import 'package:first_flutter_app/Services.dart';
 
 class StartUpPage extends StatefulWidget {
   const StartUpPage({super.key});
@@ -11,8 +12,18 @@ class StartUpPage extends StatefulWidget {
 }
 
 class _StartUpPageState extends State<StartUpPage> {
-  final List<String> services = [];
+  final List<Services> services = [];
   final List<DebitOrdersPage> debitOrders = [];
+
+  final TextEditingController incomeController = TextEditingController();
+  final TextEditingController medicalAidController = TextEditingController();
+  final TextEditingController dailyHabitController = TextEditingController();
+
+  final TextEditingController debitNameController = TextEditingController();
+  final TextEditingController debitCostController = TextEditingController();
+
+  final TextEditingController serviceNameController = TextEditingController();
+  final TextEditingController serviceCostController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -52,7 +63,9 @@ class _StartUpPageState extends State<StartUpPage> {
                     children: [
                       const SizedBox(height: 20),
 
-                      const TextField(
+                      TextField(
+                        controller: incomeController,
+                        keyboardType: TextInputType.number,
                         decoration: InputDecoration(
                           labelText: "Monthly Income",
                           hintText: "Enter your monthly income",
@@ -62,7 +75,9 @@ class _StartUpPageState extends State<StartUpPage> {
 
                       SizedBox(height: 25.0),
 
-                      const TextField(
+                      TextField(
+                        controller: medicalAidController,
+                        keyboardType: TextInputType.number,
                         decoration: InputDecoration(
                           labelText: "Medical Aid",
                           hintText: "Enter your monthly medical aid expences",
@@ -72,7 +87,9 @@ class _StartUpPageState extends State<StartUpPage> {
 
                       SizedBox(height: 10.0),
 
-                      const TextField(
+                      TextField(
+                        controller: dailyHabitController,
+                        keyboardType: TextInputType.number,
                         decoration: InputDecoration(
                           labelText: "Daily Habit Expences",
                           hintText:
@@ -108,7 +125,9 @@ class _StartUpPageState extends State<StartUpPage> {
 
                           Column(
                             children: [
-                              const TextField(
+                              TextField(
+                                controller: debitNameController,
+                                keyboardType: TextInputType.text,
                                 decoration: InputDecoration(
                                   labelText: "Debit Order Name",
                                   hintText:
@@ -119,7 +138,9 @@ class _StartUpPageState extends State<StartUpPage> {
 
                               SizedBox(height: 10.0),
 
-                              const TextField(
+                              TextField(
+                                controller: debitCostController,
+                                keyboardType: TextInputType.number,
                                 decoration: InputDecoration(
                                   labelText: "Monthly Expence",
                                   hintText:
@@ -133,7 +154,25 @@ class _StartUpPageState extends State<StartUpPage> {
                               SizedBox(
                                 width: double.infinity,
                                 child: OutlinedButton(
-                                  onPressed: () {},
+                                  onPressed: () {
+                                    String debitName = debitNameController.text;
+                                    double debitCost =
+                                        double.tryParse(
+                                          debitCostController.text,
+                                        ) ??
+                                        0;
+
+                                    DebitOrdersPage order = new DebitOrdersPage(
+                                      name: debitName,
+                                      costDebit: debitCost,
+                                    );
+                                    setState(() {
+                                      debitOrders.add(order);
+                                    });
+
+                                    debitNameController.clear();
+                                    debitCostController.clear();
+                                  },
 
                                   child: Text("Add Debit Order"),
                                   style: OutlinedButton.styleFrom(
@@ -162,12 +201,14 @@ class _StartUpPageState extends State<StartUpPage> {
                                 DataColumn(label: Text("Debit Order Name")),
                                 DataColumn(label: Text("Debit Order Cost")),
                               ],
-                              rows: debitOrders.map((order) {
+                              rows: debitOrders.map((orderer) {
                                 return DataRow(
                                   cells: [
-                                    DataCell(Text(order.getName)),
+                                    DataCell(Text(orderer.getName)),
                                     DataCell(
-                                      Text(order.getDebitCost as String),
+                                      Text(
+                                        "R ${orderer.getDebitCost.toStringAsFixed(2)}",
+                                      ),
                                     ),
                                   ],
                                 );
@@ -200,21 +241,25 @@ class _StartUpPageState extends State<StartUpPage> {
 
                       Column(
                         children: [
-                          const TextField(
+                          TextField(
+                            controller: serviceNameController,
+                            keyboardType: TextInputType.text,
                             decoration: InputDecoration(
                               labelText: "Service Name",
-                              hintText: "Enter your monthly income",
+                              hintText: "Enter the name of the service",
                               border: OutlineInputBorder(),
                             ),
                           ),
 
                           SizedBox(height: 10.0),
 
-                          const TextField(
+                          TextField(
+                            controller: serviceCostController,
+                            keyboardType: TextInputType.number,
                             decoration: InputDecoration(
                               labelText: "Monthly Expence",
                               hintText:
-                                  "Enter the ecpence for the service per month",
+                                  "Enter the expence for the service per month",
                               border: OutlineInputBorder(),
                             ),
                           ),
@@ -224,7 +269,24 @@ class _StartUpPageState extends State<StartUpPage> {
                           SizedBox(
                             width: double.infinity,
                             child: OutlinedButton(
-                              onPressed: () {},
+                              onPressed: () {
+                                String serviceName = serviceNameController.text;
+                                double serviceCost = double.parse(
+                                  serviceCostController.text,
+                                );
+
+                                Services serve = new Services(
+                                  name: serviceName,
+                                  costService: serviceCost,
+                                );
+
+                                setState(() {
+                                  services.add(serve);
+                                });
+
+                                serviceNameController.clear();
+                                serviceCostController.clear();
+                              },
 
                               child: Text("Add Service"),
                               style: OutlinedButton.styleFrom(
@@ -249,9 +311,19 @@ class _StartUpPageState extends State<StartUpPage> {
                           dataRowColor: WidgetStateProperty.all(Colors.cyan),
                           columns: const [
                             DataColumn(label: Text("Service Name")),
+                            DataColumn(label: Text("Service Cost")),
                           ],
                           rows: services.map((service) {
-                            return DataRow(cells: [DataCell(Text(service))]);
+                            return DataRow(
+                              cells: [
+                                DataCell(Text(service.getName)),
+                                DataCell(
+                                  Text(
+                                    "R ${service.getServiceCost.toStringAsFixed(2)}",
+                                  ),
+                                ),
+                              ],
+                            );
                           }).toList(),
                         ),
                       ),
