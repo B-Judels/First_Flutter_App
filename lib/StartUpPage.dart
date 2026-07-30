@@ -4,6 +4,8 @@ import 'package:first_flutter_app/home.dart';
 import 'package:first_flutter_app/models/Service.dart';
 import 'package:first_flutter_app/models/DailyHabit.dart';
 import 'package:first_flutter_app/models/MedicalAid.dart';
+import 'package:first_flutter_app/models/UserSettings.dart';
+import 'package:first_flutter_app/database/database_helper.dart';
 
 class StartUpPage extends StatefulWidget {
   const StartUpPage({super.key});
@@ -13,13 +15,19 @@ class StartUpPage extends StatefulWidget {
 }
 
 class _StartUpPageState extends State<StartUpPage> {
+  double userIncome = 0;
+
   final List<Service> services = [];
+  final List<Service> servicesStore = [];
 
   final List<DebitOrder> debitOrders = [];
+  final List<DebitOrder> debitOrdersStore = [];
 
   final List<MedicalAid> medAids = [];
+  final List<MedicalAid> medAidsStore = [];
 
   final List<DailyHabit> dHabits = [];
+  final List<DailyHabit> dHabitsStore = [];
   double dailyTotal = 0;
 
   final TextEditingController incomeController = TextEditingController();
@@ -158,6 +166,7 @@ class _StartUpPageState extends State<StartUpPage> {
                                     );
                                     setState(() {
                                       debitOrders.add(order);
+                                      debitOrdersStore.add(order);
                                     });
 
                                     debitNameController.clear();
@@ -273,6 +282,7 @@ class _StartUpPageState extends State<StartUpPage> {
                                     );
                                     setState(() {
                                       medAids.add(medAid);
+                                      medAidsStore.add(medAid);
                                     });
 
                                     medicalAidController.clear();
@@ -387,6 +397,7 @@ class _StartUpPageState extends State<StartUpPage> {
 
                                 setState(() {
                                   services.add(serve);
+                                  servicesStore.add(serve);
                                 });
 
                                 serviceNameController.clear();
@@ -508,6 +519,7 @@ class _StartUpPageState extends State<StartUpPage> {
 
                                 setState(() {
                                   dHabits.add(hab1);
+                                  dHabitsStore.add(hab1);
                                   dailyTotal = dailyTotal + habitCost;
                                 });
 
@@ -570,12 +582,98 @@ class _StartUpPageState extends State<StartUpPage> {
                           borderRadius: BorderRadius.circular(15),
                         ),
                       ),
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => Home()),
+                      onPressed: () async {
+                        for (DebitOrder order in debitOrders) {
+                          await DatabaseHelper.instance.insertDebitOrder(order);
+                        }
+
+                        double income =
+                            double.tryParse(incomeController.text) ?? 0;
+
+                        UserSettings settings = UserSettings(
+                          userIncome: income,
                         );
+
+                        await DatabaseHelper.instance.insertUserSettings(
+                          settings,
+                        );
+
+                        for (MedicalAid medAid in medAids) {
+                          await DatabaseHelper.instance.insertMedicalAid(
+                            medAid,
+                          );
+                        }
+
+                        for (Service service in services) {
+                          await DatabaseHelper.instance.insertService(service);
+                        }
+
+                        for (DailyHabit habit in dHabits) {
+                          await DatabaseHelper.instance.insertDailyHabit(habit);
+                        }
+
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text("Data aved!")),
+                        );
+
+                        //--------------------------testing console area---------------------------
+                        List<DebitOrder> ordersTest = await DatabaseHelper
+                            .instance
+                            .getDebitOrders();
+
+                        print("========== DEBIT ORDERS ==========");
+
+                        for (var order in ordersTest) {
+                          print(
+                            "${order.getId} ${order.getName} R${order.getCost}",
+                          );
+                        }
+
+                        List<Service> servicesTest = await DatabaseHelper
+                            .instance
+                            .getServices();
+
+                        print("========== SERVICES ==========");
+
+                        for (var service in servicesTest) {
+                          print(
+                            "${service.getId} ${service.getName} R${service.getCost}",
+                          );
+                        }
+
+                        List<MedicalAid> medAidsTest = await DatabaseHelper
+                            .instance
+                            .getMedicalAids();
+
+                        print("========== MED ==========");
+
+                        for (var med in medAidsTest) {
+                          print("${med.getName} R${med.getMedAidCost}");
+                        }
+
+                        List<DailyHabit> habitsTest = await DatabaseHelper
+                            .instance
+                            .getDailyHabits();
+
+                        print("========== Habits ==========");
+
+                        for (var habit in habitsTest) {
+                          print("${habit.getName} R${habit.getCost}");
+                        }
+
+                        List<UserSettings> settingsTest = await DatabaseHelper
+                            .instance
+                            .getUserSettings();
+
+                        print("========== Habits ==========");
+
+                        for (var setting in settingsTest) {
+                          print(setting.getIncome);
+                        }
+
+                        //-------------------------------------------------------------------------
                       },
+
                       child: const Text("Save and Calculate"),
                     ),
                   ),
