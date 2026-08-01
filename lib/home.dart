@@ -67,6 +67,9 @@ class Home extends StatelessWidget {
       habitTotal = (dailyHabits[i].getCost * daysInMonth) + habitTotal;
     }
 
+    double totalSpent = debitTotal + serviceTotal + medTotal + habitTotal;
+    double endMonthPredict = userSettings[0].getIncome - totalSpent;
+
     return Scaffold(
       backgroundColor: Colors.teal[100],
       appBar: AppBar(
@@ -97,13 +100,17 @@ class Home extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       Text(
-                        style: TextStyle(color: Colors.black),
+                        style: TextStyle(color: Colors.black, fontSize: 12),
                         "Current Monthly Income: R ${userSettings[0].getIncome.toStringAsFixed(2)}",
                       ),
                       Text(
+                        style: TextStyle(color: Colors.black, fontSize: 12),
                         "Current Monthly Expences: R ${currentMonthTotal.toStringAsFixed(2)}",
                       ),
-                      Text("End of Month Prediction: "),
+                      Text(
+                        style: TextStyle(color: Colors.black, fontSize: 12),
+                        "End of Month Prediction: R ${endMonthPredict.toStringAsFixed(2)}",
+                      ),
                     ],
                   ),
 
