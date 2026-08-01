@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:first_flutter_app/uiTools.dart';
 import 'package:first_flutter_app/pages/StartUpPage.dart';
 import 'package:first_flutter_app/pages/debit_order_page.dart';
+import 'package:first_flutter_app/pages/service_page.dart';
 import 'package:first_flutter_app/models/DebitOrder.dart';
 import 'package:first_flutter_app/models/Service.dart';
 import 'package:first_flutter_app/models/MedicalAid.dart';
@@ -226,7 +227,7 @@ class Home extends StatelessWidget {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) => const StartUpPage(),
+                                    builder: (context) => const ServicePage(),
                                   ),
                                 );
                               },
