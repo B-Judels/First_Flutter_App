@@ -3,12 +3,12 @@ import 'package:first_flutter_app/uiTools.dart';
 import 'package:first_flutter_app/pages/StartUpPage.dart';
 import 'package:first_flutter_app/pages/debit_order_page.dart';
 import 'package:first_flutter_app/pages/service_page.dart';
+import 'package:first_flutter_app/pages/med_aid_page.dart';
 import 'package:first_flutter_app/models/DebitOrder.dart';
 import 'package:first_flutter_app/models/Service.dart';
 import 'package:first_flutter_app/models/MedicalAid.dart';
 import 'package:first_flutter_app/models/DailyHabit.dart';
 import 'package:first_flutter_app/models/UserSettings.dart';
-import 'package:first_flutter_app/database/database_helper.dart';
 
 class Home extends StatelessWidget {
   Home({super.key});
@@ -48,6 +48,12 @@ class Home extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    double currentMonthTotal = 0;
+    double debitTotal = 0;
+    double serviceTotal = 0;
+    double medTotal = 0;
+    double habitTotal = 0;
+
     for (int i = 0; i < services.length; i++) {
       currentMonthTotal = services[i].getCost + currentMonthTotal;
       serviceTotal = serviceTotal + services[i].getCost;
@@ -84,183 +90,159 @@ class Home extends StatelessWidget {
         backgroundColor: Colors.teal[700],
       ),
       body: SafeArea(
-        child: Column(
-          children: [
-            Container(
-              margin: EdgeInsets.all(10.0),
-              width: double.maxFinite,
+        child: Padding(
+          padding: const EdgeInsets.all(2.0),
+          child: Column(
+            children: [
+              Container(
+                margin: EdgeInsets.all(10.0),
+                width: double.maxFinite,
 
-              padding: const EdgeInsets.all(10.0),
-              decoration: BoxDecoration(
-                color: Colors.teal[300],
-                borderRadius: BorderRadius.circular(5),
-              ),
-              child: Row(
-                children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Text(
-                        style: TextStyle(color: Colors.black, fontSize: 12),
-                        "Current Monthly Income: R ${userSettings[0].getIncome.toStringAsFixed(2)}",
-                      ),
-                      Text(
-                        style: TextStyle(color: Colors.black, fontSize: 12),
-                        "Current Monthly Expences: R ${currentMonthTotal.toStringAsFixed(2)}",
-                      ),
-                      Text(
-                        style: TextStyle(color: Colors.black, fontSize: 12),
-                        "End of Month Prediction: R ${endMonthPredict.toStringAsFixed(2)}",
-                      ),
-                    ],
-                  ),
-
-                  const Spacer(),
-
-                  Container(
-                    child: Column(
-                      children: [
-                        Text("Edit Income"),
-
-                        uiTools.imgBtnTitleContainer(
-                          "Monthly Debit Orders",
-                          "images/images/recieve.png",
-                          () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => const DebitOrderPage(),
-                              ),
-                            );
-                          },
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-
-            Container(
-              // color: Colors.amber[100],
-              width: double.infinity,
-              padding: const EdgeInsets.all(10.0),
-
-              child: Center(
+                padding: const EdgeInsets.all(10.0),
+                decoration: BoxDecoration(
+                  color: Colors.teal[300],
+                  borderRadius: BorderRadius.circular(5),
+                ),
                 child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        Expanded(
-                          child: Center(
-                            child: uiTools.imgBtnTitleContainer(
-                              "Monthly Debit Orders",
-                              "images/automatic-payment.png",
-                              () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) =>
-                                        const DebitOrderPage(),
-                                  ),
-                                );
-                              },
-                            ),
-                          ),
-                        ),
-
-                        SizedBox(width: 10),
-
-                        Expanded(
-                          child: Center(
-                            child: uiTools.imgBtnTitleContainer(
-                              "Daily habit costs",
-                              "images/24-hours-service.png",
-                              () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) =>
-                                        const DebitOrderPage(),
-                                  ),
-                                );
-                              },
-                            ),
-                          ),
-                        ),
-                      ],
+                    Text(
+                      style: TextStyle(color: Colors.black, fontSize: 12),
+                      "Current Monthly Income: R ${userSettings[0].getIncome.toStringAsFixed(2)}",
                     ),
-
-                    SizedBox(height: 10),
-
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        Expanded(
-                          child: Center(
-                            child: uiTools.imgBtnTitleContainer(
-                              "Healthcare",
-                              "images/healthcare.png",
-                              () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => const StartUpPage(),
-                                  ),
-                                );
-                              },
-                            ),
-                          ),
-                        ),
-
-                        SizedBox(width: 10),
-
-                        Expanded(
-                          child: Center(
-                            child: uiTools.imgBtnTitleContainer(
-                              "Monthly Services",
-                              "images/attendant.png",
-                              () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => const ServicePage(),
-                                  ),
-                                );
-                              },
-                            ),
-                          ),
-                        ),
-                      ],
+                    Text(
+                      style: TextStyle(color: Colors.black, fontSize: 12),
+                      "Current Monthly Expences: R ${currentMonthTotal.toStringAsFixed(2)}",
+                    ),
+                    Text(
+                      style: TextStyle(color: Colors.black, fontSize: 12),
+                      "End of Month Prediction: R ${endMonthPredict.toStringAsFixed(2)}",
                     ),
                   ],
                 ),
               ),
-            ),
 
-            Container(
-              margin: EdgeInsets.all(10.0),
-              width: double.maxFinite,
+              Container(
+                // color: Colors.amber[100],
+                width: double.infinity,
+                padding: const EdgeInsets.all(10.0),
 
-              padding: const EdgeInsets.all(10.0),
-              decoration: BoxDecoration(
-                color: Colors.teal[300],
-                borderRadius: BorderRadius.circular(5),
-              ),
-              child: Row(
-                children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [],
+                child: Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          Expanded(
+                            child: Center(
+                              child: uiTools.imgBtnTitleContainer(
+                                "Monthly Debit Orders",
+                                "images/automatic-payment.png",
+                                () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          const DebitOrderPage(),
+                                    ),
+                                  );
+                                },
+                              ),
+                            ),
+                          ),
+
+                          SizedBox(width: 10),
+
+                          Expanded(
+                            child: Center(
+                              child: uiTools.imgBtnTitleContainer(
+                                "Daily habit costs",
+                                "images/24-hours-service.png",
+                                () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          const DebitOrderPage(),
+                                    ),
+                                  );
+                                },
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+
+                      SizedBox(height: 10),
+
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          Expanded(
+                            child: Center(
+                              child: uiTools.imgBtnTitleContainer(
+                                "Medical Aid",
+                                "images/healthcare.png",
+                                () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => const MedAidPage(),
+                                    ),
+                                  );
+                                },
+                              ),
+                            ),
+                          ),
+
+                          SizedBox(width: 10),
+
+                          Expanded(
+                            child: Center(
+                              child: uiTools.imgBtnTitleContainer(
+                                "Monthly Services",
+                                "images/attendant.png",
+                                () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => const ServicePage(),
+                                    ),
+                                  );
+                                },
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
                   ),
-                ],
+                ),
               ),
-            ),
-          ],
+
+              Container(
+                margin: EdgeInsets.all(10.0),
+                width: double.maxFinite,
+
+                padding: const EdgeInsets.all(10.0),
+                decoration: BoxDecoration(
+                  color: Colors.teal[300],
+                  borderRadius: BorderRadius.circular(5),
+                ),
+                child: Row(
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [],
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
