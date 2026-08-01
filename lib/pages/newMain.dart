@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:first_flutter_app/uiTools.dart';
-import 'package:first_flutter_app/StartUpPage.dart';
+import 'package:first_flutter_app/pages/StartUpPage.dart';
 
 void main() {
   runApp(Newmain());

@@ -1,6 +1,6 @@
 import 'package:first_flutter_app/models/DebitOrder.dart';
 import 'package:flutter/material.dart';
-import 'package:first_flutter_app/home.dart';
+import 'package:first_flutter_app/pages/home.dart';
 import 'package:first_flutter_app/models/Service.dart';
 import 'package:first_flutter_app/models/DailyHabit.dart';
 import 'package:first_flutter_app/models/MedicalAid.dart';

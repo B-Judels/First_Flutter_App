@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:first_flutter_app/uiTools.dart';
-import 'package:first_flutter_app/StartUpPage.dart';
+import 'package:first_flutter_app/pages/StartUpPage.dart';
+import 'package:first_flutter_app/pages/debit_order_page.dart';
 import 'package:first_flutter_app/models/DebitOrder.dart';
 import 'package:first_flutter_app/models/Service.dart';
 import 'package:first_flutter_app/models/MedicalAid.dart';
@@ -120,7 +121,19 @@ class Home extends StatelessWidget {
                     child: Column(
                       children: [
                         Text("Edit Income"),
-                        uiTools.btn1("images/recieve.png"),
+
+                        uiTools.imgBtnTitleContainer(
+                          "Monthly Debit Orders",
+                          "images/images/recieve.png",
+                          () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const DebitOrderPage(),
+                              ),
+                            );
+                          },
+                        ),
                       ],
                     ),
                   ),
@@ -145,6 +158,15 @@ class Home extends StatelessWidget {
                             child: uiTools.imgBtnTitleContainer(
                               "Monthly Debit Orders",
                               "images/automatic-payment.png",
+                              () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        const DebitOrderPage(),
+                                  ),
+                                );
+                              },
                             ),
                           ),
                         ),
@@ -156,6 +178,15 @@ class Home extends StatelessWidget {
                             child: uiTools.imgBtnTitleContainer(
                               "Daily habit costs",
                               "images/24-hours-service.png",
+                              () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        const DebitOrderPage(),
+                                  ),
+                                );
+                              },
                             ),
                           ),
                         ),
@@ -172,6 +203,14 @@ class Home extends StatelessWidget {
                             child: uiTools.imgBtnTitleContainer(
                               "Healthcare",
                               "images/healthcare.png",
+                              () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => const StartUpPage(),
+                                  ),
+                                );
+                              },
                             ),
                           ),
                         ),
@@ -183,6 +222,14 @@ class Home extends StatelessWidget {
                             child: uiTools.imgBtnTitleContainer(
                               "Monthly Services",
                               "images/attendant.png",
+                              () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => const StartUpPage(),
+                                  ),
+                                );
+                              },
                             ),
                           ),
                         ),
