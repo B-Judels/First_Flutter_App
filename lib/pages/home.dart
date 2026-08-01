@@ -3,6 +3,7 @@ import 'package:first_flutter_app/uiTools.dart';
 import 'package:first_flutter_app/pages/StartUpPage.dart';
 import 'package:first_flutter_app/pages/debit_order_page.dart';
 import 'package:first_flutter_app/pages/service_page.dart';
+import 'package:first_flutter_app/pages/daily_habit_page.dart';
 import 'package:first_flutter_app/pages/med_aid_page.dart';
 import 'package:first_flutter_app/models/DebitOrder.dart';
 import 'package:first_flutter_app/models/Service.dart';
@@ -165,7 +166,7 @@ class Home extends StatelessWidget {
                                     context,
                                     MaterialPageRoute(
                                       builder: (context) =>
-                                          const DebitOrderPage(),
+                                          const DailyHabitPage(),
                                     ),
                                   );
                                 },
