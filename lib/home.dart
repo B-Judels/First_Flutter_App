@@ -1,14 +1,72 @@
 import 'package:flutter/material.dart';
 import 'package:first_flutter_app/uiTools.dart';
 import 'package:first_flutter_app/StartUpPage.dart';
+import 'package:first_flutter_app/models/DebitOrder.dart';
+import 'package:first_flutter_app/models/Service.dart';
+import 'package:first_flutter_app/models/MedicalAid.dart';
+import 'package:first_flutter_app/models/DailyHabit.dart';
+import 'package:first_flutter_app/models/UserSettings.dart';
+import 'package:first_flutter_app/database/database_helper.dart';
 
 class Home extends StatelessWidget {
   Home({super.key});
 
   final uiTools = Uitools();
 
+  //-----dummy data ----------------------------
+  final List<UserSettings> userSettings = [UserSettings(userIncome: 25000)];
+
+  final debitOrders = [
+    DebitOrder(name: "Car Insurance", cost: 1200),
+    DebitOrder(name: "Netflix", cost: 199),
+    DebitOrder(name: "Gym", cost: 450),
+  ];
+
+  final services = [
+    Service(serviceName: "Spotify", serviceCost: 89),
+    Service(serviceName: "iCloud", serviceCost: 49),
+  ];
+
+  final medicalAids = [MedicalAid(name: "Discovery", costMedAid: 2500)];
+
+  final dailyHabits = [
+    DailyHabit(name: "Coffee", costDHabit: 40),
+    DailyHabit(name: "Energy Drink", costDHabit: 25),
+  ];
+
+  int daysInMonth = 30;
+
+  //--------------------------------------------
+  double currentMonthTotal = 0;
+
+  double debitTotal = 0;
+  double serviceTotal = 0;
+  double medTotal = 0;
+  double habitTotal = 0;
+
   @override
   Widget build(BuildContext context) {
+    for (int i = 0; i < services.length; i++) {
+      currentMonthTotal = services[i].getCost + currentMonthTotal;
+      serviceTotal = serviceTotal + services[i].getCost;
+    }
+
+    for (int i = 0; i < debitOrders.length; i++) {
+      currentMonthTotal = debitOrders[i].getCost + currentMonthTotal;
+      debitTotal = debitTotal + debitOrders[i].getCost;
+    }
+
+    for (int i = 0; i < medicalAids.length; i++) {
+      currentMonthTotal = medicalAids[i].getMedAidCost + currentMonthTotal;
+      medTotal = medTotal + medicalAids[i].getMedAidCost;
+    }
+
+    for (int i = 0; i < dailyHabits.length; i++) {
+      currentMonthTotal =
+          (dailyHabits[i].getCost * daysInMonth) + currentMonthTotal;
+      habitTotal = (dailyHabits[i].getCost * daysInMonth) + habitTotal;
+    }
+
     return Scaffold(
       backgroundColor: Colors.teal[100],
       appBar: AppBar(
@@ -40,9 +98,11 @@ class Home extends StatelessWidget {
                     children: [
                       Text(
                         style: TextStyle(color: Colors.black),
-                        "Current Monthly Income: ",
+                        "Current Monthly Income: R ${userSettings[0].getIncome.toStringAsFixed(2)}",
                       ),
-                      Text("Current Monthly Expences: "),
+                      Text(
+                        "Current Monthly Expences: R ${currentMonthTotal.toStringAsFixed(2)}",
+                      ),
                       Text("End of Month Prediction: "),
                     ],
                   ),
