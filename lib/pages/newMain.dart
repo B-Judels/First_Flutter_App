@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:first_flutter_app/uiTools.dart';
+import 'package:first_flutter_app/custom_tools/uiTools.dart';
 import 'package:first_flutter_app/pages/StartUpPage.dart';
 
 class Newmain extends StatelessWidget {
