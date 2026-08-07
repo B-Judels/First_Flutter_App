@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:first_flutter_app/models/Service.dart';
+import 'package:first_flutter_app/custom_tools/logicTools.dart';
 
 class ServicePage extends StatefulWidget {
   const ServicePage({super.key});
@@ -9,7 +10,7 @@ class ServicePage extends StatefulWidget {
 }
 
 class _ServicePage extends State<ServicePage> {
-  final services = [
+  List<Service> services = [
     Service(serviceName: "Spotify", serviceCost: 89),
     Service(serviceName: "iCloud", serviceCost: 49),
   ];
@@ -136,14 +137,35 @@ class _ServicePage extends State<ServicePage> {
                           columns: const [
                             DataColumn(label: Text("Service Name")),
                             DataColumn(label: Text("Service Cost")),
+                            DataColumn(label: Text("Remove Service")),
                           ],
-                          rows: services.map((service) {
+                          rows: services.asMap().entries.map((entry) {
+                            int index = entry.key;
+                            var servicer = entry.value;
+
                             return DataRow(
                               cells: [
-                                DataCell(Text(service.getName)),
+                                DataCell(Text(servicer.getName)),
                                 DataCell(
                                   Text(
-                                    "R ${service.getCost.toStringAsFixed(2)}",
+                                    "R ${servicer.getCost.toStringAsFixed(2)}",
+                                  ),
+                                ),
+                                DataCell(
+                                  OutlinedButton(
+                                    child: const Text("Remove"),
+
+                                    onPressed: () {
+                                      setState(() {
+                                        List<Service> newList = LogicTools()
+                                            .serviceItemRemover(
+                                              services,
+                                              index,
+                                            );
+
+                                        services = newList;
+                                      });
+                                    },
                                   ),
                                 ),
                               ],
