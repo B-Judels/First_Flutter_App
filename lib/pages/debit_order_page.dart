@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:first_flutter_app/models/DebitOrder.dart';
+import 'package:first_flutter_app/custom_tools/logicTools.dart';
 
 class DebitOrderPage extends StatefulWidget {
   const DebitOrderPage({super.key});
@@ -9,7 +10,7 @@ class DebitOrderPage extends StatefulWidget {
 }
 
 class _DebitOrderPage extends State<DebitOrderPage> {
-  final debitOrders = [
+  List<DebitOrder> debitOrders = [
     DebitOrder(name: "Car Insurance", cost: 1200),
     DebitOrder(name: "Netflix", cost: 199),
     DebitOrder(name: "Gym", cost: 450),
@@ -139,14 +140,35 @@ class _DebitOrderPage extends State<DebitOrderPage> {
                           columns: const [
                             DataColumn(label: Text("Debit Order Name")),
                             DataColumn(label: Text("Debit Order Cost")),
+                            DataColumn(label: Text("Remove Debit Order")),
                           ],
-                          rows: debitOrders.map((orderer) {
+                          rows: debitOrders.asMap().entries.map((entry) {
+                            int index = entry.key;
+                            var orderer = entry.value;
+
                             return DataRow(
                               cells: [
                                 DataCell(Text(orderer.getName)),
                                 DataCell(
                                   Text(
                                     "R ${orderer.getCost.toStringAsFixed(2)}",
+                                  ),
+                                ),
+                                DataCell(
+                                  OutlinedButton(
+                                    child: const Text("Remove"),
+
+                                    onPressed: () {
+                                      setState(() {
+                                        List<DebitOrder> newList = LogicTools()
+                                            .debitOrderItemRemover(
+                                              debitOrders,
+                                              index,
+                                            );
+
+                                        debitOrders = newList;
+                                      });
+                                    },
                                   ),
                                 ),
                               ],
