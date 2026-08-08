@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:first_flutter_app/models/DailyHabit.dart';
 import 'package:first_flutter_app/models/UserSettings.dart';
+import 'package:first_flutter_app/custom_tools/logicTools.dart';
 
 class DailyHabitPage extends StatefulWidget {
   const DailyHabitPage({super.key});
@@ -10,7 +11,7 @@ class DailyHabitPage extends StatefulWidget {
 }
 
 class _DailyHabitPage extends State<DailyHabitPage> {
-  final dHabits = [
+  List<DailyHabit> dHabits = [
     DailyHabit(name: "Coffee", costDHabit: 40),
     DailyHabit(name: "Energy Drink", costDHabit: 25),
   ];
@@ -176,14 +177,34 @@ class _DailyHabitPage extends State<DailyHabitPage> {
                               columns: const [
                                 DataColumn(label: Text("Daily Habit Name")),
                                 DataColumn(label: Text("Daily Habit Cost")),
+                                DataColumn(label: Text("Remove Daily Habit")),
                               ],
-                              rows: dHabits.map((hab) {
+                              rows: dHabits.asMap().entries.map((entry) {
+                                int index = entry.key;
+                                var hab = entry.value;
                                 return DataRow(
                                   cells: [
                                     DataCell(Text(hab.getName)),
                                     DataCell(
                                       Text(
                                         "R ${hab.costDHabit.toStringAsFixed(2)}",
+                                      ),
+                                    ),
+                                    DataCell(
+                                      OutlinedButton(
+                                        child: const Text("Remove"),
+
+                                        onPressed: () {
+                                          setState(() {
+                                            List<DailyHabit> newList =
+                                                LogicTools().dHabitItemRemover(
+                                                  dHabits,
+                                                  index,
+                                                );
+
+                                            dHabits = newList;
+                                          });
+                                        },
                                       ),
                                     ),
                                   ],
