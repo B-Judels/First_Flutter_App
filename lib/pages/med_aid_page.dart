@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:first_flutter_app/models/MedicalAid.dart';
+import 'package:first_flutter_app/custom_tools/logicTools.dart';
 
 class MedAidPage extends StatefulWidget {
   const MedAidPage({super.key});
@@ -9,7 +10,7 @@ class MedAidPage extends StatefulWidget {
 }
 
 class _MedAidPage extends State<MedAidPage> {
-  final medAids = [MedicalAid(name: "Discovery", costMedAid: 2500)];
+  List<MedicalAid> medAids = [MedicalAid(name: "Discovery", costMedAid: 2500)];
 
   final TextEditingController medicalAidController = TextEditingController();
   final TextEditingController medicalAidCostController =
@@ -24,13 +25,20 @@ class _MedAidPage extends State<MedAidPage> {
 
   @override
   Widget build(BuildContext context) {
+    // 1. Calculate running medical aid totals dynamically
+    double totalMedAidCost = 0;
+    for (int i = 0; i < medAids.length; i++) {
+      totalMedAidCost += medAids[i]
+          .getMedAidCost; // Assumes getMedAidCost getter matches model
+    }
+
     return Scaffold(
       backgroundColor: Colors.teal[100],
       appBar: AppBar(
         title: Center(
           child: Text(
+            "Monthly Expense Tracker:",
             style: TextStyle(color: Colors.blueGrey[50]),
-            "Monthly Expence Tracker: ",
           ),
         ),
         backgroundColor: Colors.teal[700],
@@ -61,37 +69,48 @@ class _MedAidPage extends State<MedAidPage> {
                         ),
                       ),
 
+                      // Dynamic total display
+                      Text(
+                        "Total Medical Aid: R ${totalMedAidCost.toStringAsFixed(2)}",
+                        style: const TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+
+                      const SizedBox(height: 10.0),
+
                       Column(
                         children: [
                           TextField(
                             controller: medicalAidController,
                             keyboardType: TextInputType.text,
-                            decoration: InputDecoration(
+                            decoration: const InputDecoration(
                               labelText: "Name of Medical Aid",
                               hintText: "Enter the name for the Medical Aid",
                               border: OutlineInputBorder(),
                             ),
                           ),
-
-                          SizedBox(height: 10.0),
-
+                          const SizedBox(height: 10.0),
                           TextField(
                             controller: medicalAidCostController,
                             keyboardType: TextInputType.number,
-                            decoration: InputDecoration(
-                              labelText: "Monthly Expence",
+                            decoration: const InputDecoration(
+                              labelText: "Monthly Expense",
                               hintText:
-                                  "Enter the ecpence for the medical aid per month",
+                                  "Enter the expense for the medical aid per month",
                               border: OutlineInputBorder(),
                             ),
                           ),
-
-                          SizedBox(height: 10.0),
-
+                          const SizedBox(height: 10.0),
                           SizedBox(
                             width: double.infinity,
                             child: OutlinedButton(
                               onPressed: () {
+                                if (medicalAidController.text.isEmpty ||
+                                    medicalAidCostController.text.isEmpty)
+                                  return;
+
                                 String medAidName = medicalAidController.text;
                                 double medAidCost =
                                     double.tryParse(
@@ -99,10 +118,11 @@ class _MedAidPage extends State<MedAidPage> {
                                     ) ??
                                     0;
 
-                                MedicalAid medAid = new MedicalAid(
+                                MedicalAid medAid = MedicalAid(
                                   name: medAidName,
                                   costMedAid: medAidCost,
                                 );
+
                                 setState(() {
                                   medAids.add(medAid);
                                 });
@@ -110,8 +130,6 @@ class _MedAidPage extends State<MedAidPage> {
                                 medicalAidController.clear();
                                 medicalAidCostController.clear();
                               },
-
-                              child: Text("Add Medical Aid"),
                               style: OutlinedButton.styleFrom(
                                 backgroundColor: Colors.teal[100],
                                 padding: const EdgeInsets.all(12),
@@ -119,37 +137,65 @@ class _MedAidPage extends State<MedAidPage> {
                                   borderRadius: BorderRadius.circular(15),
                                 ),
                               ),
+                              child: const Text("Add Medical Aid"),
                             ),
                           ),
                         ],
                       ),
 
-                      const SizedBox(height: 15),
-
-                      Center(
-                        child: DataTable(
-                          headingRowColor: WidgetStateProperty.all(
-                            Colors.teal[700],
-                          ),
-                          dataRowColor: WidgetStateProperty.all(Colors.cyan),
-                          columns: const [
-                            DataColumn(label: Text("Medical Aid Name")),
-                            DataColumn(label: Text("Medical Aid Cost")),
-                          ],
-                          rows: medAids.map((mad) {
-                            return DataRow(
-                              cells: [
-                                DataCell(Text(mad.getName)),
-                                DataCell(
-                                  Text(
-                                    "R ${mad.getMedAidCost.toStringAsFixed(2)}",
-                                  ),
-                                ),
+                      // CONDITIONAL RENDERING LAYER: Only displays table elements if elements exist
+                      if (medAids.isNotEmpty) ...[
+                        const SizedBox(height: 15),
+                        Center(
+                          child: SizedBox(
+                            width: double.infinity,
+                            child: DataTable(
+                              headingRowColor: WidgetStateProperty.all(
+                                Colors.teal[700],
+                              ),
+                              dataRowColor: WidgetStateProperty.all(
+                                Colors.cyan,
+                              ),
+                              // FIXED: Added third header column to match your 3 row cells below
+                              columns: const [
+                                DataColumn(label: Text("Medical Aid Name")),
+                                DataColumn(label: Text("Medical Aid Cost")),
+                                DataColumn(label: Text("Action")),
                               ],
-                            );
-                          }).toList(),
+                              rows: medAids.asMap().entries.map((entry) {
+                                int index = entry.key;
+                                var servicer = entry.value;
+                                return DataRow(
+                                  cells: [
+                                    DataCell(Text(servicer.getName)),
+                                    DataCell(
+                                      Text(
+                                        "R ${servicer.getMedAidCost.toStringAsFixed(2)}",
+                                      ),
+                                    ),
+                                    DataCell(
+                                      OutlinedButton(
+                                        onPressed: () {
+                                          setState(() {
+                                            List<MedicalAid> newList =
+                                                const LogicTools()
+                                                    .medAidItemRemover(
+                                                      medAids,
+                                                      index,
+                                                    );
+                                            medAids = newList;
+                                          });
+                                        },
+                                        child: const Text("Remove"),
+                                      ),
+                                    ),
+                                  ],
+                                );
+                              }).toList(),
+                            ),
+                          ),
                         ),
-                      ),
+                      ],
                     ],
                   ),
                 ),

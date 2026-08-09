@@ -23,7 +23,6 @@ class _DailyHabitPage extends State<DailyHabitPage> {
   final TextEditingController dailyHabitController = TextEditingController();
 
   int daysInMonth = 30;
-  double dailyTotal = 0;
 
   @override
   void dispose() {
@@ -34,21 +33,21 @@ class _DailyHabitPage extends State<DailyHabitPage> {
 
   @override
   Widget build(BuildContext context) {
-    double habitTotal = 0;
-    double currentDailyTotal = 0;
-
+    // Automatically recalculates every time setState() is called
+    double calculatedDailyTotal = 0;
     for (int i = 0; i < dHabits.length; i++) {
-      habitTotal += dHabits[i].getCost * daysInMonth;
-      currentDailyTotal += dHabits[i].getCost;
+      calculatedDailyTotal +=
+          dHabits[i].costDHabit; // Assumes property name is costDHabit
     }
+    double monthlyHabitTotal = calculatedDailyTotal * daysInMonth;
 
     return Scaffold(
       backgroundColor: Colors.teal[100],
       appBar: AppBar(
         title: Center(
           child: Text(
+            "Monthly Expense Tracker: ",
             style: TextStyle(color: Colors.blueGrey[50]),
-            "Monthly Expence Tracker: ",
           ),
         ),
         backgroundColor: Colors.teal[700],
@@ -79,76 +78,70 @@ class _DailyHabitPage extends State<DailyHabitPage> {
                         ),
                       ),
                       Text(
-                        "Current daily total: R ${dailyTotal.toStringAsFixed(2)}",
-                        style: TextStyle(
-                          fontSize: 10,
+                        "Daily total: R ${calculatedDailyTotal.toStringAsFixed(2)}",
+                        style: const TextStyle(
+                          fontSize: 12,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-
-                      SizedBox(height: 10.0),
-
                       Text(
-                        "Updated daily total: R ${dailyTotal.toStringAsFixed(2)}",
-                        style: TextStyle(
-                          fontSize: 10,
+                        "Monthly projection: R ${monthlyHabitTotal.toStringAsFixed(2)}",
+                        style: const TextStyle(
+                          fontSize: 12,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-
+                      const SizedBox(height: 10.0),
                       Column(
                         children: [
                           TextField(
                             controller: dailyHabitNameController,
                             keyboardType: TextInputType.text,
-                            decoration: InputDecoration(
+                            decoration: const InputDecoration(
                               labelText: "Daily Cost Name",
-                              hintText:
-                                  "Enter the name for the item/activity you get/do daily",
+                              hintText: "Enter the name for the item/activity",
                               border: OutlineInputBorder(),
                             ),
                           ),
-
-                          SizedBox(height: 10.0),
-
+                          const SizedBox(height: 10.0),
                           TextField(
                             controller: dailyHabitController,
                             keyboardType: TextInputType.number,
-                            decoration: InputDecoration(
-                              labelText: "Daily Expence",
-                              hintText:
-                                  "Enter the expence for the item/action that you get/do daily",
+                            decoration: const InputDecoration(
+                              labelText: "Daily Expense",
+                              hintText: "Enter the expense amount",
                               border: OutlineInputBorder(),
                             ),
                           ),
-
-                          SizedBox(height: 10.0),
-
+                          const SizedBox(height: 10.0),
                           SizedBox(
                             width: double.infinity,
                             child: OutlinedButton(
                               onPressed: () {
+                                if (dailyHabitNameController.text.isEmpty ||
+                                    dailyHabitController.text.isEmpty)
+                                  return;
+
                                 String habitName =
                                     dailyHabitNameController.text;
-                                double habitCost = double.parse(
-                                  dailyHabitController.text,
-                                );
+                                double habitCost =
+                                    double.tryParse(
+                                      dailyHabitController.text,
+                                    ) ??
+                                    0.0;
 
-                                DailyHabit hab1 = new DailyHabit(
+                                DailyHabit hab1 = DailyHabit(
                                   name: habitName,
                                   costDHabit: habitCost,
                                 );
 
                                 setState(() {
                                   dHabits.add(hab1);
-                                  dailyTotal = dailyTotal + habitCost;
                                 });
 
                                 dailyHabitNameController.clear();
                                 dailyHabitController.clear();
                               },
-
-                              child: Text("Add Daily Habit"),
                               style: OutlinedButton.styleFrom(
                                 backgroundColor: Colors.teal[100],
                                 padding: const EdgeInsets.all(12),
@@ -156,64 +149,61 @@ class _DailyHabitPage extends State<DailyHabitPage> {
                                   borderRadius: BorderRadius.circular(15),
                                 ),
                               ),
+                              child: const Text("Add Daily Habit"),
                             ),
                           ),
                         ],
                       ),
 
-                      const SizedBox(height: 15),
-
-                      Center(
-                        child: Container(
+                      // CONDITIONAL RENDERING: Only inject layout blocks if items exist
+                      if (dHabits.isNotEmpty) ...[
+                        const SizedBox(height: 15),
+                        SizedBox(
                           width: double.infinity,
-                          child: Expanded(
-                            child: DataTable(
-                              headingRowColor: WidgetStateProperty.all(
-                                Colors.teal[700],
-                              ),
-                              dataRowColor: WidgetStateProperty.all(
-                                Colors.cyan,
-                              ),
-                              columns: const [
-                                DataColumn(label: Text("Daily Habit Name")),
-                                DataColumn(label: Text("Daily Habit Cost")),
-                                DataColumn(label: Text("Remove Daily Habit")),
-                              ],
-                              rows: dHabits.asMap().entries.map((entry) {
-                                int index = entry.key;
-                                var hab = entry.value;
-                                return DataRow(
-                                  cells: [
-                                    DataCell(Text(hab.getName)),
-                                    DataCell(
-                                      Text(
-                                        "R ${hab.costDHabit.toStringAsFixed(2)}",
-                                      ),
-                                    ),
-                                    DataCell(
-                                      OutlinedButton(
-                                        child: const Text("Remove"),
-
-                                        onPressed: () {
-                                          setState(() {
-                                            List<DailyHabit> newList =
-                                                LogicTools().dHabitItemRemover(
-                                                  dHabits,
-                                                  index,
-                                                );
-
-                                            dHabits = newList;
-                                          });
-                                        },
-                                      ),
-                                    ),
-                                  ],
-                                );
-                              }).toList(),
+                          child: DataTable(
+                            headingRowColor: WidgetStateProperty.all(
+                              Colors.teal[700],
                             ),
+                            dataRowColor: WidgetStateProperty.all(Colors.cyan),
+                            columns: const [
+                              DataColumn(label: Text("Name")),
+                              DataColumn(label: Text("Cost")),
+                              DataColumn(label: Text("Action")),
+                            ],
+                            rows: dHabits.asMap().entries.map((entry) {
+                              int index = entry.key;
+                              var hab = entry.value;
+                              return DataRow(
+                                cells: [
+                                  DataCell(
+                                    Text(hab.getName),
+                                  ), // Assumes getName getter exists
+                                  DataCell(
+                                    Text(
+                                      "R ${hab.costDHabit.toStringAsFixed(2)}",
+                                    ),
+                                  ),
+                                  DataCell(
+                                    OutlinedButton(
+                                      onPressed: () {
+                                        setState(() {
+                                          // Mutates list via tools and triggers automatic mathematical UI refresh
+                                          dHabits = const LogicTools()
+                                              .dHabitItemRemover(
+                                                dHabits,
+                                                index,
+                                              );
+                                        });
+                                      },
+                                      child: const Text("Remove"),
+                                    ),
+                                  ),
+                                ],
+                              );
+                            }).toList(),
                           ),
                         ),
-                      ),
+                      ],
                     ],
                   ),
                 ),

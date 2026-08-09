@@ -17,7 +17,6 @@ class _DebitOrderPage extends State<DebitOrderPage> {
   ];
 
   final TextEditingController debitNameController = TextEditingController();
-
   final TextEditingController debitCostController = TextEditingController();
 
   @override
@@ -29,13 +28,20 @@ class _DebitOrderPage extends State<DebitOrderPage> {
 
   @override
   Widget build(BuildContext context) {
+    // Dynamically calculate total debit orders on every build tick
+    double totalDebitOrders = 0;
+    for (int i = 0; i < debitOrders.length; i++) {
+      totalDebitOrders +=
+          debitOrders[i].getCost; // Assumes getCost getter matches model
+    }
+
     return Scaffold(
       backgroundColor: Colors.teal[100],
       appBar: AppBar(
         title: Center(
           child: Text(
+            "Monthly Expense Tracker:",
             style: TextStyle(color: Colors.blueGrey[50]),
-            "Monthly Expence Tracker: ",
           ),
         ),
         backgroundColor: Colors.teal[700],
@@ -66,39 +72,49 @@ class _DebitOrderPage extends State<DebitOrderPage> {
                         ),
                       ),
 
+                      // Running total indicator
+                      Text(
+                        "Total Debit Orders: R ${totalDebitOrders.toStringAsFixed(2)}",
+                        style: const TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+
+                      const SizedBox(height: 10.0),
+
                       Column(
                         children: [
                           TextField(
                             controller: debitNameController,
                             keyboardType: TextInputType.text,
-                            decoration: InputDecoration(
+                            decoration: const InputDecoration(
                               labelText: "Debit Order Name",
                               hintText: "Enter the name for the debit order",
                               border: OutlineInputBorder(),
                             ),
                           ),
-
-                          SizedBox(height: 10.0),
-
+                          const SizedBox(height: 10.0),
                           TextField(
                             controller: debitCostController,
                             keyboardType: TextInputType.number,
-                            decoration: InputDecoration(
-                              labelText: "Monthly Expence",
+                            decoration: const InputDecoration(
+                              labelText: "Monthly Expense",
                               hintText:
-                                  "Enter the ecpence for the service per month",
+                                  "Enter the expense for the service per month",
                               border: OutlineInputBorder(),
                             ),
                           ),
-
-                          SizedBox(height: 10.0),
-
+                          const SizedBox(height: 10.0),
                           SizedBox(
                             width: double.infinity,
                             child: OutlinedButton(
                               onPressed: () {
-                                String debitName = debitNameController.text;
+                                if (debitNameController.text.isEmpty ||
+                                    debitCostController.text.isEmpty)
+                                  return;
 
+                                String debitName = debitNameController.text;
                                 double debitCost =
                                     double.tryParse(debitCostController.text) ??
                                     0;
@@ -115,8 +131,6 @@ class _DebitOrderPage extends State<DebitOrderPage> {
                                 debitNameController.clear();
                                 debitCostController.clear();
                               },
-
-                              child: Text("Add Debit Order"),
                               style: OutlinedButton.styleFrom(
                                 backgroundColor: Colors.teal[100],
                                 padding: const EdgeInsets.all(12),
@@ -124,58 +138,68 @@ class _DebitOrderPage extends State<DebitOrderPage> {
                                   borderRadius: BorderRadius.circular(15),
                                 ),
                               ),
+                              child: const Text("Add Debit Order"),
                             ),
                           ),
                         ],
                       ),
 
-                      const SizedBox(height: 15),
-
-                      Center(
-                        child: DataTable(
-                          headingRowColor: WidgetStateProperty.all(
-                            Colors.teal[700],
-                          ),
-                          dataRowColor: WidgetStateProperty.all(Colors.cyan),
-                          columns: const [
-                            DataColumn(label: Text("Debit Order Name")),
-                            DataColumn(label: Text("Debit Order Cost")),
-                            DataColumn(label: Text("Remove Debit Order")),
-                          ],
-                          rows: debitOrders.asMap().entries.map((entry) {
-                            int index = entry.key;
-                            var orderer = entry.value;
-
-                            return DataRow(
-                              cells: [
-                                DataCell(Text(orderer.getName)),
-                                DataCell(
-                                  Text(
-                                    "R ${orderer.getCost.toStringAsFixed(2)}",
-                                  ),
-                                ),
-                                DataCell(
-                                  OutlinedButton(
-                                    child: const Text("Remove"),
-
-                                    onPressed: () {
-                                      setState(() {
-                                        List<DebitOrder> newList = LogicTools()
-                                            .debitOrderItemRemover(
-                                              debitOrders,
-                                              index,
-                                            );
-
-                                        debitOrders = newList;
-                                      });
-                                    },
-                                  ),
-                                ),
+                      // CONDITIONAL VISIBILITY LAYER
+                      // Splices widgets seamlessly inside the tree ONLY if items exist
+                      if (debitOrders.isNotEmpty) ...[
+                        const SizedBox(height: 15),
+                        Center(
+                          child: SizedBox(
+                            width: double
+                                .infinity, // Safe structural expansion replacement for Expanded
+                            child: DataTable(
+                              headingRowColor: WidgetStateProperty.all(
+                                Colors.teal[700],
+                              ),
+                              dataRowColor: WidgetStateProperty.all(
+                                Colors.cyan,
+                              ),
+                              columns: const [
+                                DataColumn(label: Text("Debit Order Name")),
+                                DataColumn(label: Text("Debit Order Cost")),
+                                DataColumn(label: Text("Remove Debit Order")),
                               ],
-                            );
-                          }).toList(),
+                              rows: debitOrders.asMap().entries.map((entry) {
+                                int index = entry.key;
+                                var orderer = entry.value;
+                                return DataRow(
+                                  cells: [
+                                    DataCell(
+                                      Text(orderer.getName),
+                                    ), // Assumes getName exists
+                                    DataCell(
+                                      Text(
+                                        "R ${orderer.getCost.toStringAsFixed(2)}",
+                                      ),
+                                    ),
+                                    DataCell(
+                                      OutlinedButton(
+                                        onPressed: () {
+                                          setState(() {
+                                            List<DebitOrder> newList =
+                                                const LogicTools()
+                                                    .debitOrderItemRemover(
+                                                      debitOrders,
+                                                      index,
+                                                    );
+                                            debitOrders = newList;
+                                          });
+                                        },
+                                        child: const Text("Remove"),
+                                      ),
+                                    ),
+                                  ],
+                                );
+                              }).toList(),
+                            ),
+                          ),
                         ),
-                      ),
+                      ],
                     ],
                   ),
                 ),

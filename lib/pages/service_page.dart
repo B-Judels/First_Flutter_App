@@ -27,13 +27,20 @@ class _ServicePage extends State<ServicePage> {
 
   @override
   Widget build(BuildContext context) {
+    // Dynamically calculate total service costs on every widget build
+    double totalServiceCost = 0;
+    for (int i = 0; i < services.length; i++) {
+      totalServiceCost +=
+          services[i].getCost; // Assumes getCost matches your model getter
+    }
+
     return Scaffold(
       backgroundColor: Colors.teal[100],
       appBar: AppBar(
         title: Center(
           child: Text(
+            "Monthly Expense Tracker:",
             style: TextStyle(color: Colors.blueGrey[50]),
-            "Monthly Expence Tracker: ",
           ),
         ),
         backgroundColor: Colors.teal[700],
@@ -64,43 +71,57 @@ class _ServicePage extends State<ServicePage> {
                         ),
                       ),
 
+                      // Running total indicator block
+                      Text(
+                        "Total Services: R ${totalServiceCost.toStringAsFixed(2)}",
+                        style: const TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+
+                      const SizedBox(height: 10.0),
+
                       Column(
                         children: [
                           TextField(
                             controller: serviceNameController,
                             keyboardType: TextInputType.text,
-                            decoration: InputDecoration(
+                            decoration: const InputDecoration(
                               labelText: "Service Name",
                               hintText: "Enter the name of the service",
                               border: OutlineInputBorder(),
                             ),
                           ),
-
-                          SizedBox(height: 10.0),
-
+                          const SizedBox(height: 10.0),
                           TextField(
                             controller: serviceCostController,
                             keyboardType: TextInputType.number,
-                            decoration: InputDecoration(
-                              labelText: "Monthly Expence",
+                            decoration: const InputDecoration(
+                              labelText: "Monthly Expense",
                               hintText:
-                                  "Enter the expence for the service per month",
+                                  "Enter the expense for the service per month",
                               border: OutlineInputBorder(),
                             ),
                           ),
-
-                          SizedBox(height: 10.0),
-
+                          const SizedBox(height: 10.0),
                           SizedBox(
                             width: double.infinity,
                             child: OutlinedButton(
                               onPressed: () {
-                                String serviceName = serviceNameController.text;
-                                double serviceCost = double.parse(
-                                  serviceCostController.text,
-                                );
+                                if (serviceNameController.text.isEmpty ||
+                                    serviceCostController.text.isEmpty)
+                                  return;
 
-                                Service serve = new Service(
+                                String serviceName = serviceNameController.text;
+                                // FIXED: Changed double.parse to tryParse to stop user input format crashes
+                                double serviceCost =
+                                    double.tryParse(
+                                      serviceCostController.text,
+                                    ) ??
+                                    0;
+
+                                Service serve = Service(
                                   serviceName: serviceName,
                                   serviceCost: serviceCost,
                                 );
@@ -112,8 +133,6 @@ class _ServicePage extends State<ServicePage> {
                                 serviceNameController.clear();
                                 serviceCostController.clear();
                               },
-
-                              child: Text("Add Service"),
                               style: OutlinedButton.styleFrom(
                                 backgroundColor: Colors.teal[100],
                                 padding: const EdgeInsets.all(12),
@@ -121,58 +140,65 @@ class _ServicePage extends State<ServicePage> {
                                   borderRadius: BorderRadius.circular(15),
                                 ),
                               ),
+                              child: const Text("Add Service"),
                             ),
                           ),
                         ],
                       ),
 
-                      const SizedBox(height: 15),
-
-                      Center(
-                        child: DataTable(
-                          headingRowColor: WidgetStateProperty.all(
-                            Colors.teal[700],
-                          ),
-                          dataRowColor: WidgetStateProperty.all(Colors.cyan),
-                          columns: const [
-                            DataColumn(label: Text("Service Name")),
-                            DataColumn(label: Text("Service Cost")),
-                            DataColumn(label: Text("Remove Service")),
-                          ],
-                          rows: services.asMap().entries.map((entry) {
-                            int index = entry.key;
-                            var servicer = entry.value;
-
-                            return DataRow(
-                              cells: [
-                                DataCell(Text(servicer.getName)),
-                                DataCell(
-                                  Text(
-                                    "R ${servicer.getCost.toStringAsFixed(2)}",
-                                  ),
-                                ),
-                                DataCell(
-                                  OutlinedButton(
-                                    child: const Text("Remove"),
-
-                                    onPressed: () {
-                                      setState(() {
-                                        List<Service> newList = LogicTools()
-                                            .serviceItemRemover(
-                                              services,
-                                              index,
-                                            );
-
-                                        services = newList;
-                                      });
-                                    },
-                                  ),
-                                ),
+                      // CONDITIONAL VISIBILITY LAYER: Hides the table completely if services is empty
+                      if (services.isNotEmpty) ...[
+                        const SizedBox(height: 15),
+                        Center(
+                          child: SizedBox(
+                            width: double
+                                .infinity, // Safe width boundary container
+                            child: DataTable(
+                              headingRowColor: WidgetStateProperty.all(
+                                Colors.teal[700],
+                              ),
+                              dataRowColor: WidgetStateProperty.all(
+                                Colors.cyan,
+                              ),
+                              columns: const [
+                                DataColumn(label: Text("Service Name")),
+                                DataColumn(label: Text("Service Cost")),
+                                DataColumn(label: Text("Remove Service")),
                               ],
-                            );
-                          }).toList(),
+                              rows: services.asMap().entries.map((entry) {
+                                int index = entry.key;
+                                var servicer = entry.value;
+                                return DataRow(
+                                  cells: [
+                                    DataCell(Text(servicer.getName)),
+                                    DataCell(
+                                      Text(
+                                        "R ${servicer.getCost.toStringAsFixed(2)}",
+                                      ),
+                                    ),
+                                    DataCell(
+                                      OutlinedButton(
+                                        onPressed: () {
+                                          setState(() {
+                                            List<Service> newList =
+                                                const LogicTools()
+                                                    .serviceItemRemover(
+                                                      services,
+                                                      index,
+                                                    );
+                                            services = newList;
+                                          });
+                                        },
+                                        child: const Text("Remove"),
+                                      ),
+                                    ),
+                                  ],
+                                );
+                              }).toList(),
+                            ),
+                          ),
                         ),
-                      ),
+                      ],
                     ],
                   ),
                 ),
