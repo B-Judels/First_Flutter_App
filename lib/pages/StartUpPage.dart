@@ -6,6 +6,7 @@ import 'package:first_flutter_app/models/DailyHabit.dart';
 import 'package:first_flutter_app/models/MedicalAid.dart';
 import 'package:first_flutter_app/models/UserSettings.dart';
 import 'package:first_flutter_app/database/database_helper.dart';
+import 'package:first_flutter_app/custom_tools/logicTools.dart';
 
 class StartUpPage extends StatefulWidget {
   const StartUpPage({super.key});
@@ -17,7 +18,7 @@ class StartUpPage extends StatefulWidget {
 class _StartUpPageState extends State<StartUpPage> {
   double userIncome = 0;
 
-  final List<Service> services = [];
+  List<Service> services = [];
   final List<Service> servicesStore = [];
 
   final List<DebitOrder> debitOrders = [];
@@ -417,32 +418,58 @@ class _StartUpPageState extends State<StartUpPage> {
                         ],
                       ),
 
-                      const SizedBox(height: 15),
+                      if (services.isNotEmpty) ...[
+                        const SizedBox(height: 15),
 
-                      Center(
-                        child: DataTable(
-                          headingRowColor: WidgetStateProperty.all(
-                            Colors.teal[700],
-                          ),
-                          dataRowColor: WidgetStateProperty.all(Colors.cyan),
-                          columns: const [
-                            DataColumn(label: Text("Service Name")),
-                            DataColumn(label: Text("Service Cost")),
-                          ],
-                          rows: services.map((service) {
-                            return DataRow(
-                              cells: [
-                                DataCell(Text(service.getName)),
-                                DataCell(
-                                  Text(
-                                    "R ${service.getCost.toStringAsFixed(2)}",
-                                  ),
-                                ),
+                        Center(
+                          child: SizedBox(
+                            width: double.infinity,
+                            child: DataTable(
+                              headingRowColor: WidgetStateProperty.all(
+                                Colors.teal[700],
+                              ),
+                              dataRowColor: WidgetStateProperty.all(
+                                Colors.cyan,
+                              ),
+                              columns: const [
+                                DataColumn(label: Text("Service Name")),
+                                DataColumn(label: Text("Service Cost")),
+                                DataColumn(label: Text("Remove Service")),
                               ],
-                            );
-                          }).toList(),
+                              rows: services.asMap().entries.map((entry) {
+                                int index = entry.key;
+                                var servicer = entry.value;
+                                return DataRow(
+                                  cells: [
+                                    DataCell(Text(servicer.getName)),
+                                    DataCell(
+                                      Text(
+                                        "R ${servicer.getCost.toStringAsFixed(2)}",
+                                      ),
+                                    ),
+                                    DataCell(
+                                      OutlinedButton(
+                                        onPressed: () {
+                                          setState(() {
+                                            List<Service> newList =
+                                                const LogicTools()
+                                                    .serviceItemRemover(
+                                                      services,
+                                                      index,
+                                                    );
+                                            services = newList;
+                                          });
+                                        },
+                                        child: const Text("Remove"),
+                                      ),
+                                    ),
+                                  ],
+                                );
+                              }).toList(),
+                            ),
+                          ),
                         ),
-                      ),
+                      ],
                     ],
                   ),
                 ),

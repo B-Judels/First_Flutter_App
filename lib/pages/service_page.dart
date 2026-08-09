@@ -146,13 +146,11 @@ class _ServicePage extends State<ServicePage> {
                         ],
                       ),
 
-                      // CONDITIONAL VISIBILITY LAYER: Hides the table completely if services is empty
                       if (services.isNotEmpty) ...[
                         const SizedBox(height: 15),
                         Center(
                           child: SizedBox(
-                            width: double
-                                .infinity, // Safe width boundary container
+                            width: double.infinity,
                             child: DataTable(
                               headingRowColor: WidgetStateProperty.all(
                                 Colors.teal[700],
