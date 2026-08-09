@@ -143,7 +143,6 @@ class _MedAidPage extends State<MedAidPage> {
                         ],
                       ),
 
-                      // CONDITIONAL RENDERING LAYER: Only displays table elements if elements exist
                       if (medAids.isNotEmpty) ...[
                         const SizedBox(height: 15),
                         Center(
@@ -156,7 +155,7 @@ class _MedAidPage extends State<MedAidPage> {
                               dataRowColor: WidgetStateProperty.all(
                                 Colors.cyan,
                               ),
-                              // FIXED: Added third header column to match your 3 row cells below
+
                               columns: const [
                                 DataColumn(label: Text("Medical Aid Name")),
                                 DataColumn(label: Text("Medical Aid Cost")),

@@ -303,34 +303,58 @@ class _StartUpPageState extends State<StartUpPage> {
                             ],
                           ),
 
-                          const SizedBox(height: 15),
+                          if (medAids.isNotEmpty) ...[
+                            const SizedBox(height: 15),
+                            Center(
+                              child: SizedBox(
+                                width: double.infinity,
+                                child: DataTable(
+                                  headingRowColor: WidgetStateProperty.all(
+                                    Colors.teal[700],
+                                  ),
+                                  dataRowColor: WidgetStateProperty.all(
+                                    Colors.cyan,
+                                  ),
 
-                          Center(
-                            child: DataTable(
-                              headingRowColor: WidgetStateProperty.all(
-                                Colors.teal[700],
-                              ),
-                              dataRowColor: WidgetStateProperty.all(
-                                Colors.cyan,
-                              ),
-                              columns: const [
-                                DataColumn(label: Text("Medical Aid Name")),
-                                DataColumn(label: Text("Medical Aid Cost")),
-                              ],
-                              rows: medAids.map((mad) {
-                                return DataRow(
-                                  cells: [
-                                    DataCell(Text(mad.getName)),
-                                    DataCell(
-                                      Text(
-                                        "R ${mad.getMedAidCost.toStringAsFixed(2)}",
-                                      ),
-                                    ),
+                                  columns: const [
+                                    DataColumn(label: Text("Medical Aid Name")),
+                                    DataColumn(label: Text("Medical Aid Cost")),
+                                    DataColumn(label: Text("Action")),
                                   ],
-                                );
-                              }).toList(),
+                                  rows: medAids.asMap().entries.map((entry) {
+                                    int index = entry.key;
+                                    var servicer = entry.value;
+                                    return DataRow(
+                                      cells: [
+                                        DataCell(Text(servicer.getName)),
+                                        DataCell(
+                                          Text(
+                                            "R ${servicer.getMedAidCost.toStringAsFixed(2)}",
+                                          ),
+                                        ),
+                                        DataCell(
+                                          OutlinedButton(
+                                            onPressed: () {
+                                              setState(() {
+                                                List<MedicalAid> newList =
+                                                    const LogicTools()
+                                                        .medAidItemRemover(
+                                                          medAids,
+                                                          index,
+                                                        );
+                                                medAids = newList;
+                                              });
+                                            },
+                                            child: const Text("Remove"),
+                                          ),
+                                        ),
+                                      ],
+                                    );
+                                  }).toList(),
+                                ),
+                              ),
                             ),
-                          ),
+                          ],
                         ],
                       ),
                     ),
