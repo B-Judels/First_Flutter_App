@@ -144,14 +144,11 @@ class _DebitOrderPage extends State<DebitOrderPage> {
                         ],
                       ),
 
-                      // CONDITIONAL VISIBILITY LAYER
-                      // Splices widgets seamlessly inside the tree ONLY if items exist
                       if (debitOrders.isNotEmpty) ...[
                         const SizedBox(height: 15),
                         Center(
                           child: SizedBox(
-                            width: double
-                                .infinity, // Safe structural expansion replacement for Expanded
+                            width: double.infinity,
                             child: DataTable(
                               headingRowColor: WidgetStateProperty.all(
                                 Colors.teal[700],
@@ -169,9 +166,7 @@ class _DebitOrderPage extends State<DebitOrderPage> {
                                 var orderer = entry.value;
                                 return DataRow(
                                   cells: [
-                                    DataCell(
-                                      Text(orderer.getName),
-                                    ), // Assumes getName exists
+                                    DataCell(Text(orderer.getName)),
                                     DataCell(
                                       Text(
                                         "R ${orderer.getCost.toStringAsFixed(2)}",

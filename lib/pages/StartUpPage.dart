@@ -187,34 +187,61 @@ class _StartUpPageState extends State<StartUpPage> {
                             ],
                           ),
 
-                          const SizedBox(height: 15),
-
-                          Center(
-                            child: DataTable(
-                              headingRowColor: WidgetStateProperty.all(
-                                Colors.teal[700],
-                              ),
-                              dataRowColor: WidgetStateProperty.all(
-                                Colors.cyan,
-                              ),
-                              columns: const [
-                                DataColumn(label: Text("Debit Order Name")),
-                                DataColumn(label: Text("Debit Order Cost")),
-                              ],
-                              rows: debitOrders.map((orderer) {
-                                return DataRow(
-                                  cells: [
-                                    DataCell(Text(orderer.getName)),
-                                    DataCell(
-                                      Text(
-                                        "R ${orderer.getCost.toStringAsFixed(2)}",
-                                      ),
+                          if (debitOrders.isNotEmpty) ...[
+                            const SizedBox(height: 15),
+                            Center(
+                              child: SizedBox(
+                                width: double.infinity,
+                                child: DataTable(
+                                  headingRowColor: WidgetStateProperty.all(
+                                    Colors.teal[700],
+                                  ),
+                                  dataRowColor: WidgetStateProperty.all(
+                                    Colors.cyan,
+                                  ),
+                                  columns: const [
+                                    DataColumn(label: Text("Debit Order Name")),
+                                    DataColumn(label: Text("Debit Order Cost")),
+                                    DataColumn(
+                                      label: Text("Remove Debit Order"),
                                     ),
                                   ],
-                                );
-                              }).toList(),
+                                  rows: debitOrders.asMap().entries.map((
+                                    entry,
+                                  ) {
+                                    int index = entry.key;
+                                    var orderer = entry.value;
+                                    return DataRow(
+                                      cells: [
+                                        DataCell(Text(orderer.getName)),
+                                        DataCell(
+                                          Text(
+                                            "R ${orderer.getCost.toStringAsFixed(2)}",
+                                          ),
+                                        ),
+                                        DataCell(
+                                          OutlinedButton(
+                                            onPressed: () {
+                                              setState(() {
+                                                List<DebitOrder> newList =
+                                                    const LogicTools()
+                                                        .debitOrderItemRemover(
+                                                          debitOrders,
+                                                          index,
+                                                        );
+                                                debitOrders = newList;
+                                              });
+                                            },
+                                            child: const Text("Remove"),
+                                          ),
+                                        ),
+                                      ],
+                                    );
+                                  }).toList(),
+                                ),
+                              ),
                             ),
-                          ),
+                          ],
                         ],
                       ),
                     ),
