@@ -21,13 +21,13 @@ class _StartUpPageState extends State<StartUpPage> {
   List<Service> services = [];
   final List<Service> servicesStore = [];
 
-  final List<DebitOrder> debitOrders = [];
+  List<DebitOrder> debitOrders = [];
   final List<DebitOrder> debitOrdersStore = [];
 
-  final List<MedicalAid> medAids = [];
+  List<MedicalAid> medAids = [];
   final List<MedicalAid> medAidsStore = [];
 
-  final List<DailyHabit> dHabits = [];
+  List<DailyHabit> dHabits = [];
   final List<DailyHabit> dHabitsStore = [];
   double dailyTotal = 0;
 
@@ -567,32 +567,54 @@ class _StartUpPageState extends State<StartUpPage> {
                         ],
                       ),
 
-                      const SizedBox(height: 15),
-
-                      Center(
-                        child: DataTable(
-                          headingRowColor: WidgetStateProperty.all(
-                            Colors.teal[700],
-                          ),
-                          dataRowColor: WidgetStateProperty.all(Colors.cyan),
-                          columns: const [
-                            DataColumn(label: Text("Daily Habit Name")),
-                            DataColumn(label: Text("Daily Habit Cost")),
-                          ],
-                          rows: dHabits.map((hab) {
-                            return DataRow(
-                              cells: [
-                                DataCell(Text(hab.getName)),
-                                DataCell(
-                                  Text(
-                                    "R ${hab.costDHabit.toStringAsFixed(2)}",
+                      if (dHabits.isNotEmpty) ...[
+                        const SizedBox(height: 15),
+                        SizedBox(
+                          width: double.infinity,
+                          child: DataTable(
+                            headingRowColor: WidgetStateProperty.all(
+                              Colors.teal[700],
+                            ),
+                            dataRowColor: WidgetStateProperty.all(Colors.cyan),
+                            columns: const [
+                              DataColumn(label: Text("Name")),
+                              DataColumn(label: Text("Cost")),
+                              DataColumn(label: Text("Action")),
+                            ],
+                            rows: dHabits.asMap().entries.map((entry) {
+                              int index = entry.key;
+                              var hab = entry.value;
+                              return DataRow(
+                                cells: [
+                                  DataCell(
+                                    Text(hab.getName),
+                                  ), // Assumes getName getter exists
+                                  DataCell(
+                                    Text(
+                                      "R ${hab.costDHabit.toStringAsFixed(2)}",
+                                    ),
                                   ),
-                                ),
-                              ],
-                            );
-                          }).toList(),
+                                  DataCell(
+                                    OutlinedButton(
+                                      onPressed: () {
+                                        setState(() {
+                                          // Mutates list via tools and triggers automatic mathematical UI refresh
+                                          dHabits = const LogicTools()
+                                              .dHabitItemRemover(
+                                                dHabits,
+                                                index,
+                                              );
+                                        });
+                                      },
+                                      child: const Text("Remove"),
+                                    ),
+                                  ),
+                                ],
+                              );
+                            }).toList(),
+                          ),
                         ),
-                      ),
+                      ],
                     ],
                   ),
                 ),
