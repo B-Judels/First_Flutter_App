@@ -162,9 +162,9 @@ class _MedAidPage extends State<MedAidPage> {
                               ),
 
                               columns: const [
-                                DataColumn(label: Text("Medical Aid Name")),
-                                DataColumn(label: Text("Medical Aid Cost")),
-                                DataColumn(label: Text("Action")),
+                                DataColumn(label: Text("Name:")),
+                                DataColumn(label: Text("Cost:")),
+                                DataColumn(label: Text("Actions:")),
                               ],
                               rows: medAids.asMap().entries.map((entry) {
                                 int index = entry.key;

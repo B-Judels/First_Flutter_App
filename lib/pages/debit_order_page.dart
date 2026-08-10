@@ -162,9 +162,9 @@ class _DebitOrderPage extends State<DebitOrderPage> {
                                 Colors.cyan,
                               ),
                               columns: const [
-                                DataColumn(label: Text("Debit Order Name")),
-                                DataColumn(label: Text("Debit Order Cost")),
-                                DataColumn(label: Text("Action")),
+                                DataColumn(label: Text("Name:")),
+                                DataColumn(label: Text("Cost:")),
+                                DataColumn(label: Text("Actions:")),
                               ],
                               rows: debitOrders.asMap().entries.map((entry) {
                                 int index = entry.key;
@@ -178,40 +178,40 @@ class _DebitOrderPage extends State<DebitOrderPage> {
                                       ),
                                     ),
                                     DataCell(
-                                      Center(
-                                        child: Row(
-                                          children: [
-                                            uiTools.itemRemoveBtn(() {
-                                              setState(() {
-                                                debitOrders = const LogicTools()
-                                                    .debitOrderItemRemover(
-                                                      debitOrders,
-                                                      index,
-                                                    );
+                                      Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          uiTools.itemRemoveBtn(() {
+                                            setState(() {
+                                              debitOrders = const LogicTools()
+                                                  .debitOrderItemRemover(
+                                                    debitOrders,
+                                                    index,
+                                                  );
 
-                                                if (editingIndex == index) {
-                                                  editingIndex = -1;
-                                                  debitNameController.clear();
-                                                  debitCostController.clear();
-                                                }
-                                              });
-                                            }),
+                                              if (editingIndex == index) {
+                                                editingIndex = -1;
+                                                debitNameController.clear();
+                                                debitCostController.clear();
+                                              }
+                                            });
+                                          }),
 
-                                            SizedBox(width: 4),
+                                          SizedBox(width: 4),
 
-                                            uiTools.itemEditBtn(() {
-                                              setState(() {
-                                                debitNameController.text =
-                                                    orderer.getName;
-                                                debitCostController.text =
-                                                    orderer.getCost.toString();
-                                                editingIndex = index;
+                                          uiTools.itemEditBtn(() {
+                                            setState(() {
+                                              debitNameController.text =
+                                                  orderer.getName;
+                                              debitCostController.text = orderer
+                                                  .getCost
+                                                  .toString();
+                                              editingIndex = index;
 
-                                                debitOrders.removeAt(index);
-                                              });
-                                            }),
-                                          ],
-                                        ),
+                                              debitOrders.removeAt(index);
+                                            });
+                                          }),
+                                        ],
                                       ),
                                     ),
                                   ],

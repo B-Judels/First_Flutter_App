@@ -164,9 +164,9 @@ class _ServicePage extends State<ServicePage> {
                                 Colors.cyan,
                               ),
                               columns: const [
-                                DataColumn(label: Text("Service Name")),
-                                DataColumn(label: Text("Service Cost")),
-                                DataColumn(label: Text("Action")),
+                                DataColumn(label: Text("Name:")),
+                                DataColumn(label: Text("Cost:")),
+                                DataColumn(label: Text("Actions:")),
                               ],
                               rows: services.asMap().entries.map((entry) {
                                 int index = entry.key;

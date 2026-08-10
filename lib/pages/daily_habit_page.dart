@@ -171,9 +171,9 @@ class _DailyHabitPage extends State<DailyHabitPage> {
                             ),
                             dataRowColor: WidgetStateProperty.all(Colors.cyan),
                             columns: const [
-                              DataColumn(label: Text("Name")),
-                              DataColumn(label: Text("Cost")),
-                              DataColumn(label: Text("Action")),
+                              DataColumn(label: Text("Name:")),
+                              DataColumn(label: Text("Cost:")),
+                              DataColumn(label: Text("Actions:")),
                             ],
                             rows: dHabits.asMap().entries.map((entry) {
                               int index = entry.key;

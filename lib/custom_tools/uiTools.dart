@@ -47,9 +47,12 @@ class Uitools {
     return OutlinedButton(
       onPressed: onPressed,
       style: OutlinedButton.styleFrom(
-        backgroundColor: Colors.teal[100],
-        padding: const EdgeInsets.all(10),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
+        backgroundColor: Colors.red[100],
+        shape: const CircleBorder(),
+
+        padding: EdgeInsets.zero,
+        minimumSize: const Size(40, 40),
+        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
       ),
       child: Image.asset("images/trash.png", width: 15, height: 15),
     );
@@ -59,9 +62,12 @@ class Uitools {
     return OutlinedButton(
       onPressed: onPressed,
       style: OutlinedButton.styleFrom(
-        backgroundColor: Colors.teal[100],
-        padding: const EdgeInsets.all(10),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
+        backgroundColor: Colors.green[100],
+        shape: const CircleBorder(),
+
+        padding: EdgeInsets.zero,
+        minimumSize: const Size(40, 40),
+        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
       ),
       child: Image.asset("images/pencil.png", width: 15, height: 15),
     );
