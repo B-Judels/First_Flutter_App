@@ -21,6 +21,8 @@ class _ServicePage extends State<ServicePage> {
 
   final uiTools = Uitools();
 
+  int editingIndex = -1;
+
   @override
   void dispose() {
     serviceNameController.dispose();
@@ -188,13 +190,27 @@ class _ServicePage extends State<ServicePage> {
                                                       services,
                                                       index,
                                                     );
+
+                                                if (editingIndex == index) {
+                                                  editingIndex = -1;
+                                                  serviceNameController.clear();
+                                                  serviceCostController.clear();
+                                                }
                                               });
                                             }),
 
                                             SizedBox(width: 4),
 
                                             uiTools.itemEditBtn(() {
-                                              // Add here
+                                              setState(() {
+                                                serviceNameController.text =
+                                                    servicer.getName;
+                                                serviceCostController.text =
+                                                    servicer.getCost.toString();
+                                                editingIndex = index;
+
+                                                services.removeAt(index);
+                                              });
                                             }),
                                           ],
                                         ),

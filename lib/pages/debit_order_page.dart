@@ -17,6 +17,8 @@ class _DebitOrderPage extends State<DebitOrderPage> {
     DebitOrder(name: "Gym", cost: 450),
   ];
 
+  int editingIndex = -1;
+
   final TextEditingController debitNameController = TextEditingController();
   final TextEditingController debitCostController = TextEditingController();
 
@@ -186,13 +188,27 @@ class _DebitOrderPage extends State<DebitOrderPage> {
                                                       debitOrders,
                                                       index,
                                                     );
+
+                                                if (editingIndex == index) {
+                                                  editingIndex = -1;
+                                                  debitNameController.clear();
+                                                  debitCostController.clear();
+                                                }
                                               });
                                             }),
 
                                             SizedBox(width: 4),
 
                                             uiTools.itemEditBtn(() {
-                                              // Add here
+                                              setState(() {
+                                                debitNameController.text =
+                                                    orderer.getName;
+                                                debitCostController.text =
+                                                    orderer.getCost.toString();
+                                                editingIndex = index;
+
+                                                debitOrders.removeAt(index);
+                                              });
                                             }),
                                           ],
                                         ),

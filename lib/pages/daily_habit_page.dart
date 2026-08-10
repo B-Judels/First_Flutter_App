@@ -17,6 +17,8 @@ class _DailyHabitPage extends State<DailyHabitPage> {
     DailyHabit(name: "Energy Drink", costDHabit: 25),
   ];
 
+  int editingIndex = -1;
+
   final uiTools = Uitools();
 
   final List<UserSettings> userSettings = [UserSettings(userIncome: 25000)];
@@ -197,13 +199,29 @@ class _DailyHabitPage extends State<DailyHabitPage> {
                                                     dHabits,
                                                     index,
                                                   );
+
+                                              if (editingIndex == index) {
+                                                editingIndex = -1;
+                                                dailyHabitNameController
+                                                    .clear();
+                                                dailyHabitController.clear();
+                                              }
                                             });
                                           }),
 
                                           SizedBox(width: 4),
 
                                           uiTools.itemEditBtn(() {
-                                            // Add here
+                                            setState(() {
+                                              dailyHabitNameController.text =
+                                                  hab.getName;
+                                              dailyHabitController.text = hab
+                                                  .getCost
+                                                  .toString();
+                                              editingIndex = index;
+
+                                              dHabits.removeAt(index);
+                                            });
                                           }),
                                         ],
                                       ),

@@ -15,6 +15,8 @@ class _MedAidPage extends State<MedAidPage> {
 
   final uiTools = Uitools();
 
+  int editingIndex = -1;
+
   final TextEditingController medicalAidController = TextEditingController();
   final TextEditingController medicalAidCostController =
       TextEditingController();
@@ -186,13 +188,29 @@ class _MedAidPage extends State<MedAidPage> {
                                                       medAids,
                                                       index,
                                                     );
+
+                                                if (editingIndex == index) {
+                                                  editingIndex = -1;
+                                                  medicalAidController.clear();
+                                                  medicalAidCostController
+                                                      .clear();
+                                                }
                                               });
                                             }),
 
                                             SizedBox(width: 4),
 
                                             uiTools.itemEditBtn(() {
-                                              // Add here
+                                              setState(() {
+                                                medicalAidController.text =
+                                                    servicer.getName;
+                                                medicalAidCostController.text =
+                                                    servicer.getMedAidCost
+                                                        .toString();
+                                                editingIndex = index;
+
+                                                medAids.removeAt(index);
+                                              });
                                             }),
                                           ],
                                         ),
