@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:first_flutter_app/models/MedicalAid.dart';
 import 'package:first_flutter_app/custom_tools/logicTools.dart';
+import 'package:first_flutter_app/custom_tools/uiTools.dart';
 
 class MedAidPage extends StatefulWidget {
   const MedAidPage({super.key});
@@ -11,6 +12,8 @@ class MedAidPage extends StatefulWidget {
 
 class _MedAidPage extends State<MedAidPage> {
   List<MedicalAid> medAids = [MedicalAid(name: "Discovery", costMedAid: 2500)];
+
+  final uiTools = Uitools();
 
   final TextEditingController medicalAidController = TextEditingController();
   final TextEditingController medicalAidCostController =
@@ -173,19 +176,26 @@ class _MedAidPage extends State<MedAidPage> {
                                       ),
                                     ),
                                     DataCell(
-                                      OutlinedButton(
-                                        onPressed: () {
-                                          setState(() {
-                                            List<MedicalAid> newList =
-                                                const LogicTools()
+                                      Center(
+                                        child: Row(
+                                          children: [
+                                            uiTools.itemRemoveBtn(() {
+                                              setState(() {
+                                                medAids = const LogicTools()
                                                     .medAidItemRemover(
                                                       medAids,
                                                       index,
                                                     );
-                                            medAids = newList;
-                                          });
-                                        },
-                                        child: const Text("Remove"),
+                                              });
+                                            }),
+
+                                            SizedBox(width: 4),
+
+                                            uiTools.itemEditBtn(() {
+                                              // Add here
+                                            }),
+                                          ],
+                                        ),
                                       ),
                                     ),
                                   ],

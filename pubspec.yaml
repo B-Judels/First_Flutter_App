@@ -69,6 +69,7 @@ flutter:
     - images/24-hours-service.png
     - images/healthcare.png
     - images/trash.png
+    - images/pencil.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

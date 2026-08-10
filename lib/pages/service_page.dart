@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:first_flutter_app/models/Service.dart';
 import 'package:first_flutter_app/custom_tools/logicTools.dart';
+import 'package:first_flutter_app/custom_tools/uiTools.dart';
 
 class ServicePage extends StatefulWidget {
   const ServicePage({super.key});
@@ -17,6 +18,8 @@ class _ServicePage extends State<ServicePage> {
 
   final TextEditingController serviceNameController = TextEditingController();
   final TextEditingController serviceCostController = TextEditingController();
+
+  final uiTools = Uitools();
 
   @override
   void dispose() {
@@ -161,7 +164,7 @@ class _ServicePage extends State<ServicePage> {
                               columns: const [
                                 DataColumn(label: Text("Service Name")),
                                 DataColumn(label: Text("Service Cost")),
-                                DataColumn(label: Text("Remove Service")),
+                                DataColumn(label: Text("Action")),
                               ],
                               rows: services.asMap().entries.map((entry) {
                                 int index = entry.key;
@@ -175,19 +178,26 @@ class _ServicePage extends State<ServicePage> {
                                       ),
                                     ),
                                     DataCell(
-                                      OutlinedButton(
-                                        onPressed: () {
-                                          setState(() {
-                                            List<Service> newList =
-                                                const LogicTools()
+                                      Center(
+                                        child: Row(
+                                          children: [
+                                            uiTools.itemRemoveBtn(() {
+                                              setState(() {
+                                                services = const LogicTools()
                                                     .serviceItemRemover(
                                                       services,
                                                       index,
                                                     );
-                                            services = newList;
-                                          });
-                                        },
-                                        child: const Text("Remove"),
+                                              });
+                                            }),
+
+                                            SizedBox(width: 4),
+
+                                            uiTools.itemEditBtn(() {
+                                              // Add here
+                                            }),
+                                          ],
+                                        ),
                                       ),
                                     ),
                                   ],

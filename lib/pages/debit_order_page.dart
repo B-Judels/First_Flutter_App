@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:first_flutter_app/models/DebitOrder.dart';
 import 'package:first_flutter_app/custom_tools/logicTools.dart';
+import 'package:first_flutter_app/custom_tools/uiTools.dart';
 
 class DebitOrderPage extends StatefulWidget {
   const DebitOrderPage({super.key});
@@ -18,6 +19,8 @@ class _DebitOrderPage extends State<DebitOrderPage> {
 
   final TextEditingController debitNameController = TextEditingController();
   final TextEditingController debitCostController = TextEditingController();
+
+  final uiTools = Uitools();
 
   @override
   void dispose() {
@@ -159,7 +162,7 @@ class _DebitOrderPage extends State<DebitOrderPage> {
                               columns: const [
                                 DataColumn(label: Text("Debit Order Name")),
                                 DataColumn(label: Text("Debit Order Cost")),
-                                DataColumn(label: Text("Remove Debit Order")),
+                                DataColumn(label: Text("Action")),
                               ],
                               rows: debitOrders.asMap().entries.map((entry) {
                                 int index = entry.key;
@@ -173,19 +176,26 @@ class _DebitOrderPage extends State<DebitOrderPage> {
                                       ),
                                     ),
                                     DataCell(
-                                      OutlinedButton(
-                                        onPressed: () {
-                                          setState(() {
-                                            List<DebitOrder> newList =
-                                                const LogicTools()
+                                      Center(
+                                        child: Row(
+                                          children: [
+                                            uiTools.itemRemoveBtn(() {
+                                              setState(() {
+                                                debitOrders = const LogicTools()
                                                     .debitOrderItemRemover(
                                                       debitOrders,
                                                       index,
                                                     );
-                                            debitOrders = newList;
-                                          });
-                                        },
-                                        child: const Text("Remove"),
+                                              });
+                                            }),
+
+                                            SizedBox(width: 4),
+
+                                            uiTools.itemEditBtn(() {
+                                              // Add here
+                                            }),
+                                          ],
+                                        ),
                                       ),
                                     ),
                                   ],

@@ -188,15 +188,25 @@ class _DailyHabitPage extends State<DailyHabitPage> {
                                   ),
                                   DataCell(
                                     Center(
-                                      child: uiTools.itemRemoveBtn(() {
-                                        setState(() {
-                                          dHabits = const LogicTools()
-                                              .dHabitItemRemover(
-                                                dHabits,
-                                                index,
-                                              );
-                                        });
-                                      }),
+                                      child: Row(
+                                        children: [
+                                          uiTools.itemRemoveBtn(() {
+                                            setState(() {
+                                              dHabits = const LogicTools()
+                                                  .dHabitItemRemover(
+                                                    dHabits,
+                                                    index,
+                                                  );
+                                            });
+                                          }),
+
+                                          SizedBox(width: 4),
+
+                                          uiTools.itemEditBtn(() {
+                                            // Add here
+                                          }),
+                                        ],
+                                      ),
                                     ),
                                   ),
                                 ],

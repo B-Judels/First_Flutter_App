@@ -54,4 +54,16 @@ class Uitools {
       child: Image.asset("images/trash.png", width: 15, height: 15),
     );
   }
+
+  OutlinedButton itemEditBtn(VoidCallback onPressed) {
+    return OutlinedButton(
+      onPressed: onPressed,
+      style: OutlinedButton.styleFrom(
+        backgroundColor: Colors.teal[100],
+        padding: const EdgeInsets.all(10),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
+      ),
+      child: Image.asset("images/pencil.png", width: 15, height: 15),
+    );
+  }
 }
