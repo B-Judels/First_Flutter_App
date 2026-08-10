@@ -42,4 +42,16 @@ class Uitools {
       child: Image.asset(imgDir, width: 80, height: 80),
     );
   }
+
+  OutlinedButton itemRemoveBtn(VoidCallback onPressed) {
+    return OutlinedButton(
+      onPressed: onPressed,
+      style: OutlinedButton.styleFrom(
+        backgroundColor: Colors.teal[100],
+        padding: const EdgeInsets.all(10),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
+      ),
+      child: Image.asset("images/trash.png", width: 15, height: 15),
+    );
+  }
 }

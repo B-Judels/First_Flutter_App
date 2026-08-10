@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:first_flutter_app/custom_tools/uiTools.dart';
-import 'package:first_flutter_app/pages/StartUpPage.dart';
 import 'package:first_flutter_app/pages/debit_order_page.dart';
 import 'package:first_flutter_app/pages/service_page.dart';
 import 'package:first_flutter_app/pages/daily_habit_page.dart';
@@ -11,6 +10,7 @@ import 'package:first_flutter_app/models/MedicalAid.dart';
 import 'package:first_flutter_app/models/DailyHabit.dart';
 import 'package:first_flutter_app/models/UserSettings.dart';
 
+// ignore: must_be_immutable
 class Home extends StatelessWidget {
   Home({super.key});
 

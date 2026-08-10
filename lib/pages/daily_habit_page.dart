@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:first_flutter_app/models/DailyHabit.dart';
 import 'package:first_flutter_app/models/UserSettings.dart';
 import 'package:first_flutter_app/custom_tools/logicTools.dart';
+import 'package:first_flutter_app/custom_tools/uiTools.dart';
 
 class DailyHabitPage extends StatefulWidget {
   const DailyHabitPage({super.key});
@@ -15,6 +16,8 @@ class _DailyHabitPage extends State<DailyHabitPage> {
     DailyHabit(name: "Coffee", costDHabit: 40),
     DailyHabit(name: "Energy Drink", costDHabit: 25),
   ];
+
+  final uiTools = Uitools();
 
   final List<UserSettings> userSettings = [UserSettings(userIncome: 25000)];
 
@@ -184,18 +187,16 @@ class _DailyHabitPage extends State<DailyHabitPage> {
                                     ),
                                   ),
                                   DataCell(
-                                    OutlinedButton(
-                                      onPressed: () {
+                                    Center(
+                                      child: uiTools.itemRemoveBtn(() {
                                         setState(() {
-                                          // Mutates list via tools and triggers automatic mathematical UI refresh
                                           dHabits = const LogicTools()
                                               .dHabitItemRemover(
                                                 dHabits,
                                                 index,
                                               );
                                         });
-                                      },
-                                      child: const Text("Remove"),
+                                      }),
                                     ),
                                   ),
                                 ],
