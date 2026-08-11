@@ -698,9 +698,9 @@ class _StartUpPageState extends State<StartUpPage> {
                             ),
                             dataRowColor: WidgetStateProperty.all(Colors.cyan),
                             columns: const [
-                              DataColumn(label: Text("Name")),
-                              DataColumn(label: Text("Cost")),
-                              DataColumn(label: Text("Action")),
+                              DataColumn(label: Text("Name:")),
+                              DataColumn(label: Text("Cost:")),
+                              DataColumn(label: Text("Actions:")),
                             ],
                             rows: dHabits.asMap().entries.map((entry) {
                               int index = entry.key;
@@ -716,18 +716,42 @@ class _StartUpPageState extends State<StartUpPage> {
                                     ),
                                   ),
                                   DataCell(
-                                    OutlinedButton(
-                                      onPressed: () {
-                                        setState(() {
-                                          // Mutates list via tools and triggers automatic mathematical UI refresh
-                                          dHabits = const LogicTools()
-                                              .dHabitItemRemover(
-                                                dHabits,
-                                                index,
-                                              );
-                                        });
-                                      },
-                                      child: const Text("Remove"),
+                                    Center(
+                                      child: Row(
+                                        children: [
+                                          uiTools.itemRemoveBtn(() {
+                                            setState(() {
+                                              dHabits = const LogicTools()
+                                                  .dHabitItemRemover(
+                                                    dHabits,
+                                                    index,
+                                                  );
+
+                                              if (editingIndex == index) {
+                                                editingIndex = -1;
+                                                dailyHabitNameController
+                                                    .clear();
+                                                dailyHabitController.clear();
+                                              }
+                                            });
+                                          }),
+
+                                          SizedBox(width: 4),
+
+                                          uiTools.itemEditBtn(() {
+                                            setState(() {
+                                              dailyHabitNameController.text =
+                                                  hab.getName;
+                                              dailyHabitController.text = hab
+                                                  .getCost
+                                                  .toString();
+                                              editingIndex = index;
+
+                                              dHabits.removeAt(index);
+                                            });
+                                          }),
+                                        ],
+                                      ),
                                     ),
                                   ),
                                 ],

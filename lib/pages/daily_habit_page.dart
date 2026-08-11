@@ -160,7 +160,6 @@ class _DailyHabitPage extends State<DailyHabitPage> {
                         ],
                       ),
 
-                      // CONDITIONAL RENDERING: Only inject layout blocks if items exist
                       if (dHabits.isNotEmpty) ...[
                         const SizedBox(height: 15),
                         SizedBox(
