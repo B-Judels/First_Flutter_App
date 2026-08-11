@@ -125,7 +125,6 @@ class Home extends StatelessWidget {
               ),
 
               Container(
-                // color: Colors.amber[100],
                 width: double.infinity,
                 padding: const EdgeInsets.all(10.0),
 

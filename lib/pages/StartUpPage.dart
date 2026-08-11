@@ -7,6 +7,7 @@ import 'package:first_flutter_app/models/MedicalAid.dart';
 import 'package:first_flutter_app/models/UserSettings.dart';
 import 'package:first_flutter_app/database/database_helper.dart';
 import 'package:first_flutter_app/custom_tools/logicTools.dart';
+import 'package:first_flutter_app/custom_tools/uiTools.dart';
 
 class StartUpPage extends StatefulWidget {
   const StartUpPage({super.key});
@@ -17,6 +18,8 @@ class StartUpPage extends StatefulWidget {
 
 class _StartUpPageState extends State<StartUpPage> {
   double userIncome = 0;
+
+  final uiTools = Uitools();
 
   List<Service> services = [];
   final List<Service> servicesStore = [];
@@ -46,6 +49,8 @@ class _StartUpPageState extends State<StartUpPage> {
 
   final TextEditingController serviceNameController = TextEditingController();
   final TextEditingController serviceCostController = TextEditingController();
+
+  int editingIndex = -1;
 
   @override
   Widget build(BuildContext context) {
@@ -141,9 +146,9 @@ class _StartUpPageState extends State<StartUpPage> {
                                 controller: debitCostController,
                                 keyboardType: TextInputType.number,
                                 decoration: InputDecoration(
-                                  labelText: "Monthly Expence",
+                                  labelText: "Monthly Expense",
                                   hintText:
-                                      "Enter the ecpence for the service per month",
+                                      "Enter the ecpense for the service per month",
                                   border: OutlineInputBorder(),
                                 ),
                               ),
@@ -200,11 +205,9 @@ class _StartUpPageState extends State<StartUpPage> {
                                     Colors.cyan,
                                   ),
                                   columns: const [
-                                    DataColumn(label: Text("Debit Order Name")),
-                                    DataColumn(label: Text("Debit Order Cost")),
-                                    DataColumn(
-                                      label: Text("Remove Debit Order"),
-                                    ),
+                                    DataColumn(label: Text("Name:")),
+                                    DataColumn(label: Text("Cost:")),
+                                    DataColumn(label: Text("Actions:")),
                                   ],
                                   rows: debitOrders.asMap().entries.map((
                                     entry,
@@ -220,19 +223,41 @@ class _StartUpPageState extends State<StartUpPage> {
                                           ),
                                         ),
                                         DataCell(
-                                          OutlinedButton(
-                                            onPressed: () {
-                                              setState(() {
-                                                List<DebitOrder> newList =
-                                                    const LogicTools()
-                                                        .debitOrderItemRemover(
-                                                          debitOrders,
-                                                          index,
-                                                        );
-                                                debitOrders = newList;
-                                              });
-                                            },
-                                            child: const Text("Remove"),
+                                          Row(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              uiTools.itemRemoveBtn(() {
+                                                setState(() {
+                                                  debitOrders =
+                                                      const LogicTools()
+                                                          .debitOrderItemRemover(
+                                                            debitOrders,
+                                                            index,
+                                                          );
+
+                                                  if (editingIndex == index) {
+                                                    editingIndex = -1;
+                                                    debitNameController.clear();
+                                                    debitCostController.clear();
+                                                  }
+                                                });
+                                              }),
+
+                                              SizedBox(width: 4),
+
+                                              uiTools.itemEditBtn(() {
+                                                setState(() {
+                                                  debitNameController.text =
+                                                      orderer.getName;
+                                                  debitCostController.text =
+                                                      orderer.getCost
+                                                          .toString();
+                                                  editingIndex = index;
+
+                                                  debitOrders.removeAt(index);
+                                                });
+                                              }),
+                                            ],
                                           ),
                                         ),
                                       ],
@@ -344,9 +369,9 @@ class _StartUpPageState extends State<StartUpPage> {
                                   ),
 
                                   columns: const [
-                                    DataColumn(label: Text("Medical Aid Name")),
-                                    DataColumn(label: Text("Medical Aid Cost")),
-                                    DataColumn(label: Text("Action")),
+                                    DataColumn(label: Text("Name:")),
+                                    DataColumn(label: Text("Cost:")),
+                                    DataColumn(label: Text("Actions:")),
                                   ],
                                   rows: medAids.asMap().entries.map((entry) {
                                     int index = entry.key;
@@ -360,19 +385,44 @@ class _StartUpPageState extends State<StartUpPage> {
                                           ),
                                         ),
                                         DataCell(
-                                          OutlinedButton(
-                                            onPressed: () {
-                                              setState(() {
-                                                List<MedicalAid> newList =
-                                                    const LogicTools()
+                                          Center(
+                                            child: Row(
+                                              children: [
+                                                uiTools.itemRemoveBtn(() {
+                                                  setState(() {
+                                                    medAids = const LogicTools()
                                                         .medAidItemRemover(
                                                           medAids,
                                                           index,
                                                         );
-                                                medAids = newList;
-                                              });
-                                            },
-                                            child: const Text("Remove"),
+
+                                                    if (editingIndex == index) {
+                                                      editingIndex = -1;
+                                                      medicalAidController
+                                                          .clear();
+                                                      medicalAidCostController
+                                                          .clear();
+                                                    }
+                                                  });
+                                                }),
+
+                                                SizedBox(width: 4),
+
+                                                uiTools.itemEditBtn(() {
+                                                  setState(() {
+                                                    medicalAidController.text =
+                                                        servicer.getName;
+                                                    medicalAidCostController
+                                                        .text = servicer
+                                                        .getMedAidCost
+                                                        .toString();
+                                                    editingIndex = index;
+
+                                                    medAids.removeAt(index);
+                                                  });
+                                                }),
+                                              ],
+                                            ),
                                           ),
                                         ),
                                       ],
@@ -471,7 +521,6 @@ class _StartUpPageState extends State<StartUpPage> {
 
                       if (services.isNotEmpty) ...[
                         const SizedBox(height: 15),
-
                         Center(
                           child: SizedBox(
                             width: double.infinity,
@@ -483,9 +532,9 @@ class _StartUpPageState extends State<StartUpPage> {
                                 Colors.cyan,
                               ),
                               columns: const [
-                                DataColumn(label: Text("Service Name")),
-                                DataColumn(label: Text("Service Cost")),
-                                DataColumn(label: Text("Remove Service")),
+                                DataColumn(label: Text("Name:")),
+                                DataColumn(label: Text("Cost:")),
+                                DataColumn(label: Text("Actions:")),
                               ],
                               rows: services.asMap().entries.map((entry) {
                                 int index = entry.key;
@@ -499,19 +548,40 @@ class _StartUpPageState extends State<StartUpPage> {
                                       ),
                                     ),
                                     DataCell(
-                                      OutlinedButton(
-                                        onPressed: () {
-                                          setState(() {
-                                            List<Service> newList =
-                                                const LogicTools()
+                                      Center(
+                                        child: Row(
+                                          children: [
+                                            uiTools.itemRemoveBtn(() {
+                                              setState(() {
+                                                services = const LogicTools()
                                                     .serviceItemRemover(
                                                       services,
                                                       index,
                                                     );
-                                            services = newList;
-                                          });
-                                        },
-                                        child: const Text("Remove"),
+
+                                                if (editingIndex == index) {
+                                                  editingIndex = -1;
+                                                  serviceNameController.clear();
+                                                  serviceCostController.clear();
+                                                }
+                                              });
+                                            }),
+
+                                            SizedBox(width: 4),
+
+                                            uiTools.itemEditBtn(() {
+                                              setState(() {
+                                                serviceNameController.text =
+                                                    servicer.getName;
+                                                serviceCostController.text =
+                                                    servicer.getCost.toString();
+                                                editingIndex = index;
+
+                                                services.removeAt(index);
+                                              });
+                                            }),
+                                          ],
+                                        ),
                                       ),
                                     ),
                                   ],
