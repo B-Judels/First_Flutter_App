@@ -9,43 +9,60 @@ import 'package:first_flutter_app/models/Service.dart';
 import 'package:first_flutter_app/models/MedicalAid.dart';
 import 'package:first_flutter_app/models/DailyHabit.dart';
 import 'package:first_flutter_app/models/UserSettings.dart';
+import 'package:first_flutter_app/database/database_helper.dart';
 
-// ignore: must_be_immutable
-class Home extends StatelessWidget {
-  Home({super.key});
+class Home extends StatefulWidget {
+  const Home({super.key});
 
+  @override
+  State<Home> createState() => _HomeState();
+}
+
+class _HomeState extends State<Home> {
   final uiTools = Uitools();
 
-  //-----dummy data ----------------------------
-  final List<UserSettings> userSettings = [UserSettings(userIncome: 25000)];
+  List<UserSettings> userSettings = [];
 
-  final debitOrders = [
-    DebitOrder(name: "Car Insurance", cost: 1200),
-    DebitOrder(name: "Netflix", cost: 199),
-    DebitOrder(name: "Gym", cost: 450),
-  ];
+  List<DebitOrder> debitOrders = [];
 
-  final services = [
-    Service(serviceName: "Spotify", serviceCost: 89),
-    Service(serviceName: "iCloud", serviceCost: 49),
-  ];
+  List<Service> services = [];
 
-  final medicalAids = [MedicalAid(name: "Discovery", costMedAid: 2500)];
+  List<MedicalAid> medicalAids = [];
 
-  final dailyHabits = [
-    DailyHabit(name: "Coffee", costDHabit: 40),
-    DailyHabit(name: "Energy Drink", costDHabit: 25),
-  ];
+  List<DailyHabit> dailyHabits = [];
 
   int daysInMonth = 30;
 
-  //--------------------------------------------
+  Future<void> _loadDatabaseData() async {
+    final db = DatabaseHelper.instance;
+
+    final loadedUserSettings = await db.getUserSettings();
+    final loadedDebitOrders = await db.getDebitOrders();
+    final loadedServices = await db.getServices();
+    final loadedMedicalAids = await db.getMedicalAids();
+    final loadedDailyHabits = await db.getDailyHabits();
+
+    setState(() {
+      userSettings = loadedUserSettings;
+      debitOrders = loadedDebitOrders;
+      services = loadedServices;
+      medicalAids = loadedMedicalAids;
+      dailyHabits = loadedDailyHabits;
+    });
+  }
+
   double currentMonthTotal = 0;
 
   double debitTotal = 0;
   double serviceTotal = 0;
   double medTotal = 0;
   double habitTotal = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadDatabaseData();
+  }
 
   @override
   Widget build(BuildContext context) {
