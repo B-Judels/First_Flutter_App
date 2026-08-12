@@ -22,16 +22,13 @@ class _StartUpPageState extends State<StartUpPage> {
   final uiTools = Uitools();
 
   List<Service> services = [];
-  final List<Service> servicesStore = [];
 
   List<DebitOrder> debitOrders = [];
-  final List<DebitOrder> debitOrdersStore = [];
 
   List<MedicalAid> medAids = [];
-  final List<MedicalAid> medAidsStore = [];
 
   List<DailyHabit> dHabits = [];
-  final List<DailyHabit> dHabitsStore = [];
+
   double dailyTotal = 0;
 
   final TextEditingController incomeController = TextEditingController();
@@ -158,6 +155,13 @@ class _StartUpPageState extends State<StartUpPage> {
                               SizedBox(
                                 width: double.infinity,
                                 child: OutlinedButton(
+                                  style: OutlinedButton.styleFrom(
+                                    backgroundColor: Colors.teal[100],
+                                    padding: const EdgeInsets.all(12),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(15),
+                                    ),
+                                  ),
                                   onPressed: () {
                                     String debitName = debitNameController.text;
                                     double debitCost =
@@ -166,13 +170,12 @@ class _StartUpPageState extends State<StartUpPage> {
                                         ) ??
                                         0;
 
-                                    DebitOrder order = new DebitOrder(
+                                    DebitOrder order = DebitOrder(
                                       name: debitName,
                                       cost: debitCost,
                                     );
                                     setState(() {
                                       debitOrders.add(order);
-                                      debitOrdersStore.add(order);
                                     });
 
                                     debitNameController.clear();
@@ -180,13 +183,6 @@ class _StartUpPageState extends State<StartUpPage> {
                                   },
 
                                   child: Text("Add Debit Order"),
-                                  style: OutlinedButton.styleFrom(
-                                    backgroundColor: Colors.teal[100],
-                                    padding: const EdgeInsets.all(12),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(15),
-                                    ),
-                                  ),
                                 ),
                               ),
                             ],
@@ -320,6 +316,13 @@ class _StartUpPageState extends State<StartUpPage> {
                               SizedBox(
                                 width: double.infinity,
                                 child: OutlinedButton(
+                                  style: OutlinedButton.styleFrom(
+                                    backgroundColor: Colors.teal[100],
+                                    padding: const EdgeInsets.all(12),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(15),
+                                    ),
+                                  ),
                                   onPressed: () {
                                     String medAidName =
                                         medicalAidController.text;
@@ -329,13 +332,12 @@ class _StartUpPageState extends State<StartUpPage> {
                                         ) ??
                                         0;
 
-                                    MedicalAid medAid = new MedicalAid(
+                                    MedicalAid medAid = MedicalAid(
                                       name: medAidName,
                                       costMedAid: medAidCost,
                                     );
                                     setState(() {
                                       medAids.add(medAid);
-                                      medAidsStore.add(medAid);
                                     });
 
                                     medicalAidController.clear();
@@ -343,13 +345,6 @@ class _StartUpPageState extends State<StartUpPage> {
                                   },
 
                                   child: Text("Add Medical Aid"),
-                                  style: OutlinedButton.styleFrom(
-                                    backgroundColor: Colors.teal[100],
-                                    padding: const EdgeInsets.all(12),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(15),
-                                    ),
-                                  ),
                                 ),
                               ),
                             ],
@@ -486,27 +481,6 @@ class _StartUpPageState extends State<StartUpPage> {
                           SizedBox(
                             width: double.infinity,
                             child: OutlinedButton(
-                              onPressed: () {
-                                String serviceName = serviceNameController.text;
-                                double serviceCost = double.parse(
-                                  serviceCostController.text,
-                                );
-
-                                Service serve = new Service(
-                                  serviceName: serviceName,
-                                  serviceCost: serviceCost,
-                                );
-
-                                setState(() {
-                                  services.add(serve);
-                                  servicesStore.add(serve);
-                                });
-
-                                serviceNameController.clear();
-                                serviceCostController.clear();
-                              },
-
-                              child: Text("Add Service"),
                               style: OutlinedButton.styleFrom(
                                 backgroundColor: Colors.teal[100],
                                 padding: const EdgeInsets.all(12),
@@ -514,6 +488,26 @@ class _StartUpPageState extends State<StartUpPage> {
                                   borderRadius: BorderRadius.circular(15),
                                 ),
                               ),
+                              onPressed: () {
+                                String serviceName = serviceNameController.text;
+                                double serviceCost = double.parse(
+                                  serviceCostController.text,
+                                );
+
+                                Service serve = Service(
+                                  serviceName: serviceName,
+                                  serviceCost: serviceCost,
+                                );
+
+                                setState(() {
+                                  services.add(serve);
+                                });
+
+                                serviceNameController.clear();
+                                serviceCostController.clear();
+                              },
+
+                              child: Text("Add Service"),
                             ),
                           ),
                         ],
@@ -653,6 +647,13 @@ class _StartUpPageState extends State<StartUpPage> {
                           SizedBox(
                             width: double.infinity,
                             child: OutlinedButton(
+                              style: OutlinedButton.styleFrom(
+                                backgroundColor: Colors.teal[100],
+                                padding: const EdgeInsets.all(12),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(15),
+                                ),
+                              ),
                               onPressed: () {
                                 String habitName =
                                     dailyHabitNameController.text;
@@ -660,14 +661,14 @@ class _StartUpPageState extends State<StartUpPage> {
                                   dailyHabitController.text,
                                 );
 
-                                DailyHabit hab1 = new DailyHabit(
+                                DailyHabit hab = DailyHabit(
                                   name: habitName,
                                   costDHabit: habitCost,
                                 );
 
                                 setState(() {
-                                  dHabits.add(hab1);
-                                  dHabitsStore.add(hab1);
+                                  dHabits.add(hab);
+
                                   dailyTotal = dailyTotal + habitCost;
                                 });
 
@@ -676,13 +677,6 @@ class _StartUpPageState extends State<StartUpPage> {
                               },
 
                               child: Text("Add Daily Habit"),
-                              style: OutlinedButton.styleFrom(
-                                backgroundColor: Colors.teal[100],
-                                padding: const EdgeInsets.all(12),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(15),
-                                ),
-                              ),
                             ),
                           ),
                         ],
@@ -765,7 +759,7 @@ class _StartUpPageState extends State<StartUpPage> {
                 ),
 
                 Container(
-                  margin: EdgeInsets.all(10.0),
+                  margin: const EdgeInsets.all(10.0),
                   child: SizedBox(
                     width: double.infinity,
                     height: 80,
@@ -806,68 +800,14 @@ class _StartUpPageState extends State<StartUpPage> {
                           await DatabaseHelper.instance.insertDailyHabit(habit);
                         }
 
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text("Data aved!")),
+                        if (!mounted) return;
+
+                        // Go directly to Home
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(builder: (context) => const Home()),
                         );
-
-                        //--------------------------testing console area---------------------------
-                        List<DebitOrder> ordersTest = await DatabaseHelper
-                            .instance
-                            .getDebitOrders();
-
-                        print("========== DEBIT ORDERS ==========");
-
-                        for (var order in ordersTest) {
-                          print(
-                            "${order.getId} ${order.getName} R${order.getCost}",
-                          );
-                        }
-
-                        List<Service> servicesTest = await DatabaseHelper
-                            .instance
-                            .getServices();
-
-                        print("========== SERVICES ==========");
-
-                        for (var service in servicesTest) {
-                          print(
-                            "${service.getId} ${service.getName} R${service.getCost}",
-                          );
-                        }
-
-                        List<MedicalAid> medAidsTest = await DatabaseHelper
-                            .instance
-                            .getMedicalAids();
-
-                        print("========== MED ==========");
-
-                        for (var med in medAidsTest) {
-                          print("${med.getName} R${med.getMedAidCost}");
-                        }
-
-                        List<DailyHabit> habitsTest = await DatabaseHelper
-                            .instance
-                            .getDailyHabits();
-
-                        print("========== Habits ==========");
-
-                        for (var habit in habitsTest) {
-                          print("${habit.getName} R${habit.getCost}");
-                        }
-
-                        List<UserSettings> settingsTest = await DatabaseHelper
-                            .instance
-                            .getUserSettings();
-
-                        print("========== Habits ==========");
-
-                        for (var setting in settingsTest) {
-                          print(setting.getIncome);
-                        }
-
-                        //-------------------------------------------------------------------------
                       },
-
                       child: const Text("Save and Calculate"),
                     ),
                   ),
