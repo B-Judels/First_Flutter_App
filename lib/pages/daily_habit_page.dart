@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:first_flutter_app/models/DailyHabit.dart';
-import 'package:first_flutter_app/models/UserSettings.dart';
-import 'package:first_flutter_app/custom_tools/logicTools.dart';
-import 'package:first_flutter_app/custom_tools/uiTools.dart';
+import 'package:freeuse_monthly_expense_tracker/models/DailyHabit.dart';
+import 'package:freeuse_monthly_expense_tracker/models/UserSettings.dart';
+import 'package:freeuse_monthly_expense_tracker/custom_tools/logicTools.dart';
+import 'package:freeuse_monthly_expense_tracker/custom_tools/uiTools.dart';
 
 class DailyHabitPage extends StatefulWidget {
   const DailyHabitPage({super.key});

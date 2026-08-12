@@ -1,13 +1,13 @@
-import 'package:first_flutter_app/models/DebitOrder.dart';
+import 'package:freeuse_monthly_expense_tracker/models/DebitOrder.dart';
 import 'package:flutter/material.dart';
-import 'package:first_flutter_app/pages/home.dart';
-import 'package:first_flutter_app/models/Service.dart';
-import 'package:first_flutter_app/models/DailyHabit.dart';
-import 'package:first_flutter_app/models/MedicalAid.dart';
-import 'package:first_flutter_app/models/UserSettings.dart';
-import 'package:first_flutter_app/database/database_helper.dart';
-import 'package:first_flutter_app/custom_tools/logicTools.dart';
-import 'package:first_flutter_app/custom_tools/uiTools.dart';
+import 'package:freeuse_monthly_expense_tracker/pages/home.dart';
+import 'package:freeuse_monthly_expense_tracker/models/Service.dart';
+import 'package:freeuse_monthly_expense_tracker/models/DailyHabit.dart';
+import 'package:freeuse_monthly_expense_tracker/models/MedicalAid.dart';
+import 'package:freeuse_monthly_expense_tracker/models/UserSettings.dart';
+import 'package:freeuse_monthly_expense_tracker/database/database_helper.dart';
+import 'package:freeuse_monthly_expense_tracker/custom_tools/logicTools.dart';
+import 'package:freeuse_monthly_expense_tracker/custom_tools/uiTools.dart';
 
 class StartUpPage extends StatefulWidget {
   const StartUpPage({super.key});

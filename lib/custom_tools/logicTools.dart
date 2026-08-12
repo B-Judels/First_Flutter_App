@@ -1,7 +1,7 @@
-import 'package:first_flutter_app/models/DebitOrder.dart';
-import 'package:first_flutter_app/models/Service.dart';
-import 'package:first_flutter_app/models/DailyHabit.dart';
-import 'package:first_flutter_app/models/MedicalAid.dart';
+import 'package:freeuse_monthly_expense_tracker/models/DebitOrder.dart';
+import 'package:freeuse_monthly_expense_tracker/models/Service.dart';
+import 'package:freeuse_monthly_expense_tracker/models/DailyHabit.dart';
+import 'package:freeuse_monthly_expense_tracker/models/MedicalAid.dart';
 
 class LogicTools {
   const LogicTools();

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:first_flutter_app/models/DebitOrder.dart';
-import 'package:first_flutter_app/custom_tools/logicTools.dart';
-import 'package:first_flutter_app/custom_tools/uiTools.dart';
+import 'package:freeuse_monthly_expense_tracker/models/DebitOrder.dart';
+import 'package:freeuse_monthly_expense_tracker/custom_tools/logicTools.dart';
+import 'package:freeuse_monthly_expense_tracker/custom_tools/uiTools.dart';
 
 class DebitOrderPage extends StatefulWidget {
   const DebitOrderPage({super.key});

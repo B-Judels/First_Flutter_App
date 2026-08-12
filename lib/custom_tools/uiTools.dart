@@ -1,4 +1,3 @@
-import 'package:first_flutter_app/pages/StartUpPage.dart';
 import 'package:flutter/material.dart';
 
 class Uitools {

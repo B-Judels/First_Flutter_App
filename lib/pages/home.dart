@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:first_flutter_app/custom_tools/uiTools.dart';
-import 'package:first_flutter_app/pages/debit_order_page.dart';
-import 'package:first_flutter_app/pages/service_page.dart';
-import 'package:first_flutter_app/pages/daily_habit_page.dart';
-import 'package:first_flutter_app/pages/med_aid_page.dart';
-import 'package:first_flutter_app/models/DebitOrder.dart';
-import 'package:first_flutter_app/models/Service.dart';
-import 'package:first_flutter_app/models/MedicalAid.dart';
-import 'package:first_flutter_app/models/DailyHabit.dart';
-import 'package:first_flutter_app/models/UserSettings.dart';
-import 'package:first_flutter_app/database/database_helper.dart';
+import 'package:freeuse_monthly_expense_tracker/custom_tools/uiTools.dart';
+import 'package:freeuse_monthly_expense_tracker/pages/debit_order_page.dart';
+import 'package:freeuse_monthly_expense_tracker/pages/service_page.dart';
+import 'package:freeuse_monthly_expense_tracker/pages/daily_habit_page.dart';
+import 'package:freeuse_monthly_expense_tracker/pages/med_aid_page.dart';
+import 'package:freeuse_monthly_expense_tracker/models/DebitOrder.dart';
+import 'package:freeuse_monthly_expense_tracker/models/Service.dart';
+import 'package:freeuse_monthly_expense_tracker/models/MedicalAid.dart';
+import 'package:freeuse_monthly_expense_tracker/models/DailyHabit.dart';
+import 'package:freeuse_monthly_expense_tracker/models/UserSettings.dart';
+import 'package:freeuse_monthly_expense_tracker/database/database_helper.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});

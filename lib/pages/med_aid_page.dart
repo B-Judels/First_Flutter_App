@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:first_flutter_app/models/MedicalAid.dart';
-import 'package:first_flutter_app/custom_tools/logicTools.dart';
-import 'package:first_flutter_app/custom_tools/uiTools.dart';
+import 'package:freeuse_monthly_expense_tracker/models/MedicalAid.dart';
+import 'package:freeuse_monthly_expense_tracker/custom_tools/logicTools.dart';
+import 'package:freeuse_monthly_expense_tracker/custom_tools/uiTools.dart';
 
 class MedAidPage extends StatefulWidget {
   const MedAidPage({super.key});

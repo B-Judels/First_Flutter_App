@@ -5,7 +5,7 @@ plugins {
 }
 
 android {
-    namespace = "com.example.first_flutter_app"
+    namespace = "com.bermonkel.monthly_expense_tracker"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
@@ -15,8 +15,8 @@ android {
     }
 
     defaultConfig {
-        // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId = "com.example.first_flutter_app"
+
+        applicationId = "com.bermonkel.monthly_expense_tracker"
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
         minSdk = flutter.minSdkVersion

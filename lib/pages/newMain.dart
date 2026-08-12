@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:first_flutter_app/custom_tools/uiTools.dart';
-import 'package:first_flutter_app/pages/StartUpPage.dart';
+import 'package:freeuse_monthly_expense_tracker/custom_tools/uiTools.dart';
+import 'package:freeuse_monthly_expense_tracker/pages/StartUpPage.dart';
 
 class Newmain extends StatelessWidget {
   Newmain({super.key});
