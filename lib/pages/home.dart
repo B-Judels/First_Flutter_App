@@ -102,7 +102,7 @@ class _HomeState extends State<Home> {
         title: Center(
           child: Text(
             style: TextStyle(color: Colors.blueGrey[50]),
-            "Monthly Expence Tracker: ",
+            "Monthly Expense Tracker: ",
           ),
         ),
         backgroundColor: Colors.teal[700],
@@ -131,7 +131,7 @@ class _HomeState extends State<Home> {
                     ),
                     Text(
                       style: TextStyle(color: Colors.black, fontSize: 12),
-                      "Current Monthly Expences: R ${currentMonthTotal.toStringAsFixed(2)}",
+                      "Current Monthly Expenses: R ${currentMonthTotal.toStringAsFixed(2)}",
                     ),
                     Text(
                       style: TextStyle(color: Colors.black, fontSize: 12),

@@ -57,7 +57,7 @@ class _StartUpPageState extends State<StartUpPage> {
         title: Center(
           child: Text(
             style: TextStyle(color: Colors.blueGrey[50]),
-            "Monthly Expence Tracker: ",
+            "Monthly Expense Tracker: ",
           ),
         ),
         backgroundColor: Colors.teal[700],
@@ -304,9 +304,9 @@ class _StartUpPageState extends State<StartUpPage> {
                                 controller: medicalAidCostController,
                                 keyboardType: TextInputType.number,
                                 decoration: InputDecoration(
-                                  labelText: "Monthly Expence",
+                                  labelText: "Monthly Expense",
                                   hintText:
-                                      "Enter the ecpence for the medical aid per month",
+                                      "Enter the ecpense for the medical aid per month",
                                   border: OutlineInputBorder(),
                                 ),
                               ),
@@ -469,9 +469,9 @@ class _StartUpPageState extends State<StartUpPage> {
                             controller: serviceCostController,
                             keyboardType: TextInputType.number,
                             decoration: InputDecoration(
-                              labelText: "Monthly Expence",
+                              labelText: "Monthly Expense",
                               hintText:
-                                  "Enter the expence for the service per month",
+                                  "Enter the expense for the service per month",
                               border: OutlineInputBorder(),
                             ),
                           ),
@@ -635,9 +635,9 @@ class _StartUpPageState extends State<StartUpPage> {
                             controller: dailyHabitController,
                             keyboardType: TextInputType.number,
                             decoration: InputDecoration(
-                              labelText: "Daily Expence",
+                              labelText: "Daily Expense",
                               hintText:
-                                  "Enter the expence for the item/action that you get/do daily",
+                                  "Enter the expensde for the item/action that you get/do daily",
                               border: OutlineInputBorder(),
                             ),
                           ),
