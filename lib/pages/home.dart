@@ -33,7 +33,14 @@ class _HomeState extends State<Home> {
 
   List<DailyHabit> dailyHabits = [];
 
-  int daysInMonth = 30;
+  int selectedYear = DateTime.now().year;
+  int selectedMonth = DateTime.now().month;
+
+  int daysInMonth = DateTime(
+    DateTime.now().year,
+    DateTime.now().month + 1,
+    0,
+  ).day;
 
   Future<void> _loadDatabaseData() async {
     try {
@@ -72,6 +79,122 @@ class _HomeState extends State<Home> {
   double serviceTotal = 0;
   double medTotal = 0;
   double habitTotal = 0;
+
+  Future<void> selectMonthAndYear() async {
+    int tempMonth = selectedMonth;
+    int tempYear = selectedYear;
+
+    await showDialog(
+      context: context,
+      builder: (context) {
+        return StatefulBuilder(
+          builder: (context, setDialogState) {
+            return AlertDialog(
+              title: const Text("Select Month and Year"),
+              content: Row(
+                children: [
+                  // Month
+                  Expanded(
+                    child: DropdownButton<int>(
+                      value: tempMonth,
+                      isExpanded: true,
+                      items: List.generate(12, (index) {
+                        final monthNumber = index + 1;
+
+                        final monthName = DateTime(2000, monthNumber);
+
+                        return DropdownMenuItem<int>(
+                          value: monthNumber,
+                          child: Text(_monthName(monthName.month)),
+                        );
+                      }),
+                      onChanged: (value) {
+                        if (value != null) {
+                          setDialogState(() {
+                            tempMonth = value;
+                          });
+                        }
+                      },
+                    ),
+                  ),
+
+                  const SizedBox(width: 15),
+
+                  // Year
+                  Expanded(
+                    child: DropdownButton<int>(
+                      value: tempYear,
+                      isExpanded: true,
+                      items: List.generate(11, (index) {
+                        final year = DateTime.now().year - 5 + index;
+
+                        return DropdownMenuItem<int>(
+                          value: year,
+                          child: Text(year.toString()),
+                        );
+                      }),
+                      onChanged: (value) {
+                        if (value != null) {
+                          setDialogState(() {
+                            tempYear = value;
+                          });
+                        }
+                      },
+                    ),
+                  ),
+                ],
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: const Text("Cancel"),
+                ),
+
+                ElevatedButton(
+                  onPressed: () {
+                    setState(() {
+                      selectedMonth = tempMonth;
+                      selectedYear = tempYear;
+
+                      daysInMonth = DateTime(
+                        selectedYear,
+                        selectedMonth + 1,
+                        0,
+                      ).day;
+                    });
+
+                    Navigator.pop(context);
+                  },
+                  child: const Text("Select"),
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
+  }
+
+  String _monthName(int month) {
+    const months = [
+      "January",
+      "February",
+      "March",
+      "April",
+      "May",
+      "June",
+      "July",
+      "August",
+      "September",
+      "October",
+      "November",
+      "December",
+    ];
+
+    return months[month - 1];
+  }
 
   @override
   void initState() {
@@ -143,21 +266,57 @@ class _HomeState extends State<Home> {
                   color: Colors.teal[300],
                   borderRadius: BorderRadius.circular(5),
                 ),
-                child: Column(
+                child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    Text(
-                      style: TextStyle(color: Colors.black, fontSize: 12),
-                      "Current Monthly Income: R ${userSettings.isNotEmpty ? userSettings[0].getIncome.toStringAsFixed(2) : "0.00"}",
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "Current Monthly Income: R ${userSettings.isNotEmpty ? userSettings[0].getIncome.toStringAsFixed(2) : "0.00"}",
+                          style: const TextStyle(
+                            color: Colors.black,
+                            fontSize: 12,
+                          ),
+                        ),
+
+                        Text(
+                          "Current Monthly Expenses: R ${currentMonthTotal.toStringAsFixed(2)}",
+                          style: const TextStyle(
+                            color: Colors.black,
+                            fontSize: 12,
+                          ),
+                        ),
+
+                        Text(
+                          "End of Month Prediction: R ${endMonthPredict.toStringAsFixed(2)}",
+                          style: const TextStyle(
+                            color: Colors.black,
+                            fontSize: 12,
+                          ),
+                        ),
+                      ],
                     ),
-                    Text(
-                      style: TextStyle(color: Colors.black, fontSize: 12),
-                      "Current Monthly Expenses: R ${currentMonthTotal.toStringAsFixed(2)}",
-                    ),
-                    Text(
-                      style: TextStyle(color: Colors.black, fontSize: 12),
-                      "End of Month Prediction: R ${endMonthPredict.toStringAsFixed(2)}",
+
+                    const Spacer(),
+
+                    Column(
+                      children: [
+                        OutlinedButton(
+                          onPressed: selectMonthAndYear,
+                          child: Text(
+                            "Select Month: ${_monthName(selectedMonth)} $selectedYear",
+                          ),
+                        ),
+
+                        Text(
+                          "${_monthName(selectedMonth)} $daysInMonth days.",
+                          style: const TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
                     ),
                   ],
                 ),
