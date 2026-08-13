@@ -771,42 +771,60 @@ class _StartUpPageState extends State<StartUpPage> {
                         ),
                       ),
                       onPressed: () async {
-                        for (DebitOrder order in debitOrders) {
-                          await DatabaseHelper.instance.insertDebitOrder(order);
-                        }
+                        try {
+                          for (DebitOrder order in debitOrders) {
+                            await DatabaseHelper.instance.insertDebitOrder(
+                              order,
+                            );
+                          }
 
-                        double income =
-                            double.tryParse(incomeController.text) ?? 0;
+                          double income =
+                              double.tryParse(incomeController.text) ?? 0;
 
-                        UserSettings settings = UserSettings(
-                          userIncome: income,
-                        );
+                          UserSettings settings = UserSettings(
+                            userIncome: income,
+                          );
 
-                        await DatabaseHelper.instance.insertUserSettings(
-                          settings,
-                        );
+                          await DatabaseHelper.instance.insertUserSettings(
+                            settings,
+                          );
 
-                        for (MedicalAid medAid in medAids) {
-                          await DatabaseHelper.instance.insertMedicalAid(
-                            medAid,
+                          for (MedicalAid medAid in medAids) {
+                            await DatabaseHelper.instance.insertMedicalAid(
+                              medAid,
+                            );
+                          }
+
+                          for (Service service in services) {
+                            await DatabaseHelper.instance.insertService(
+                              service,
+                            );
+                          }
+
+                          for (DailyHabit habit in dHabits) {
+                            await DatabaseHelper.instance.insertDailyHabit(
+                              habit,
+                            );
+                          }
+
+                          if (!mounted) return;
+
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const Home(),
+                            ),
+                          );
+                        } catch (e, stackTrace) {
+                          debugPrint("DATABASE ERROR: $e");
+                          debugPrint("STACK TRACE: $stackTrace");
+
+                          if (!mounted) return;
+
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text("Database error: $e")),
                           );
                         }
-
-                        for (Service service in services) {
-                          await DatabaseHelper.instance.insertService(service);
-                        }
-
-                        for (DailyHabit habit in dHabits) {
-                          await DatabaseHelper.instance.insertDailyHabit(habit);
-                        }
-
-                        if (!mounted) return;
-
-                        // Go directly to Home
-                        Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(builder: (context) => const Home()),
-                        );
                       },
                       child: const Text("Save and Calculate"),
                     ),

@@ -21,6 +21,8 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   final uiTools = Uitools();
 
+  bool isLoading = true;
+
   List<UserSettings> userSettings = [];
 
   List<DebitOrder> debitOrders = [];
@@ -34,21 +36,34 @@ class _HomeState extends State<Home> {
   int daysInMonth = 30;
 
   Future<void> _loadDatabaseData() async {
-    final db = DatabaseHelper.instance;
+    try {
+      final db = DatabaseHelper.instance;
 
-    final loadedUserSettings = await db.getUserSettings();
-    final loadedDebitOrders = await db.getDebitOrders();
-    final loadedServices = await db.getServices();
-    final loadedMedicalAids = await db.getMedicalAids();
-    final loadedDailyHabits = await db.getDailyHabits();
+      final loadedUserSettings = await db.getUserSettings();
+      final loadedDebitOrders = await db.getDebitOrders();
+      final loadedServices = await db.getServices();
+      final loadedMedicalAids = await db.getMedicalAids();
+      final loadedDailyHabits = await db.getDailyHabits();
 
-    setState(() {
-      userSettings = loadedUserSettings;
-      debitOrders = loadedDebitOrders;
-      services = loadedServices;
-      medicalAids = loadedMedicalAids;
-      dailyHabits = loadedDailyHabits;
-    });
+      if (!mounted) return;
+
+      setState(() {
+        userSettings = loadedUserSettings;
+        debitOrders = loadedDebitOrders;
+        services = loadedServices;
+        medicalAids = loadedMedicalAids;
+        dailyHabits = loadedDailyHabits;
+        isLoading = false;
+      });
+    } catch (e) {
+      debugPrint("Database error: $e");
+
+      if (!mounted) return;
+
+      setState(() {
+        isLoading = false;
+      });
+    }
   }
 
   double currentMonthTotal = 0;
@@ -66,6 +81,10 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
+    if (isLoading) {
+      return const Scaffold(body: Center(child: CircularProgressIndicator()));
+    }
+
     double currentMonthTotal = 0;
     double debitTotal = 0;
     double serviceTotal = 0;
@@ -94,7 +113,10 @@ class _HomeState extends State<Home> {
     }
 
     double totalSpent = debitTotal + serviceTotal + medTotal + habitTotal;
-    double endMonthPredict = userSettings[0].getIncome - totalSpent;
+
+    double endMonthPredict = userSettings.isNotEmpty
+        ? userSettings[0].getIncome - totalSpent
+        : 0;
 
     return Scaffold(
       backgroundColor: Colors.teal[100],
@@ -127,7 +149,7 @@ class _HomeState extends State<Home> {
                   children: [
                     Text(
                       style: TextStyle(color: Colors.black, fontSize: 12),
-                      "Current Monthly Income: R ${userSettings[0].getIncome.toStringAsFixed(2)}",
+                      "Current Monthly Income: R ${userSettings.isNotEmpty ? userSettings[0].getIncome.toStringAsFixed(2) : "0.00"}",
                     ),
                     Text(
                       style: TextStyle(color: Colors.black, fontSize: 12),
