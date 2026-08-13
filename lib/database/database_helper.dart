@@ -198,4 +198,16 @@ class DatabaseHelper {
       }
     });
   }
+
+  Future<void> deleteAllData() async {
+    final db = await database;
+
+    await db.transaction((txn) async {
+      await txn.delete('user_settings');
+      await txn.delete('debit_orders');
+      await txn.delete('services');
+      await txn.delete('medical_aid');
+      await txn.delete('daily_habits');
+    });
+  }
 }
