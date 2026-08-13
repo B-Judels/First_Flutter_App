@@ -273,26 +273,50 @@ class _HomeState extends State<Home> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          "Current Monthly Income: R ${userSettings.isNotEmpty ? userSettings[0].getIncome.toStringAsFixed(2) : "0.00"}",
+                          "Current Monthly Income:",
                           style: const TextStyle(
                             color: Colors.black,
-                            fontSize: 12,
+                            fontSize: 13,
+                          ),
+                        ),
+                        Text(
+                          "R ${userSettings.isNotEmpty ? userSettings[0].getIncome.toStringAsFixed(2) : "0.00"}",
+                          style: const TextStyle(
+                            color: Colors.black,
+                            fontSize: 13,
                           ),
                         ),
 
-                        Text(
-                          "Current Monthly Expenses: R ${currentMonthTotal.toStringAsFixed(2)}",
-                          style: const TextStyle(
-                            color: Colors.black,
-                            fontSize: 12,
-                          ),
-                        ),
+                        SizedBox(height: 3),
 
                         Text(
-                          "End of Month Prediction: R ${endMonthPredict.toStringAsFixed(2)}",
+                          "Current Monthly Expenses:",
                           style: const TextStyle(
                             color: Colors.black,
-                            fontSize: 12,
+                            fontSize: 13,
+                          ),
+                        ),
+                        Text(
+                          "R ${currentMonthTotal.toStringAsFixed(2)}",
+                          style: const TextStyle(
+                            color: Colors.black,
+                            fontSize: 13,
+                          ),
+                        ),
+                        SizedBox(height: 3),
+
+                        Text(
+                          "End of Month Prediction:",
+                          style: const TextStyle(
+                            color: Colors.black,
+                            fontSize: 13,
+                          ),
+                        ),
+                        Text(
+                          "R ${endMonthPredict.toStringAsFixed(2)}",
+                          style: const TextStyle(
+                            color: Colors.black,
+                            fontSize: 13,
                           ),
                         ),
                       ],
@@ -302,12 +326,16 @@ class _HomeState extends State<Home> {
 
                     Column(
                       children: [
-                        OutlinedButton(
-                          onPressed: selectMonthAndYear,
-                          child: Text(
+                        SizedBox(
+                          width: 130,
+                          child: uiTools.imgBtnTitleContainer2(
                             "Select Month: ${_monthName(selectedMonth)} $selectedYear",
+                            "images/calendar1.png",
+                            selectMonthAndYear,
                           ),
                         ),
+
+                        const SizedBox(height: 5),
 
                         Text(
                           "${_monthName(selectedMonth)} $daysInMonth days.",
