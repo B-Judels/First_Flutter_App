@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:freeuse_monthly_expense_tracker/models/DailyHabit.dart';
-import 'package:freeuse_monthly_expense_tracker/models/UserSettings.dart';
 import 'package:freeuse_monthly_expense_tracker/custom_tools/logicTools.dart';
 import 'package:freeuse_monthly_expense_tracker/custom_tools/uiTools.dart';
+import 'package:freeuse_monthly_expense_tracker/database/database_helper.dart';
 
 class DailyHabitPage extends StatefulWidget {
   const DailyHabitPage({super.key});
@@ -12,16 +12,34 @@ class DailyHabitPage extends StatefulWidget {
 }
 
 class _DailyHabitPage extends State<DailyHabitPage> {
-  List<DailyHabit> dHabits = [
-    DailyHabit(name: "Coffee", costDHabit: 40),
-    DailyHabit(name: "Energy Drink", costDHabit: 25),
-  ];
+  List<DailyHabit> dHabits = [];
 
   int editingIndex = -1;
 
   final uiTools = Uitools();
 
-  final List<UserSettings> userSettings = [UserSettings(userIncome: 25000)];
+  bool isLoading = true;
+
+  Future<void> _loadDatabaseData() async {
+    try {
+      final db = DatabaseHelper.instance;
+      final loadedDHabits = await db.getDailyHabits();
+
+      if (!mounted) return;
+
+      setState(() {
+        dHabits = loadedDHabits;
+      });
+    } catch (e) {
+      debugPrint("Database error: $e");
+
+      if (!mounted) return;
+
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
 
   final TextEditingController dailyHabitNameController =
       TextEditingController();
@@ -37,12 +55,16 @@ class _DailyHabitPage extends State<DailyHabitPage> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    _loadDatabaseData();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    // Automatically recalculates every time setState() is called
     double calculatedDailyTotal = 0;
     for (int i = 0; i < dHabits.length; i++) {
-      calculatedDailyTotal +=
-          dHabits[i].costDHabit; // Assumes property name is costDHabit
+      calculatedDailyTotal += dHabits[i].costDHabit;
     }
     double monthlyHabitTotal = calculatedDailyTotal * daysInMonth;
 
@@ -179,9 +201,7 @@ class _DailyHabitPage extends State<DailyHabitPage> {
                               var hab = entry.value;
                               return DataRow(
                                 cells: [
-                                  DataCell(
-                                    Text(hab.getName),
-                                  ), // Assumes getName getter exists
+                                  DataCell(Text(hab.getName)),
                                   DataCell(
                                     Text(
                                       "R ${hab.costDHabit.toStringAsFixed(2)}",

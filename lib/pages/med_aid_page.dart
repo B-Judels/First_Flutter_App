@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:freeuse_monthly_expense_tracker/models/MedicalAid.dart';
 import 'package:freeuse_monthly_expense_tracker/custom_tools/logicTools.dart';
 import 'package:freeuse_monthly_expense_tracker/custom_tools/uiTools.dart';
+import 'package:freeuse_monthly_expense_tracker/database/database_helper.dart';
 
 class MedAidPage extends StatefulWidget {
   const MedAidPage({super.key});
@@ -11,11 +12,34 @@ class MedAidPage extends StatefulWidget {
 }
 
 class _MedAidPage extends State<MedAidPage> {
-  List<MedicalAid> medAids = [MedicalAid(name: "Discovery", costMedAid: 2500)];
+  List<MedicalAid> medAids = [];
 
   final uiTools = Uitools();
 
   int editingIndex = -1;
+
+  bool isLoading = true;
+
+  Future<void> _loadDatabaseData() async {
+    try {
+      final db = DatabaseHelper.instance;
+      final loadedMedAids = await db.getMedicalAids();
+
+      if (!mounted) return;
+
+      setState(() {
+        medAids = loadedMedAids;
+      });
+    } catch (e) {
+      debugPrint("Database error: $e");
+
+      if (!mounted) return;
+
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
 
   final TextEditingController medicalAidController = TextEditingController();
   final TextEditingController medicalAidCostController =
@@ -29,12 +53,16 @@ class _MedAidPage extends State<MedAidPage> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    _loadDatabaseData();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    // 1. Calculate running medical aid totals dynamically
     double totalMedAidCost = 0;
     for (int i = 0; i < medAids.length; i++) {
-      totalMedAidCost += medAids[i]
-          .getMedAidCost; // Assumes getMedAidCost getter matches model
+      totalMedAidCost += medAids[i].getMedAidCost;
     }
 
     return Scaffold(

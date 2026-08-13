@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:freeuse_monthly_expense_tracker/models/Service.dart';
 import 'package:freeuse_monthly_expense_tracker/custom_tools/logicTools.dart';
 import 'package:freeuse_monthly_expense_tracker/custom_tools/uiTools.dart';
+import 'package:freeuse_monthly_expense_tracker/database/database_helper.dart';
 
 class ServicePage extends StatefulWidget {
   const ServicePage({super.key});
@@ -11,10 +12,30 @@ class ServicePage extends StatefulWidget {
 }
 
 class _ServicePage extends State<ServicePage> {
-  List<Service> services = [
-    Service(serviceName: "Spotify", serviceCost: 89),
-    Service(serviceName: "iCloud", serviceCost: 49),
-  ];
+  List<Service> services = [];
+
+  bool isLoading = true;
+
+  Future<void> _loadDatabaseData() async {
+    try {
+      final db = DatabaseHelper.instance;
+      final loadedServices = await db.getServices();
+
+      if (!mounted) return;
+
+      setState(() {
+        services = loadedServices;
+      });
+    } catch (e) {
+      debugPrint("Database error: $e");
+
+      if (!mounted) return;
+
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
 
   final TextEditingController serviceNameController = TextEditingController();
   final TextEditingController serviceCostController = TextEditingController();
@@ -28,6 +49,12 @@ class _ServicePage extends State<ServicePage> {
     serviceNameController.dispose();
     serviceCostController.dispose();
     super.dispose();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _loadDatabaseData();
   }
 
   @override

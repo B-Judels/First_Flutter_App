@@ -40,7 +40,7 @@ class Uitools {
       width: width ?? double.infinity,
       padding: const EdgeInsets.all(10),
       decoration: BoxDecoration(
-        color: Colors.grey[300],
+        color: Colors.teal[100],
         borderRadius: BorderRadius.circular(20),
         border: Border.all(color: Colors.black, width: 1),
       ),
@@ -76,7 +76,7 @@ class Uitools {
     return OutlinedButton(
       onPressed: onPressed,
       style: OutlinedButton.styleFrom(
-        backgroundColor: Colors.red[100],
+        backgroundColor: Colors.lightBlue[200],
         shape: const CircleBorder(),
 
         padding: EdgeInsets.zero,

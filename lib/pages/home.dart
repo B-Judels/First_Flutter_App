@@ -338,7 +338,7 @@ class _HomeState extends State<Home> {
                         const SizedBox(height: 5),
 
                         Text(
-                          "${_monthName(selectedMonth)} $daysInMonth days.",
+                          "${_monthName(selectedMonth)}: $daysInMonth days.",
                           style: const TextStyle(
                             fontSize: 12,
                             fontWeight: FontWeight.bold,

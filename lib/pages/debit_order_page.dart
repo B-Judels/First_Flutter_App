@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:freeuse_monthly_expense_tracker/models/DebitOrder.dart';
 import 'package:freeuse_monthly_expense_tracker/custom_tools/logicTools.dart';
 import 'package:freeuse_monthly_expense_tracker/custom_tools/uiTools.dart';
+import 'package:freeuse_monthly_expense_tracker/database/database_helper.dart';
 
 class DebitOrderPage extends StatefulWidget {
   const DebitOrderPage({super.key});
@@ -11,13 +12,32 @@ class DebitOrderPage extends StatefulWidget {
 }
 
 class _DebitOrderPage extends State<DebitOrderPage> {
-  List<DebitOrder> debitOrders = [
-    DebitOrder(name: "Car Insurance", cost: 1200),
-    DebitOrder(name: "Netflix", cost: 199),
-    DebitOrder(name: "Gym", cost: 450),
-  ];
+  List<DebitOrder> debitOrders = [];
 
   int editingIndex = -1;
+
+  bool isLoading = true;
+
+  Future<void> _loadDatabaseData() async {
+    try {
+      final db = DatabaseHelper.instance;
+      final loadedDebitOrders = await db.getDebitOrders();
+
+      if (!mounted) return;
+
+      setState(() {
+        debitOrders = loadedDebitOrders;
+      });
+    } catch (e) {
+      debugPrint("Database error: $e");
+
+      if (!mounted) return;
+
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
 
   final TextEditingController debitNameController = TextEditingController();
   final TextEditingController debitCostController = TextEditingController();
@@ -29,6 +49,12 @@ class _DebitOrderPage extends State<DebitOrderPage> {
     debitNameController.dispose();
     debitCostController.dispose();
     super.dispose();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _loadDatabaseData();
   }
 
   @override
