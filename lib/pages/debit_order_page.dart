@@ -59,11 +59,9 @@ class _DebitOrderPage extends State<DebitOrderPage> {
 
   @override
   Widget build(BuildContext context) {
-    // Dynamically calculate total debit orders on every build tick
     double totalDebitOrders = 0;
     for (int i = 0; i < debitOrders.length; i++) {
-      totalDebitOrders +=
-          debitOrders[i].getCost; // Assumes getCost getter matches model
+      totalDebitOrders += debitOrders[i].getCost;
     }
 
     return Scaffold(
@@ -103,7 +101,6 @@ class _DebitOrderPage extends State<DebitOrderPage> {
                         ),
                       ),
 
-                      // Running total indicator
                       Text(
                         "Total Debit Orders: R ${totalDebitOrders.toStringAsFixed(2)}",
                         style: const TextStyle(
@@ -248,6 +245,38 @@ class _DebitOrderPage extends State<DebitOrderPage> {
                         ),
                       ],
                     ],
+                  ),
+                ),
+
+                SizedBox(height: 20),
+
+                Center(
+                  child: Padding(
+                    padding: const EdgeInsets.all(5.0),
+                    child: SizedBox(
+                      width: double.infinity,
+                      child: OutlinedButton(
+                        style: OutlinedButton.styleFrom(
+                          backgroundColor: Colors.lightBlue[200],
+                        ),
+                        onPressed: () async {
+                          await DatabaseHelper.instance.replaceDebitOrders(
+                            debitOrders,
+                          );
+
+                          if (!mounted) return;
+
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text("Debit orders updated!"),
+                            ),
+                          );
+
+                          Navigator.pop(context);
+                        },
+                        child: const Text("Update"),
+                      ),
+                    ),
                   ),
                 ),
               ],

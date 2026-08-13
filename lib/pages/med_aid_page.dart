@@ -102,7 +102,6 @@ class _MedAidPage extends State<MedAidPage> {
                         ),
                       ),
 
-                      // Dynamic total display
                       Text(
                         "Total Medical Aid: R ${totalMedAidCost.toStringAsFixed(2)}",
                         style: const TextStyle(
@@ -252,6 +251,50 @@ class _MedAidPage extends State<MedAidPage> {
                         ),
                       ],
                     ],
+                  ),
+                ),
+
+                SizedBox(height: 20),
+
+                Center(
+                  child: Padding(
+                    padding: const EdgeInsets.all(5.0),
+                    child: SizedBox(
+                      width: double.infinity,
+                      child: OutlinedButton(
+                        style: OutlinedButton.styleFrom(
+                          backgroundColor: Colors.lightBlue[200],
+                        ),
+                        onPressed: () async {
+                          try {
+                            await DatabaseHelper.instance.replaceMedicalAids(
+                              medAids,
+                            );
+
+                            if (!mounted) return;
+
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text("Medical Aid updated!"),
+                              ),
+                            );
+                          } catch (e) {
+                            debugPrint("Error updating Medical Aid: $e");
+
+                            if (!mounted) return;
+
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text("Failed to update Medical Aid."),
+                              ),
+                            );
+                          }
+
+                          Navigator.pop(context);
+                        },
+                        child: const Text("Update"),
+                      ),
+                    ),
                   ),
                 ),
               ],

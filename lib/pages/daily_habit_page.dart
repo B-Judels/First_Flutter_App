@@ -255,6 +255,38 @@ class _DailyHabitPage extends State<DailyHabitPage> {
                     ],
                   ),
                 ),
+
+                SizedBox(height: 20),
+
+                Center(
+                  child: Padding(
+                    padding: const EdgeInsets.all(5.0),
+                    child: SizedBox(
+                      width: double.infinity,
+                      child: OutlinedButton(
+                        style: OutlinedButton.styleFrom(
+                          backgroundColor: Colors.lightBlue[200],
+                        ),
+                        onPressed: () async {
+                          await DatabaseHelper.instance.replaceDailyHabits(
+                            dHabits,
+                          );
+
+                          if (!mounted) return;
+
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text("Daily habits updated!"),
+                            ),
+                          );
+
+                          Navigator.pop(context);
+                        },
+                        child: const Text("Update"),
+                      ),
+                    ),
+                  ),
+                ),
               ],
             ),
           ),

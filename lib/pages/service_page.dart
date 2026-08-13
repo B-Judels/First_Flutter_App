@@ -59,11 +59,9 @@ class _ServicePage extends State<ServicePage> {
 
   @override
   Widget build(BuildContext context) {
-    // Dynamically calculate total service costs on every widget build
     double totalServiceCost = 0;
     for (int i = 0; i < services.length; i++) {
-      totalServiceCost +=
-          services[i].getCost; // Assumes getCost matches your model getter
+      totalServiceCost += services[i].getCost;
     }
 
     return Scaffold(
@@ -103,7 +101,6 @@ class _ServicePage extends State<ServicePage> {
                         ),
                       ),
 
-                      // Running total indicator block
                       Text(
                         "Total Services: R ${totalServiceCost.toStringAsFixed(2)}",
                         style: const TextStyle(
@@ -146,7 +143,7 @@ class _ServicePage extends State<ServicePage> {
                                   return;
 
                                 String serviceName = serviceNameController.text;
-                                // FIXED: Changed double.parse to tryParse to stop user input format crashes
+
                                 double serviceCost =
                                     double.tryParse(
                                       serviceCostController.text,
@@ -251,6 +248,50 @@ class _ServicePage extends State<ServicePage> {
                         ),
                       ],
                     ],
+                  ),
+                ),
+
+                SizedBox(height: 20),
+
+                Center(
+                  child: Padding(
+                    padding: const EdgeInsets.all(5.0),
+                    child: SizedBox(
+                      width: double.infinity,
+                      child: OutlinedButton(
+                        style: OutlinedButton.styleFrom(
+                          backgroundColor: Colors.lightBlue[200],
+                        ),
+                        onPressed: () async {
+                          try {
+                            await DatabaseHelper.instance.replaceServices(
+                              services,
+                            );
+
+                            if (!mounted) return;
+
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text("Services updated!"),
+                              ),
+                            );
+                          } catch (e) {
+                            debugPrint("Error updating services: $e");
+
+                            if (!mounted) return;
+
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text("Failed to update services."),
+                              ),
+                            );
+                          }
+
+                          Navigator.pop(context);
+                        },
+                        child: const Text("Update"),
+                      ),
+                    ),
                   ),
                 ),
               ],

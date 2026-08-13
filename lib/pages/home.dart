@@ -366,14 +366,18 @@ class _HomeState extends State<Home> {
                               child: uiTools.imgBtnTitleContainer(
                                 "Monthly Debit Orders",
                                 "images/automatic-payment.png",
-                                () {
-                                  Navigator.push(
+                                () async {
+                                  await Navigator.push(
                                     context,
                                     MaterialPageRoute(
                                       builder: (context) =>
                                           const DebitOrderPage(),
                                     ),
                                   );
+
+                                  if (!mounted) return;
+
+                                  await _loadDatabaseData();
                                 },
                               ),
                             ),
@@ -386,14 +390,18 @@ class _HomeState extends State<Home> {
                               child: uiTools.imgBtnTitleContainer(
                                 "Daily habit costs",
                                 "images/24-hours-service.png",
-                                () {
-                                  Navigator.push(
+                                () async {
+                                  await Navigator.push(
                                     context,
                                     MaterialPageRoute(
                                       builder: (context) =>
                                           const DailyHabitPage(),
                                     ),
                                   );
+
+                                  if (!mounted) return;
+
+                                  await _loadDatabaseData();
                                 },
                               ),
                             ),
@@ -411,13 +419,17 @@ class _HomeState extends State<Home> {
                               child: uiTools.imgBtnTitleContainer(
                                 "Medical Aid",
                                 "images/healthcare.png",
-                                () {
-                                  Navigator.push(
+                                () async {
+                                  await Navigator.push(
                                     context,
                                     MaterialPageRoute(
                                       builder: (context) => const MedAidPage(),
                                     ),
                                   );
+
+                                  if (!mounted) return;
+
+                                  await _loadDatabaseData();
                                 },
                               ),
                             ),
@@ -430,13 +442,17 @@ class _HomeState extends State<Home> {
                               child: uiTools.imgBtnTitleContainer(
                                 "Monthly Services",
                                 "images/attendant.png",
-                                () {
-                                  Navigator.push(
+                                () async {
+                                  await Navigator.push(
                                     context,
                                     MaterialPageRoute(
                                       builder: (context) => const ServicePage(),
                                     ),
                                   );
+
+                                  if (!mounted) return;
+
+                                  await _loadDatabaseData();
                                 },
                               ),
                             ),

@@ -150,4 +150,52 @@ class DatabaseHelper {
 
     return maps.map((map) => DailyHabit.fromMap(map)).toList();
   }
+
+  Future<void> replaceDebitOrders(List<DebitOrder> orders) async {
+    final db = await database;
+
+    await db.transaction((txn) async {
+      await txn.delete('debit_orders');
+
+      for (DebitOrder order in orders) {
+        await txn.insert('debit_orders', order.toMap());
+      }
+    });
+  }
+
+  Future<void> replaceDailyHabits(List<DailyHabit> habits) async {
+    final db = await database;
+
+    await db.transaction((txn) async {
+      await txn.delete('daily_habits');
+
+      for (DailyHabit habit in habits) {
+        await txn.insert('daily_habits', habit.toMap());
+      }
+    });
+  }
+
+  Future<void> replaceMedicalAids(List<MedicalAid> medicalAids) async {
+    final db = await database;
+
+    await db.transaction((txn) async {
+      await txn.delete('medical_aid');
+
+      for (MedicalAid medicalAid in medicalAids) {
+        await txn.insert('medical_aid', medicalAid.toMap());
+      }
+    });
+  }
+
+  Future<void> replaceServices(List<Service> services) async {
+    final db = await database;
+
+    await db.transaction((txn) async {
+      await txn.delete('services');
+
+      for (Service service in services) {
+        await txn.insert('services', service.toMap());
+      }
+    });
+  }
 }
