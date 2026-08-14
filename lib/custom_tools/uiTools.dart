@@ -12,9 +12,9 @@ class Uitools {
       width: double.infinity,
       padding: const EdgeInsets.all(10),
       decoration: BoxDecoration(
-        color: Colors.grey[300],
+        color: Colors.grey[100],
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: Colors.black, width: 1),
+        border: Border.all(color: Colors.black, width: 2),
       ),
       child: Column(
         children: [
@@ -42,7 +42,7 @@ class Uitools {
       decoration: BoxDecoration(
         color: Colors.teal[100],
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: Colors.black, width: 1),
+        border: Border.all(color: Colors.black, width: 2),
       ),
       child: Column(
         children: [
@@ -66,6 +66,7 @@ class Uitools {
       style: OutlinedButton.styleFrom(
         backgroundColor: Colors.teal[100],
         padding: const EdgeInsets.all(12),
+        side: BorderSide(color: Colors.black, width: 1),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
       ),
       child: Image.asset(imgDir, width: 80, height: 80),
@@ -76,7 +77,8 @@ class Uitools {
     return OutlinedButton(
       onPressed: onPressed,
       style: OutlinedButton.styleFrom(
-        backgroundColor: Colors.lightBlue[200],
+        backgroundColor: Colors.grey[100],
+        side: BorderSide(color: Colors.black, width: 1),
         shape: const CircleBorder(),
 
         padding: EdgeInsets.zero,

@@ -288,7 +288,7 @@ class _HomeState extends State<Home> {
         title: Center(
           child: Text(
             style: TextStyle(color: Colors.blueGrey[50]),
-            "Monthly Expense Tracker: ",
+            "Monthly Expense Tracker",
           ),
         ),
         backgroundColor: Colors.teal[700],
@@ -299,14 +299,34 @@ class _HomeState extends State<Home> {
             padding: const EdgeInsets.all(2.0),
             child: Column(
               children: [
+                SizedBox(height: 5),
+
+                Container(
+                  margin: EdgeInsets.all(2.0),
+                  width: double.maxFinite,
+
+                  padding: const EdgeInsets.all(1.0),
+                  decoration: BoxDecoration(
+                    color: Colors.teal[300],
+                    borderRadius: BorderRadius.circular(5),
+                  ),
+                  child: Center(
+                    child: Text(
+                      style: TextStyle(fontSize: 20),
+                      "Tracked Data:",
+                    ),
+                  ),
+                ),
+
                 Container(
                   margin: EdgeInsets.all(10.0),
                   width: double.maxFinite,
 
                   padding: const EdgeInsets.all(10.0),
                   decoration: BoxDecoration(
-                    color: Colors.teal[300],
-                    borderRadius: BorderRadius.circular(5),
+                    color: Colors.grey[100],
+                    borderRadius: BorderRadius.circular(20),
+                    border: Border.all(color: Colors.black, width: 2),
                   ),
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -399,7 +419,7 @@ class _HomeState extends State<Home> {
                   decoration: BoxDecoration(
                     color: Colors.grey[100],
                     borderRadius: BorderRadius.circular(20),
-                    border: Border.all(color: Colors.black, width: 1),
+                    border: Border.all(color: Colors.black, width: 2),
                   ),
 
                   child: Center(
@@ -419,7 +439,19 @@ class _HomeState extends State<Home> {
                   ),
                 ),
 
-                SizedBox(height: 20),
+                Container(
+                  margin: EdgeInsets.all(2.0),
+                  width: double.maxFinite,
+
+                  padding: const EdgeInsets.all(1.0),
+                  decoration: BoxDecoration(
+                    color: Colors.teal[300],
+                    borderRadius: BorderRadius.circular(5),
+                  ),
+                  child: Center(
+                    child: Text(style: TextStyle(fontSize: 20), "Manage Data:"),
+                  ),
+                ),
 
                 Container(
                   width: double.infinity,
@@ -534,26 +566,6 @@ class _HomeState extends State<Home> {
                         ),
                       ],
                     ),
-                  ),
-                ),
-
-                Container(
-                  margin: EdgeInsets.all(10.0),
-                  width: double.maxFinite,
-
-                  padding: const EdgeInsets.all(10.0),
-                  decoration: BoxDecoration(
-                    color: Colors.teal[300],
-                    borderRadius: BorderRadius.circular(5),
-                  ),
-                  child: Row(
-                    children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [],
-                      ),
-                    ],
                   ),
                 ),
               ],
