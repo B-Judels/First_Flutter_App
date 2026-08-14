@@ -1,3 +1,4 @@
+import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:freeuse_monthly_expense_tracker/custom_tools/uiTools.dart';
 import 'package:freeuse_monthly_expense_tracker/pages/debit_order_page.dart';
@@ -79,6 +80,46 @@ class _HomeState extends State<Home> {
   double serviceTotal = 0;
   double medTotal = 0;
   double habitTotal = 0;
+
+  List<PieChartSectionData> pieChartSections(
+    double debitTotal,
+    double serviceTotal,
+    double medTotal,
+    double habitTotal,
+  ) {
+    final total = debitTotal + serviceTotal + medTotal + habitTotal;
+
+    if (total == 0) {
+      return [PieChartSectionData(value: 1, title: "No Expenses", radius: 80)];
+    }
+
+    return [
+      PieChartSectionData(
+        value: debitTotal,
+        color: Colors.red[400],
+        title: "Debit Orders",
+        radius: 80,
+      ),
+      PieChartSectionData(
+        value: serviceTotal,
+        color: Colors.lightBlue[400],
+        title: "Services",
+        radius: 80,
+      ),
+      PieChartSectionData(
+        value: medTotal,
+        color: Colors.lightGreen[400],
+        title: "Medical Aid",
+        radius: 80,
+      ),
+      PieChartSectionData(
+        value: habitTotal,
+        color: Colors.purple[400],
+        title: "Daily Habits",
+        radius: 80,
+      ),
+    ];
+  }
 
   Future<void> selectMonthAndYear() async {
     int tempMonth = selectedMonth;
@@ -252,209 +293,97 @@ class _HomeState extends State<Home> {
         ),
         backgroundColor: Colors.teal[700],
       ),
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(2.0),
-          child: Column(
-            children: [
-              Container(
-                margin: EdgeInsets.all(10.0),
-                width: double.maxFinite,
+      body: SingleChildScrollView(
+        child: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.all(2.0),
+            child: Column(
+              children: [
+                Container(
+                  margin: EdgeInsets.all(10.0),
+                  width: double.maxFinite,
 
-                padding: const EdgeInsets.all(10.0),
-                decoration: BoxDecoration(
-                  color: Colors.teal[300],
-                  borderRadius: BorderRadius.circular(5),
-                ),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          "Current Monthly Income:",
-                          style: const TextStyle(
-                            color: Colors.black,
-                            fontSize: 13,
-                          ),
-                        ),
-                        Text(
-                          "R ${userSettings.isNotEmpty ? userSettings[0].getIncome.toStringAsFixed(2) : "0.00"}",
-                          style: const TextStyle(
-                            color: Colors.black,
-                            fontSize: 13,
-                          ),
-                        ),
-
-                        SizedBox(height: 3),
-
-                        Text(
-                          "Current Monthly Expenses:",
-                          style: const TextStyle(
-                            color: Colors.black,
-                            fontSize: 13,
-                          ),
-                        ),
-                        Text(
-                          "R ${currentMonthTotal.toStringAsFixed(2)}",
-                          style: const TextStyle(
-                            color: Colors.black,
-                            fontSize: 13,
-                          ),
-                        ),
-                        SizedBox(height: 3),
-
-                        Text(
-                          "End of Month Prediction:",
-                          style: const TextStyle(
-                            color: Colors.black,
-                            fontSize: 13,
-                          ),
-                        ),
-                        Text(
-                          "R ${endMonthPredict.toStringAsFixed(2)}",
-                          style: const TextStyle(
-                            color: Colors.black,
-                            fontSize: 13,
-                          ),
-                        ),
-                      ],
-                    ),
-
-                    const Spacer(),
-
-                    Column(
-                      children: [
-                        SizedBox(
-                          width: 130,
-                          child: uiTools.imgBtnTitleContainer2(
-                            "Select Month: ${_monthName(selectedMonth)} $selectedYear",
-                            "images/calendar1.png",
-                            selectMonthAndYear,
-                          ),
-                        ),
-
-                        const SizedBox(height: 5),
-
-                        Text(
-                          "${_monthName(selectedMonth)}: $daysInMonth days.",
-                          style: const TextStyle(
-                            fontSize: 12,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-
-              Container(
-                width: double.infinity,
-                padding: const EdgeInsets.all(10.0),
-
-                child: Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  padding: const EdgeInsets.all(10.0),
+                  decoration: BoxDecoration(
+                    color: Colors.teal[300],
+                    borderRadius: BorderRadius.circular(5),
+                  ),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Expanded(
-                            child: Center(
-                              child: uiTools.imgBtnTitleContainer(
-                                "Monthly Debit Orders",
-                                "images/automatic-payment.png",
-                                () async {
-                                  await Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) =>
-                                          const DebitOrderPage(),
-                                    ),
-                                  );
-
-                                  if (!mounted) return;
-
-                                  await _loadDatabaseData();
-                                },
-                              ),
+                          Text(
+                            "Current Monthly Income:",
+                            style: const TextStyle(
+                              color: Colors.black,
+                              fontSize: 13,
+                            ),
+                          ),
+                          Text(
+                            "R ${userSettings.isNotEmpty ? userSettings[0].getIncome.toStringAsFixed(2) : "0.00"}",
+                            style: const TextStyle(
+                              color: Colors.black,
+                              fontSize: 13,
                             ),
                           ),
 
-                          SizedBox(width: 10),
+                          SizedBox(height: 3),
 
-                          Expanded(
-                            child: Center(
-                              child: uiTools.imgBtnTitleContainer(
-                                "Daily habit costs",
-                                "images/24-hours-service.png",
-                                () async {
-                                  await Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) =>
-                                          const DailyHabitPage(),
-                                    ),
-                                  );
+                          Text(
+                            "Current Monthly Expenses:",
+                            style: const TextStyle(
+                              color: Colors.black,
+                              fontSize: 13,
+                            ),
+                          ),
+                          Text(
+                            "R ${currentMonthTotal.toStringAsFixed(2)}",
+                            style: const TextStyle(
+                              color: Colors.black,
+                              fontSize: 13,
+                            ),
+                          ),
+                          SizedBox(height: 3),
 
-                                  if (!mounted) return;
-
-                                  await _loadDatabaseData();
-                                },
-                              ),
+                          Text(
+                            "End of Month Prediction:",
+                            style: const TextStyle(
+                              color: Colors.black,
+                              fontSize: 13,
+                            ),
+                          ),
+                          Text(
+                            "R ${endMonthPredict.toStringAsFixed(2)}",
+                            style: const TextStyle(
+                              color: Colors.black,
+                              fontSize: 13,
                             ),
                           ),
                         ],
                       ),
 
-                      SizedBox(height: 10),
+                      const Spacer(),
 
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      Column(
                         children: [
-                          Expanded(
-                            child: Center(
-                              child: uiTools.imgBtnTitleContainer(
-                                "Medical Aid",
-                                "images/healthcare.png",
-                                () async {
-                                  await Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => const MedAidPage(),
-                                    ),
-                                  );
-
-                                  if (!mounted) return;
-
-                                  await _loadDatabaseData();
-                                },
-                              ),
+                          SizedBox(
+                            width: 130,
+                            child: uiTools.imgBtnTitleContainer2(
+                              "Select Month: ${_monthName(selectedMonth)} $selectedYear",
+                              "images/calendar1.png",
+                              selectMonthAndYear,
                             ),
                           ),
 
-                          SizedBox(width: 10),
+                          const SizedBox(height: 5),
 
-                          Expanded(
-                            child: Center(
-                              child: uiTools.imgBtnTitleContainer(
-                                "Monthly Services",
-                                "images/attendant.png",
-                                () async {
-                                  await Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => const ServicePage(),
-                                    ),
-                                  );
-
-                                  if (!mounted) return;
-
-                                  await _loadDatabaseData();
-                                },
-                              ),
+                          Text(
+                            "${_monthName(selectedMonth)}: $daysInMonth days.",
+                            style: const TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
                         ],
@@ -462,28 +391,173 @@ class _HomeState extends State<Home> {
                     ],
                   ),
                 ),
-              ),
 
-              Container(
-                margin: EdgeInsets.all(10.0),
-                width: double.maxFinite,
+                Container(
+                  width: double.infinity,
+                  margin: EdgeInsets.all(10.0),
+                  padding: const EdgeInsets.all(10.0),
+                  decoration: BoxDecoration(
+                    color: Colors.grey[100],
+                    borderRadius: BorderRadius.circular(20),
+                    border: Border.all(color: Colors.black, width: 1),
+                  ),
 
-                padding: const EdgeInsets.all(10.0),
-                decoration: BoxDecoration(
-                  color: Colors.teal[300],
-                  borderRadius: BorderRadius.circular(5),
-                ),
-                child: Row(
-                  children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [],
+                  child: Center(
+                    child: SizedBox(
+                      height: 300,
+                      child: PieChart(
+                        PieChartData(
+                          sections: pieChartSections(
+                            debitTotal,
+                            serviceTotal,
+                            medTotal,
+                            habitTotal,
+                          ),
+                        ),
+                      ),
                     ),
-                  ],
+                  ),
                 ),
-              ),
-            ],
+
+                SizedBox(height: 20),
+
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(10.0),
+
+                  child: Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            Expanded(
+                              child: Center(
+                                child: uiTools.imgBtnTitleContainer(
+                                  "Monthly Debit Orders",
+                                  "images/automatic-payment.png",
+                                  () async {
+                                    await Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            const DebitOrderPage(),
+                                      ),
+                                    );
+
+                                    if (!mounted) return;
+
+                                    await _loadDatabaseData();
+                                  },
+                                ),
+                              ),
+                            ),
+
+                            SizedBox(width: 10),
+
+                            Expanded(
+                              child: Center(
+                                child: uiTools.imgBtnTitleContainer(
+                                  "Daily habit costs",
+                                  "images/24-hours-service.png",
+                                  () async {
+                                    await Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            const DailyHabitPage(),
+                                      ),
+                                    );
+
+                                    if (!mounted) return;
+
+                                    await _loadDatabaseData();
+                                  },
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+
+                        SizedBox(height: 10),
+
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            Expanded(
+                              child: Center(
+                                child: uiTools.imgBtnTitleContainer(
+                                  "Medical Aid",
+                                  "images/healthcare.png",
+                                  () async {
+                                    await Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            const MedAidPage(),
+                                      ),
+                                    );
+
+                                    if (!mounted) return;
+
+                                    await _loadDatabaseData();
+                                  },
+                                ),
+                              ),
+                            ),
+
+                            SizedBox(width: 10),
+
+                            Expanded(
+                              child: Center(
+                                child: uiTools.imgBtnTitleContainer(
+                                  "Monthly Services",
+                                  "images/attendant.png",
+                                  () async {
+                                    await Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            const ServicePage(),
+                                      ),
+                                    );
+
+                                    if (!mounted) return;
+
+                                    await _loadDatabaseData();
+                                  },
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+
+                Container(
+                  margin: EdgeInsets.all(10.0),
+                  width: double.maxFinite,
+
+                  padding: const EdgeInsets.all(10.0),
+                  decoration: BoxDecoration(
+                    color: Colors.teal[300],
+                    borderRadius: BorderRadius.circular(5),
+                  ),
+                  child: Row(
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [],
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
