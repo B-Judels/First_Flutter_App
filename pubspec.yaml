@@ -36,6 +36,8 @@ dependencies:
 
   month_picker_dialog: ^6.7.2
   fl_chart: ^1.2.0
+  just_the_tooltip: ^0.0.12
+  
 
   
 

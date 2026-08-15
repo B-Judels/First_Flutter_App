@@ -146,8 +146,9 @@ class _DailyHabitPage extends State<DailyHabitPage> {
                             child: OutlinedButton(
                               onPressed: () {
                                 if (dailyHabitNameController.text.isEmpty ||
-                                    dailyHabitController.text.isEmpty)
+                                    dailyHabitController.text.isEmpty) {
                                   return;
+                                }
 
                                 String habitName =
                                     dailyHabitNameController.text;
@@ -163,11 +164,16 @@ class _DailyHabitPage extends State<DailyHabitPage> {
                                 );
 
                                 setState(() {
-                                  dHabits.add(hab1);
-                                });
+                                  if (editingIndex != -1) {
+                                    dHabits.insert(editingIndex, hab1);
+                                    editingIndex = -1;
+                                  } else {
+                                    dHabits.add(hab1);
+                                  }
 
-                                dailyHabitNameController.clear();
-                                dailyHabitController.clear();
+                                  dailyHabitNameController.clear();
+                                  dailyHabitController.clear();
+                                });
                               },
                               style: OutlinedButton.styleFrom(
                                 backgroundColor: Colors.teal[100],
@@ -176,7 +182,11 @@ class _DailyHabitPage extends State<DailyHabitPage> {
                                   borderRadius: BorderRadius.circular(15),
                                 ),
                               ),
-                              child: const Text("Add Daily Habit"),
+                              child: Text(
+                                editingIndex != -1
+                                    ? "Update Daily Habit"
+                                    : "Add Daily Habit",
+                              ),
                             ),
                           ),
                         ],
@@ -258,35 +268,36 @@ class _DailyHabitPage extends State<DailyHabitPage> {
 
                 SizedBox(height: 20),
 
-                Center(
-                  child: Padding(
-                    padding: const EdgeInsets.all(5.0),
-                    child: SizedBox(
-                      width: double.infinity,
-                      child: OutlinedButton(
-                        style: OutlinedButton.styleFrom(
-                          backgroundColor: Colors.lightBlue[200],
+                if (editingIndex == -1)
+                  Center(
+                    child: Padding(
+                      padding: const EdgeInsets.all(5.0),
+                      child: SizedBox(
+                        width: double.infinity,
+                        child: OutlinedButton(
+                          style: OutlinedButton.styleFrom(
+                            backgroundColor: Colors.lightBlue[200],
+                          ),
+                          onPressed: () async {
+                            await DatabaseHelper.instance.replaceDailyHabits(
+                              dHabits,
+                            );
+
+                            if (!mounted) return;
+
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text("Daily habits updated!"),
+                              ),
+                            );
+
+                            Navigator.pop(context);
+                          },
+                          child: const Text("Update"),
                         ),
-                        onPressed: () async {
-                          await DatabaseHelper.instance.replaceDailyHabits(
-                            dHabits,
-                          );
-
-                          if (!mounted) return;
-
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text("Daily habits updated!"),
-                            ),
-                          );
-
-                          Navigator.pop(context);
-                        },
-                        child: const Text("Update"),
                       ),
                     ),
                   ),
-                ),
               ],
             ),
           ),

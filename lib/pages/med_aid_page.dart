@@ -70,7 +70,7 @@ class _MedAidPage extends State<MedAidPage> {
       appBar: AppBar(
         title: Center(
           child: Text(
-            "Monthly Expense Tracker:",
+            "Monthly Expense Tracker",
             style: TextStyle(color: Colors.blueGrey[50]),
           ),
         ),
@@ -95,7 +95,7 @@ class _MedAidPage extends State<MedAidPage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const Text(
-                        "Monthly Medical Aid",
+                        "Monthly Insurance",
                         style: TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
@@ -103,7 +103,7 @@ class _MedAidPage extends State<MedAidPage> {
                       ),
 
                       Text(
-                        "Total Medical Aid: R ${totalMedAidCost.toStringAsFixed(2)}",
+                        "Total Insurance: R ${totalMedAidCost.toStringAsFixed(2)}",
                         style: const TextStyle(
                           fontSize: 12,
                           fontWeight: FontWeight.bold,
@@ -118,8 +118,8 @@ class _MedAidPage extends State<MedAidPage> {
                             controller: medicalAidController,
                             keyboardType: TextInputType.text,
                             decoration: const InputDecoration(
-                              labelText: "Name of Medical Aid",
-                              hintText: "Enter the name for the Medical Aid",
+                              labelText: "Name of Insurance",
+                              hintText: "Enter the name for the Insurance",
                               border: OutlineInputBorder(),
                             ),
                           ),
@@ -130,7 +130,7 @@ class _MedAidPage extends State<MedAidPage> {
                             decoration: const InputDecoration(
                               labelText: "Monthly Expense",
                               hintText:
-                                  "Enter the expense for the medical aid per month",
+                                  "Enter the expense for the insurance per month",
                               border: OutlineInputBorder(),
                             ),
                           ),
@@ -140,10 +140,12 @@ class _MedAidPage extends State<MedAidPage> {
                             child: OutlinedButton(
                               onPressed: () {
                                 if (medicalAidController.text.isEmpty ||
-                                    medicalAidCostController.text.isEmpty)
+                                    medicalAidCostController.text.isEmpty) {
                                   return;
+                                }
 
                                 String medAidName = medicalAidController.text;
+
                                 double medAidCost =
                                     double.tryParse(
                                       medicalAidCostController.text,
@@ -157,10 +159,12 @@ class _MedAidPage extends State<MedAidPage> {
 
                                 setState(() {
                                   medAids.add(medAid);
-                                });
 
-                                medicalAidController.clear();
-                                medicalAidCostController.clear();
+                                  editingIndex = -1;
+
+                                  medicalAidController.clear();
+                                  medicalAidCostController.clear();
+                                });
                               },
                               style: OutlinedButton.styleFrom(
                                 backgroundColor: Colors.teal[100],
@@ -169,7 +173,11 @@ class _MedAidPage extends State<MedAidPage> {
                                   borderRadius: BorderRadius.circular(15),
                                 ),
                               ),
-                              child: const Text("Add Medical Aid"),
+                              child: Text(
+                                editingIndex == -1
+                                    ? "Add Insurance"
+                                    : "Update Insurance",
+                              ),
                             ),
                           ),
                         ],
@@ -256,47 +264,51 @@ class _MedAidPage extends State<MedAidPage> {
 
                 SizedBox(height: 20),
 
-                Center(
-                  child: Padding(
-                    padding: const EdgeInsets.all(5.0),
-                    child: SizedBox(
-                      width: double.infinity,
-                      child: OutlinedButton(
-                        style: OutlinedButton.styleFrom(
-                          backgroundColor: Colors.lightBlue[200],
+                if (editingIndex == -1) ...[
+                  SizedBox(height: 20),
+
+                  Center(
+                    child: Padding(
+                      padding: const EdgeInsets.all(5.0),
+                      child: SizedBox(
+                        width: double.infinity,
+                        child: OutlinedButton(
+                          style: OutlinedButton.styleFrom(
+                            backgroundColor: Colors.lightBlue[200],
+                          ),
+                          onPressed: () async {
+                            try {
+                              await DatabaseHelper.instance.replaceMedicalAids(
+                                medAids,
+                              );
+
+                              if (!mounted) return;
+
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text("Insurance updated!"),
+                                ),
+                              );
+                            } catch (e) {
+                              debugPrint("Error updating Insurance: $e");
+
+                              if (!mounted) return;
+
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text("Failed to update Insurance."),
+                                ),
+                              );
+                            }
+
+                            Navigator.pop(context);
+                          },
+                          child: const Text("Update"),
                         ),
-                        onPressed: () async {
-                          try {
-                            await DatabaseHelper.instance.replaceMedicalAids(
-                              medAids,
-                            );
-
-                            if (!mounted) return;
-
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text("Medical Aid updated!"),
-                              ),
-                            );
-                          } catch (e) {
-                            debugPrint("Error updating Medical Aid: $e");
-
-                            if (!mounted) return;
-
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text("Failed to update Medical Aid."),
-                              ),
-                            );
-                          }
-
-                          Navigator.pop(context);
-                        },
-                        child: const Text("Update"),
                       ),
                     ),
                   ),
-                ),
+                ],
               ],
             ),
           ),

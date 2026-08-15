@@ -139,8 +139,9 @@ class _DebitOrderPage extends State<DebitOrderPage> {
                             child: OutlinedButton(
                               onPressed: () {
                                 if (debitNameController.text.isEmpty ||
-                                    debitCostController.text.isEmpty)
+                                    debitCostController.text.isEmpty) {
                                   return;
+                                }
 
                                 String debitName = debitNameController.text;
                                 double debitCost =
@@ -153,7 +154,12 @@ class _DebitOrderPage extends State<DebitOrderPage> {
                                 );
 
                                 setState(() {
-                                  debitOrders.add(order);
+                                  if (editingIndex == -1) {
+                                    debitOrders.add(order);
+                                  } else {
+                                    debitOrders.insert(editingIndex, order);
+                                    editingIndex = -1;
+                                  }
                                 });
 
                                 debitNameController.clear();
@@ -166,7 +172,11 @@ class _DebitOrderPage extends State<DebitOrderPage> {
                                   borderRadius: BorderRadius.circular(15),
                                 ),
                               ),
-                              child: const Text("Add Debit Order"),
+                              child: Text(
+                                editingIndex == -1
+                                    ? "Add Debit Order"
+                                    : "Update Debit Order",
+                              ),
                             ),
                           ),
                         ],
@@ -250,35 +260,36 @@ class _DebitOrderPage extends State<DebitOrderPage> {
 
                 SizedBox(height: 20),
 
-                Center(
-                  child: Padding(
-                    padding: const EdgeInsets.all(5.0),
-                    child: SizedBox(
-                      width: double.infinity,
-                      child: OutlinedButton(
-                        style: OutlinedButton.styleFrom(
-                          backgroundColor: Colors.lightBlue[200],
+                if (editingIndex == -1)
+                  Center(
+                    child: Padding(
+                      padding: const EdgeInsets.all(5.0),
+                      child: SizedBox(
+                        width: double.infinity,
+                        child: OutlinedButton(
+                          style: OutlinedButton.styleFrom(
+                            backgroundColor: Colors.lightBlue[200],
+                          ),
+                          onPressed: () async {
+                            await DatabaseHelper.instance.replaceDebitOrders(
+                              debitOrders,
+                            );
+
+                            if (!mounted) return;
+
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text("Debit orders updated!"),
+                              ),
+                            );
+
+                            Navigator.pop(context);
+                          },
+                          child: const Text("Update"),
                         ),
-                        onPressed: () async {
-                          await DatabaseHelper.instance.replaceDebitOrders(
-                            debitOrders,
-                          );
-
-                          if (!mounted) return;
-
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text("Debit orders updated!"),
-                            ),
-                          );
-
-                          Navigator.pop(context);
-                        },
-                        child: const Text("Update"),
                       ),
                     ),
                   ),
-                ),
               ],
             ),
           ),

@@ -139,8 +139,9 @@ class _ServicePage extends State<ServicePage> {
                             child: OutlinedButton(
                               onPressed: () {
                                 if (serviceNameController.text.isEmpty ||
-                                    serviceCostController.text.isEmpty)
+                                    serviceCostController.text.isEmpty) {
                                   return;
+                                }
 
                                 String serviceName = serviceNameController.text;
 
@@ -156,7 +157,13 @@ class _ServicePage extends State<ServicePage> {
                                 );
 
                                 setState(() {
-                                  services.add(serve);
+                                  if (editingIndex != -1) {
+                                    services.insert(editingIndex, serve);
+
+                                    editingIndex = -1;
+                                  } else {
+                                    services.add(serve);
+                                  }
                                 });
 
                                 serviceNameController.clear();
@@ -169,7 +176,11 @@ class _ServicePage extends State<ServicePage> {
                                   borderRadius: BorderRadius.circular(15),
                                 ),
                               ),
-                              child: const Text("Add Service"),
+                              child: Text(
+                                editingIndex != -1
+                                    ? "Update Service"
+                                    : "Add Service",
+                              ),
                             ),
                           ),
                         ],
@@ -253,47 +264,51 @@ class _ServicePage extends State<ServicePage> {
 
                 SizedBox(height: 20),
 
-                Center(
-                  child: Padding(
-                    padding: const EdgeInsets.all(5.0),
-                    child: SizedBox(
-                      width: double.infinity,
-                      child: OutlinedButton(
-                        style: OutlinedButton.styleFrom(
-                          backgroundColor: Colors.lightBlue[200],
+                if (editingIndex == -1) ...[
+                  const SizedBox(height: 20),
+
+                  Center(
+                    child: Padding(
+                      padding: const EdgeInsets.all(5.0),
+                      child: SizedBox(
+                        width: double.infinity,
+                        child: OutlinedButton(
+                          style: OutlinedButton.styleFrom(
+                            backgroundColor: Colors.lightBlue[200],
+                          ),
+                          onPressed: () async {
+                            try {
+                              await DatabaseHelper.instance.replaceServices(
+                                services,
+                              );
+
+                              if (!mounted) return;
+
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text("Services updated!"),
+                                ),
+                              );
+                            } catch (e) {
+                              debugPrint("Error updating services: $e");
+
+                              if (!mounted) return;
+
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text("Failed to update services."),
+                                ),
+                              );
+                            }
+
+                            Navigator.pop(context);
+                          },
+                          child: const Text("Update"),
                         ),
-                        onPressed: () async {
-                          try {
-                            await DatabaseHelper.instance.replaceServices(
-                              services,
-                            );
-
-                            if (!mounted) return;
-
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text("Services updated!"),
-                              ),
-                            );
-                          } catch (e) {
-                            debugPrint("Error updating services: $e");
-
-                            if (!mounted) return;
-
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text("Failed to update services."),
-                              ),
-                            );
-                          }
-
-                          Navigator.pop(context);
-                        },
-                        child: const Text("Update"),
                       ),
                     ),
                   ),
-                ),
+                ],
               ],
             ),
           ),
