@@ -124,45 +124,41 @@ class _StartUpPageState extends State<StartUpPage> {
                             ),
                           ),
 
+                          const SizedBox(height: 10.0),
+
                           Column(
                             children: [
                               TextField(
                                 controller: debitNameController,
                                 keyboardType: TextInputType.text,
-                                decoration: InputDecoration(
+                                decoration: const InputDecoration(
                                   labelText: "Debit Order Name",
                                   hintText:
                                       "Enter the name for the debit order",
                                   border: OutlineInputBorder(),
                                 ),
                               ),
-
-                              SizedBox(height: 10.0),
-
+                              const SizedBox(height: 10.0),
                               TextField(
                                 controller: debitCostController,
                                 keyboardType: TextInputType.number,
-                                decoration: InputDecoration(
+                                decoration: const InputDecoration(
                                   labelText: "Monthly Expense",
                                   hintText:
-                                      "Enter the ecpense for the service per month",
+                                      "Enter the expense for the service per month",
                                   border: OutlineInputBorder(),
                                 ),
                               ),
-
-                              SizedBox(height: 10.0),
-
+                              const SizedBox(height: 10.0),
                               SizedBox(
                                 width: double.infinity,
                                 child: OutlinedButton(
-                                  style: OutlinedButton.styleFrom(
-                                    backgroundColor: Colors.teal[100],
-                                    padding: const EdgeInsets.all(12),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(15),
-                                    ),
-                                  ),
                                   onPressed: () {
+                                    if (debitNameController.text.isEmpty ||
+                                        debitCostController.text.isEmpty) {
+                                      return;
+                                    }
+
                                     String debitName = debitNameController.text;
                                     double debitCost =
                                         double.tryParse(
@@ -174,15 +170,31 @@ class _StartUpPageState extends State<StartUpPage> {
                                       name: debitName,
                                       cost: debitCost,
                                     );
+
                                     setState(() {
-                                      debitOrders.add(order);
+                                      if (editingIndex == -1) {
+                                        debitOrders.add(order);
+                                      } else {
+                                        debitOrders.insert(editingIndex, order);
+                                        editingIndex = -1;
+                                      }
                                     });
 
                                     debitNameController.clear();
                                     debitCostController.clear();
                                   },
-
-                                  child: Text("Add Debit Order"),
+                                  style: OutlinedButton.styleFrom(
+                                    backgroundColor: Colors.teal[100],
+                                    padding: const EdgeInsets.all(12),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(15),
+                                    ),
+                                  ),
+                                  child: Text(
+                                    editingIndex == -1
+                                        ? "Add Debit Order"
+                                        : "Update Debit Order",
+                                  ),
                                 ),
                               ),
                             ],
@@ -278,54 +290,50 @@ class _StartUpPageState extends State<StartUpPage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           const Text(
-                            "Monthly Medical Aid",
+                            "Monthly Insurance",
                             style: TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
 
+                          const SizedBox(height: 10.0),
+
                           Column(
                             children: [
                               TextField(
                                 controller: medicalAidController,
                                 keyboardType: TextInputType.text,
-                                decoration: InputDecoration(
-                                  labelText: "Name of Medical Aid",
-                                  hintText:
-                                      "Enter the name for the Medical Aid",
+                                decoration: const InputDecoration(
+                                  labelText: "Name of Insurance",
+                                  hintText: "Enter the name for the Insurance",
                                   border: OutlineInputBorder(),
                                 ),
                               ),
-
-                              SizedBox(height: 10.0),
-
+                              const SizedBox(height: 10.0),
                               TextField(
                                 controller: medicalAidCostController,
                                 keyboardType: TextInputType.number,
-                                decoration: InputDecoration(
+                                decoration: const InputDecoration(
                                   labelText: "Monthly Expense",
                                   hintText:
-                                      "Enter the ecpense for the medical aid per month",
+                                      "Enter the expense for the insurance per month",
                                   border: OutlineInputBorder(),
                                 ),
                               ),
-
-                              SizedBox(height: 10.0),
-
+                              const SizedBox(height: 10.0),
                               SizedBox(
                                 width: double.infinity,
                                 child: OutlinedButton(
-                                  style: OutlinedButton.styleFrom(
-                                    backgroundColor: Colors.teal[100],
-                                    padding: const EdgeInsets.all(12),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(15),
-                                    ),
-                                  ),
                                   onPressed: () {
+                                    if (medicalAidController.text.isEmpty ||
+                                        medicalAidCostController.text.isEmpty) {
+                                      return;
+                                    }
+
                                     String medAidName =
                                         medicalAidController.text;
+
                                     double medAidCost =
                                         double.tryParse(
                                           medicalAidCostController.text,
@@ -336,15 +344,28 @@ class _StartUpPageState extends State<StartUpPage> {
                                       name: medAidName,
                                       costMedAid: medAidCost,
                                     );
+
                                     setState(() {
                                       medAids.add(medAid);
+
+                                      editingIndex = -1;
+
+                                      medicalAidController.clear();
+                                      medicalAidCostController.clear();
                                     });
-
-                                    medicalAidController.clear();
-                                    medicalAidCostController.clear();
                                   },
-
-                                  child: Text("Add Medical Aid"),
+                                  style: OutlinedButton.styleFrom(
+                                    backgroundColor: Colors.teal[100],
+                                    padding: const EdgeInsets.all(12),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(15),
+                                    ),
+                                  ),
+                                  child: Text(
+                                    editingIndex == -1
+                                        ? "Add Insurance"
+                                        : "Update Insurance",
+                                  ),
                                 ),
                               ),
                             ],
@@ -451,48 +472,47 @@ class _StartUpPageState extends State<StartUpPage> {
                         ),
                       ),
 
+                      const SizedBox(height: 10.0),
+
                       Column(
                         children: [
                           TextField(
                             controller: serviceNameController,
                             keyboardType: TextInputType.text,
-                            decoration: InputDecoration(
+                            decoration: const InputDecoration(
                               labelText: "Service Name",
                               hintText: "Enter the name of the service",
                               border: OutlineInputBorder(),
                             ),
                           ),
-
-                          SizedBox(height: 10.0),
-
+                          const SizedBox(height: 10.0),
                           TextField(
                             controller: serviceCostController,
                             keyboardType: TextInputType.number,
-                            decoration: InputDecoration(
+                            decoration: const InputDecoration(
                               labelText: "Monthly Expense",
                               hintText:
                                   "Enter the expense for the service per month",
                               border: OutlineInputBorder(),
                             ),
                           ),
-
-                          SizedBox(height: 10.0),
-
+                          const SizedBox(height: 10.0),
                           SizedBox(
                             width: double.infinity,
                             child: OutlinedButton(
-                              style: OutlinedButton.styleFrom(
-                                backgroundColor: Colors.teal[100],
-                                padding: const EdgeInsets.all(12),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(15),
-                                ),
-                              ),
                               onPressed: () {
+                                if (serviceNameController.text.isEmpty ||
+                                    serviceCostController.text.isEmpty) {
+                                  return;
+                                }
+
                                 String serviceName = serviceNameController.text;
-                                double serviceCost = double.parse(
-                                  serviceCostController.text,
-                                );
+
+                                double serviceCost =
+                                    double.tryParse(
+                                      serviceCostController.text,
+                                    ) ??
+                                    0;
 
                                 Service serve = Service(
                                   serviceName: serviceName,
@@ -500,14 +520,30 @@ class _StartUpPageState extends State<StartUpPage> {
                                 );
 
                                 setState(() {
-                                  services.add(serve);
+                                  if (editingIndex != -1) {
+                                    services.insert(editingIndex, serve);
+
+                                    editingIndex = -1;
+                                  } else {
+                                    services.add(serve);
+                                  }
                                 });
 
                                 serviceNameController.clear();
                                 serviceCostController.clear();
                               },
-
-                              child: Text("Add Service"),
+                              style: OutlinedButton.styleFrom(
+                                backgroundColor: Colors.teal[100],
+                                padding: const EdgeInsets.all(12),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(15),
+                                ),
+                              ),
+                              child: Text(
+                                editingIndex != -1
+                                    ? "Update Service"
+                                    : "Add Service",
+                              ),
                             ),
                           ),
                         ],
@@ -607,46 +643,70 @@ class _StartUpPageState extends State<StartUpPage> {
                         ),
                       ),
                       Text(
-                        "Current daily total: R ${dailyTotal.toStringAsFixed(2)}",
-                        style: TextStyle(
-                          fontSize: 10,
+                        "Daily total: R ${dailyTotal.toStringAsFixed(2)}",
+                        style: const TextStyle(
+                          fontSize: 12,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
 
-                      SizedBox(height: 10.0),
-
+                      const SizedBox(height: 10.0),
                       Column(
                         children: [
                           TextField(
                             controller: dailyHabitNameController,
                             keyboardType: TextInputType.text,
-                            decoration: InputDecoration(
+                            decoration: const InputDecoration(
                               labelText: "Daily Cost Name",
-                              hintText:
-                                  "Enter the name for the item/activity you get/do daily",
+                              hintText: "Enter the name for the item/activity",
                               border: OutlineInputBorder(),
                             ),
                           ),
-
-                          SizedBox(height: 10.0),
-
+                          const SizedBox(height: 10.0),
                           TextField(
                             controller: dailyHabitController,
                             keyboardType: TextInputType.number,
-                            decoration: InputDecoration(
+                            decoration: const InputDecoration(
                               labelText: "Daily Expense",
-                              hintText:
-                                  "Enter the expensde for the item/action that you get/do daily",
+                              hintText: "Enter the expense amount",
                               border: OutlineInputBorder(),
                             ),
                           ),
-
-                          SizedBox(height: 10.0),
-
+                          const SizedBox(height: 10.0),
                           SizedBox(
                             width: double.infinity,
                             child: OutlinedButton(
+                              onPressed: () {
+                                if (dailyHabitNameController.text.isEmpty ||
+                                    dailyHabitController.text.isEmpty) {
+                                  return;
+                                }
+
+                                String habitName =
+                                    dailyHabitNameController.text;
+                                double habitCost =
+                                    double.tryParse(
+                                      dailyHabitController.text,
+                                    ) ??
+                                    0.0;
+
+                                DailyHabit hab1 = DailyHabit(
+                                  name: habitName,
+                                  costDHabit: habitCost,
+                                );
+
+                                setState(() {
+                                  if (editingIndex != -1) {
+                                    dHabits.insert(editingIndex, hab1);
+                                    editingIndex = -1;
+                                  } else {
+                                    dHabits.add(hab1);
+                                  }
+
+                                  dailyHabitNameController.clear();
+                                  dailyHabitController.clear();
+                                });
+                              },
                               style: OutlinedButton.styleFrom(
                                 backgroundColor: Colors.teal[100],
                                 padding: const EdgeInsets.all(12),
@@ -654,29 +714,11 @@ class _StartUpPageState extends State<StartUpPage> {
                                   borderRadius: BorderRadius.circular(15),
                                 ),
                               ),
-                              onPressed: () {
-                                String habitName =
-                                    dailyHabitNameController.text;
-                                double habitCost = double.parse(
-                                  dailyHabitController.text,
-                                );
-
-                                DailyHabit hab = DailyHabit(
-                                  name: habitName,
-                                  costDHabit: habitCost,
-                                );
-
-                                setState(() {
-                                  dHabits.add(hab);
-
-                                  dailyTotal = dailyTotal + habitCost;
-                                });
-
-                                dailyHabitNameController.clear();
-                                dailyHabitController.clear();
-                              },
-
-                              child: Text("Add Daily Habit"),
+                              child: Text(
+                                editingIndex != -1
+                                    ? "Update Daily Habit"
+                                    : "Add Daily Habit",
+                              ),
                             ),
                           ),
                         ],
@@ -701,9 +743,7 @@ class _StartUpPageState extends State<StartUpPage> {
                               var hab = entry.value;
                               return DataRow(
                                 cells: [
-                                  DataCell(
-                                    Text(hab.getName),
-                                  ), // Assumes getName getter exists
+                                  DataCell(Text(hab.getName)),
                                   DataCell(
                                     Text(
                                       "R ${hab.costDHabit.toStringAsFixed(2)}",

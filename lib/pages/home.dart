@@ -165,7 +165,6 @@ class _HomeState extends State<Home> {
               title: const Text("Select Month and Year"),
               content: Row(
                 children: [
-                  // Month
                   Expanded(
                     child: DropdownButton<int>(
                       value: tempMonth,
@@ -192,7 +191,6 @@ class _HomeState extends State<Home> {
 
                   const SizedBox(width: 15),
 
-                  // Year
                   Expanded(
                     child: DropdownButton<int>(
                       value: tempYear,
@@ -718,7 +716,7 @@ class _HomeState extends State<Home> {
                             Expanded(
                               child: Center(
                                 child: uiTools.imgBtnTitleContainer(
-                                  "Medical Aid",
+                                  "Insurance",
                                   "images/healthcare.png",
                                   () async {
                                     await Navigator.push(
