@@ -60,6 +60,34 @@ class Uitools {
     );
   }
 
+  Widget imgBtnTitleContainer3(
+    String title,
+    String imgDir,
+    VoidCallback onPressed,
+  ) {
+    return Container(
+      width: 230,
+      height: 230,
+      padding: const EdgeInsets.all(10),
+      decoration: BoxDecoration(
+        color: Colors.grey[100],
+        borderRadius: BorderRadius.circular(50),
+        border: Border.all(color: Colors.black, width: 2),
+      ),
+      child: Column(
+        children: [
+          Text(
+            title,
+            textAlign: TextAlign.center,
+            style: const TextStyle(fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(height: 10),
+          btn3(imgDir, onPressed),
+        ],
+      ),
+    );
+  }
+
   OutlinedButton btn1(String imgDir, VoidCallback onPressed) {
     return OutlinedButton(
       onPressed: onPressed,
@@ -89,6 +117,19 @@ class Uitools {
     );
   }
 
+  OutlinedButton btn3(String imgDir, VoidCallback onPressed) {
+    return OutlinedButton(
+      onPressed: onPressed,
+      style: OutlinedButton.styleFrom(
+        backgroundColor: Colors.teal[100],
+        padding: const EdgeInsets.all(12),
+        side: BorderSide(color: Colors.black, width: 1),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
+      ),
+      child: Image.asset(imgDir, width: 120, height: 120),
+    );
+  }
+
   OutlinedButton itemRemoveBtn(VoidCallback onPressed) {
     return OutlinedButton(
       onPressed: onPressed,
@@ -97,10 +138,10 @@ class Uitools {
         shape: const CircleBorder(),
 
         padding: EdgeInsets.zero,
-        minimumSize: const Size(40, 40),
+        minimumSize: const Size(35, 35),
         tapTargetSize: MaterialTapTargetSize.shrinkWrap,
       ),
-      child: Image.asset("images/trash.png", width: 15, height: 15),
+      child: Image.asset("images/trash.png", width: 20, height: 20),
     );
   }
 
@@ -112,10 +153,10 @@ class Uitools {
         shape: const CircleBorder(),
 
         padding: EdgeInsets.zero,
-        minimumSize: const Size(40, 40),
+        minimumSize: const Size(35, 35),
         tapTargetSize: MaterialTapTargetSize.shrinkWrap,
       ),
-      child: Image.asset("images/pencil.png", width: 15, height: 15),
+      child: Image.asset("images/pencil.png", width: 20, height: 20),
     );
   }
 }

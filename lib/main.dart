@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:freeuse_monthly_expense_tracker/pages/home.dart';
 import 'package:freeuse_monthly_expense_tracker/pages/StartUpPage.dart';
 import 'package:freeuse_monthly_expense_tracker/database/database_helper.dart';
+import 'package:freeuse_monthly_expense_tracker/custom_tools/uiTools.dart';
 
 void main() {
   runApp(const MyApp());
@@ -15,13 +16,13 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: "Monthly Expense Tracker",
-      home: const NewMain(),
+      home: NewMain(),
     );
   }
 }
 
 class NewMain extends StatelessWidget {
-  const NewMain({super.key});
+  NewMain({super.key});
 
   Future<void> _startNew(BuildContext context) async {
     final userSettings = await DatabaseHelper.instance.getUserSettings();
@@ -79,6 +80,8 @@ class NewMain extends StatelessWidget {
     );
   }
 
+  final uiTools = Uitools();
+
   Future<void> _continue(BuildContext context) async {
     final userSettings = await DatabaseHelper.instance.getUserSettings();
 
@@ -135,47 +138,33 @@ class NewMain extends StatelessWidget {
             padding: const EdgeInsets.all(10),
             child: Container(
               width: double.infinity,
-              padding: const EdgeInsets.all(10),
+              padding: const EdgeInsets.all(15),
               decoration: BoxDecoration(
                 color: Colors.teal[300],
-                borderRadius: BorderRadius.circular(5),
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(color: Colors.black, width: 2),
               ),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  SizedBox(
-                    width: double.infinity,
-                    height: 80,
-                    child: OutlinedButton(
-                      style: OutlinedButton.styleFrom(
-                        backgroundColor: Colors.grey[200],
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(15),
-                        ),
-                      ),
-                      onPressed: () {
+                  Center(
+                    child: uiTools.imgBtnTitleContainer3(
+                      "Start New",
+                      "images/startNew.png",
+                      () async {
                         _startNew(context);
                       },
-                      child: const Text("Start New"),
                     ),
                   ),
+                  const SizedBox(height: 15),
 
-                  const SizedBox(height: 20),
-
-                  SizedBox(
-                    width: double.infinity,
-                    height: 80,
-                    child: OutlinedButton(
-                      style: OutlinedButton.styleFrom(
-                        backgroundColor: Colors.lightBlue[100],
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(15),
-                        ),
-                      ),
-                      onPressed: () {
+                  Center(
+                    child: uiTools.imgBtnTitleContainer3(
+                      "Continue",
+                      "images/continue.png",
+                      () async {
                         _continue(context);
                       },
-                      child: const Text("Continue"),
                     ),
                   ),
                 ],
