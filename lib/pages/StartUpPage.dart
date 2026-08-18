@@ -851,9 +851,7 @@ class _StartUpPageState extends State<StartUpPage> {
 
                           Navigator.pushReplacement(
                             context,
-                            MaterialPageRoute(
-                              builder: (context) => const Home(),
-                            ),
+                            uiTools.smoothPageRoute(const Home()),
                           );
                         } catch (e, stackTrace) {
                           debugPrint("DATABASE ERROR: $e");

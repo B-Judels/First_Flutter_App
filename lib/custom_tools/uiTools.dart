@@ -159,4 +159,31 @@ class Uitools {
       child: Image.asset("images/pencil.png", width: 20, height: 20),
     );
   }
+
+  PageRoute smoothPageRoute(Widget page) {
+    return PageRouteBuilder(
+      pageBuilder: (context, animation, secondaryAnimation) => page,
+
+      transitionsBuilder: (context, animation, secondaryAnimation, child) {
+        const begin = Offset(0.05, 0.0);
+        const end = Offset.zero;
+        const curve = Curves.easeOutCubic;
+
+        final tween = Tween(
+          begin: begin,
+          end: end,
+        ).chain(CurveTween(curve: curve));
+
+        return FadeTransition(
+          opacity: animation,
+          child: SlideTransition(
+            position: animation.drive(tween),
+            child: child,
+          ),
+        );
+      },
+
+      transitionDuration: const Duration(milliseconds: 300),
+    );
+  }
 }

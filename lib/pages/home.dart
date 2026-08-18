@@ -668,9 +668,8 @@ class _HomeState extends State<Home> {
                                   () async {
                                     await Navigator.push(
                                       context,
-                                      MaterialPageRoute(
-                                        builder: (context) =>
-                                            const DebitOrderPage(),
+                                      uiTools.smoothPageRoute(
+                                        const DebitOrderPage(),
                                       ),
                                     );
 
@@ -692,9 +691,8 @@ class _HomeState extends State<Home> {
                                   () async {
                                     await Navigator.push(
                                       context,
-                                      MaterialPageRoute(
-                                        builder: (context) =>
-                                            const DailyHabitPage(),
+                                      uiTools.smoothPageRoute(
+                                        const DailyHabitPage(),
                                       ),
                                     );
 
@@ -721,9 +719,8 @@ class _HomeState extends State<Home> {
                                   () async {
                                     await Navigator.push(
                                       context,
-                                      MaterialPageRoute(
-                                        builder: (context) =>
-                                            const MedAidPage(),
+                                      uiTools.smoothPageRoute(
+                                        const MedAidPage(),
                                       ),
                                     );
 
@@ -745,9 +742,8 @@ class _HomeState extends State<Home> {
                                   () async {
                                     await Navigator.push(
                                       context,
-                                      MaterialPageRoute(
-                                        builder: (context) =>
-                                            const ServicePage(),
+                                      uiTools.smoothPageRoute(
+                                        const ServicePage(),
                                       ),
                                     );
 

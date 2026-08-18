@@ -74,10 +74,7 @@ class NewMain extends StatelessWidget {
 
     if (!context.mounted) return;
 
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => const StartUpPage()),
-    );
+    Navigator.push(context, uiTools.smoothPageRoute(const StartUpPage()));
   }
 
   final uiTools = Uitools();
@@ -113,10 +110,7 @@ class NewMain extends StatelessWidget {
       return;
     }
 
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => const Home()),
-    );
+    Navigator.push(context, uiTools.smoothPageRoute(const Home()));
   }
 
   @override
