@@ -186,4 +186,42 @@ class Uitools {
       transitionDuration: const Duration(milliseconds: 300),
     );
   }
+
+  Widget infoButton({required bool showInfo, required VoidCallback onPressed}) {
+    return OutlinedButton(
+      onPressed: onPressed,
+      child: Text(showInfo ? "Hide Info" : "Info"),
+    );
+  }
+
+  Widget infoContainer({required bool showInfo, required String infoText}) {
+    return AnimatedSwitcher(
+      duration: const Duration(milliseconds: 300),
+
+      transitionBuilder: (child, animation) {
+        return FadeTransition(
+          opacity: animation,
+          child: SizeTransition(sizeFactor: animation, child: child),
+        );
+      },
+
+      child: showInfo
+          ? Container(
+              key: const ValueKey("infoContainer"),
+              width: double.infinity,
+              margin: const EdgeInsets.only(top: 10),
+              padding: const EdgeInsets.all(15),
+              decoration: BoxDecoration(
+                color: Colors.grey[100],
+                borderRadius: BorderRadius.circular(15),
+                border: Border.all(color: Colors.black, width: 1.5),
+              ),
+              child: Text(
+                infoText,
+                style: const TextStyle(fontSize: 14, color: Colors.black),
+              ),
+            )
+          : const SizedBox(key: ValueKey("emptyInfoContainer")),
+    );
+  }
 }

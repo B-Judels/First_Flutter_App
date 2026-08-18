@@ -16,6 +16,8 @@ class _ServicePage extends State<ServicePage> {
 
   bool isLoading = true;
 
+  bool showInfo = false;
+
   Future<void> _loadDatabaseData() async {
     try {
       final db = DatabaseHelper.instance;
@@ -93,20 +95,46 @@ class _ServicePage extends State<ServicePage> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text(
-                        "Monthly Services",
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                        ),
+                      Row(
+                        children: [
+                          Column(
+                            children: [
+                              const Text(
+                                "Monthly Services",
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+
+                              Text(
+                                "Total Services: R ${totalServiceCost.toStringAsFixed(2)}",
+                                style: const TextStyle(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
+                          ),
+                          Spacer(),
+
+                          uiTools.infoButton(
+                            showInfo: showInfo,
+                            onPressed: () {
+                              setState(() {
+                                showInfo = !showInfo;
+                              });
+                            },
+                          ),
+                        ],
                       ),
 
-                      Text(
-                        "Total Services: R ${totalServiceCost.toStringAsFixed(2)}",
-                        style: const TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.bold,
-                        ),
+                      uiTools.infoContainer(
+                        showInfo: showInfo,
+                        infoText:
+                            "Services are recurring monthly expenses such as "
+                            "subscriptions, internet, cellphone contracts, "
+                            "streaming services, etc.",
                       ),
 
                       const SizedBox(height: 10.0),

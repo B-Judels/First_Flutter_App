@@ -21,6 +21,8 @@ class _StartUpPageState extends State<StartUpPage> {
 
   final uiTools = Uitools();
 
+  bool showInfo = false;
+
   List<Service> services = [];
 
   List<DebitOrder> debitOrders = [];
@@ -464,12 +466,38 @@ class _StartUpPageState extends State<StartUpPage> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text(
-                        "Monthly Services",
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                        ),
+                      Row(
+                        children: [
+                          Column(
+                            children: [
+                              const Text(
+                                "Monthly Services",
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
+                          ),
+                          Spacer(),
+
+                          uiTools.infoButton(
+                            showInfo: showInfo,
+                            onPressed: () {
+                              setState(() {
+                                showInfo = !showInfo;
+                              });
+                            },
+                          ),
+                        ],
+                      ),
+
+                      uiTools.infoContainer(
+                        showInfo: showInfo,
+                        infoText:
+                            "Services are recurring monthly expenses such as "
+                            "subscriptions, internet, cellphone contracts, "
+                            "streaming services, etc.",
                       ),
 
                       const SizedBox(height: 10.0),
