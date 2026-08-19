@@ -22,6 +22,9 @@ class _StartUpPageState extends State<StartUpPage> {
   final uiTools = Uitools();
 
   bool showInfo = false;
+  bool showInfo2 = false;
+  bool showInfo3 = false;
+  bool showInfo4 = false;
 
   List<Service> services = [];
 
@@ -111,19 +114,51 @@ class _StartUpPageState extends State<StartUpPage> {
                     Container(
                       margin: const EdgeInsets.all(10),
                       padding: const EdgeInsets.all(10),
+
                       decoration: BoxDecoration(
                         color: Colors.teal[300],
                         borderRadius: BorderRadius.circular(5),
                       ),
+
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
+
                         children: [
-                          const Text(
-                            "Monthly Debit Orders",
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                            ),
+                          Row(
+                            children: [
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const Text(
+                                    "Monthly Debit Orders",
+                                    style: TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ],
+                              ),
+
+                              const Spacer(),
+
+                              uiTools.infoButton(
+                                showInfo: showInfo,
+                                onPressed: () {
+                                  setState(() {
+                                    showInfo = !showInfo;
+                                  });
+                                },
+                              ),
+                            ],
+                          ),
+
+                          uiTools.infoContainer(
+                            showInfo: showInfo,
+                            infoText:
+                                "Debit orders are recurring payments that are "
+                                "automatically deducted from your bank account. "
+                                "Examples include Streaming Services, Loan Repayments, "
+                                "Subscriptions, and other regular payments.",
                           ),
 
                           const SizedBox(height: 10.0),
@@ -133,6 +168,7 @@ class _StartUpPageState extends State<StartUpPage> {
                               TextField(
                                 controller: debitNameController,
                                 keyboardType: TextInputType.text,
+
                                 decoration: const InputDecoration(
                                   labelText: "Debit Order Name",
                                   hintText:
@@ -140,10 +176,13 @@ class _StartUpPageState extends State<StartUpPage> {
                                   border: OutlineInputBorder(),
                                 ),
                               ),
+
                               const SizedBox(height: 10.0),
+
                               TextField(
                                 controller: debitCostController,
                                 keyboardType: TextInputType.number,
+
                                 decoration: const InputDecoration(
                                   labelText: "Monthly Expense",
                                   hintText:
@@ -151,9 +190,12 @@ class _StartUpPageState extends State<StartUpPage> {
                                   border: OutlineInputBorder(),
                                 ),
                               ),
+
                               const SizedBox(height: 10.0),
+
                               SizedBox(
                                 width: double.infinity,
+
                                 child: OutlinedButton(
                                   onPressed: () {
                                     if (debitNameController.text.isEmpty ||
@@ -162,6 +204,7 @@ class _StartUpPageState extends State<StartUpPage> {
                                     }
 
                                     String debitName = debitNameController.text;
+
                                     double debitCost =
                                         double.tryParse(
                                           debitCostController.text,
@@ -178,6 +221,7 @@ class _StartUpPageState extends State<StartUpPage> {
                                         debitOrders.add(order);
                                       } else {
                                         debitOrders.insert(editingIndex, order);
+
                                         editingIndex = -1;
                                       }
                                     });
@@ -185,13 +229,16 @@ class _StartUpPageState extends State<StartUpPage> {
                                     debitNameController.clear();
                                     debitCostController.clear();
                                   },
+
                                   style: OutlinedButton.styleFrom(
                                     backgroundColor: Colors.teal[100],
                                     padding: const EdgeInsets.all(12),
+
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(15),
                                     ),
                                   ),
+
                                   child: Text(
                                     editingIndex == -1
                                         ? "Add Debit Order"
@@ -204,34 +251,44 @@ class _StartUpPageState extends State<StartUpPage> {
 
                           if (debitOrders.isNotEmpty) ...[
                             const SizedBox(height: 15),
+
                             Center(
                               child: SizedBox(
                                 width: double.infinity,
+
                                 child: DataTable(
                                   headingRowColor: WidgetStateProperty.all(
                                     Colors.teal[700],
                                   ),
+
                                   dataRowColor: WidgetStateProperty.all(
                                     Colors.cyan,
                                   ),
+
                                   columns: const [
                                     DataColumn(label: Text("Name:")),
+
                                     DataColumn(label: Text("Cost:")),
+
                                     DataColumn(label: Text("Actions:")),
                                   ],
+
                                   rows: debitOrders.asMap().entries.map((
                                     entry,
                                   ) {
                                     int index = entry.key;
                                     var orderer = entry.value;
+
                                     return DataRow(
                                       cells: [
                                         DataCell(Text(orderer.getName)),
+
                                         DataCell(
                                           Text(
                                             "R ${orderer.getCost.toStringAsFixed(2)}",
                                           ),
                                         ),
+
                                         DataCell(
                                           Row(
                                             mainAxisSize: MainAxisSize.min,
@@ -247,21 +304,24 @@ class _StartUpPageState extends State<StartUpPage> {
 
                                                   if (editingIndex == index) {
                                                     editingIndex = -1;
+
                                                     debitNameController.clear();
                                                     debitCostController.clear();
                                                   }
                                                 });
                                               }),
 
-                                              SizedBox(width: 4),
+                                              const SizedBox(width: 4),
 
                                               uiTools.itemEditBtn(() {
                                                 setState(() {
                                                   debitNameController.text =
                                                       orderer.getName;
+
                                                   debitCostController.text =
                                                       orderer.getCost
                                                           .toString();
+
                                                   editingIndex = index;
 
                                                   debitOrders.removeAt(index);
@@ -291,12 +351,38 @@ class _StartUpPageState extends State<StartUpPage> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Text(
-                            "Monthly Insurance",
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                            ),
+                          Row(
+                            children: [
+                              Column(
+                                children: [
+                                  const Text(
+                                    "Insurance",
+                                    style: TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              Spacer(),
+
+                              uiTools.infoButton(
+                                showInfo: showInfo2,
+                                onPressed: () {
+                                  setState(() {
+                                    showInfo2 = !showInfo2;
+                                  });
+                                },
+                              ),
+                            ],
+                          ),
+
+                          uiTools.infoContainer(
+                            showInfo: showInfo2,
+                            infoText:
+                                "Any Insurance, for example\n"
+                                "Health Insurance/Medical Aid, Car Insurance,\n "
+                                "Home Insurance, etc.",
                           ),
 
                           const SizedBox(height: 10.0),
@@ -482,10 +568,10 @@ class _StartUpPageState extends State<StartUpPage> {
                           Spacer(),
 
                           uiTools.infoButton(
-                            showInfo: showInfo,
+                            showInfo: showInfo3,
                             onPressed: () {
                               setState(() {
-                                showInfo = !showInfo;
+                                showInfo3 = !showInfo3;
                               });
                             },
                           ),
@@ -493,11 +579,11 @@ class _StartUpPageState extends State<StartUpPage> {
                       ),
 
                       uiTools.infoContainer(
-                        showInfo: showInfo,
+                        showInfo: showInfo3,
                         infoText:
                             "Services are recurring monthly expenses such as "
-                            "subscriptions, internet, cellphone contracts, "
-                            "streaming services, etc.",
+                            "Electricity Bill, Internet Bill, Cellphone Contracts, "
+                            "Water Bill, Monthly Class Fees, etc.",
                       ),
 
                       const SizedBox(height: 10.0),
@@ -655,54 +741,107 @@ class _StartUpPageState extends State<StartUpPage> {
 
                 Container(
                   margin: const EdgeInsets.all(10),
+
                   padding: const EdgeInsets.all(10),
+
                   decoration: BoxDecoration(
                     color: Colors.teal[300],
                     borderRadius: BorderRadius.circular(5),
                   ),
+
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
+
                     children: [
-                      const Text(
-                        "Daily Habit Costs",
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                        ),
+                      Row(
+                        children: [
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Text(
+                                "Daily Habit Costs",
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+
+                              Text(
+                                "Daily total: R ${dailyTotal.toStringAsFixed(2)}",
+                                style: const TextStyle(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
+                          ),
+
+                          const Spacer(),
+
+                          // INFO BUTTON
+                          uiTools.infoButton(
+                            showInfo: showInfo4,
+
+                            onPressed: () {
+                              setState(() {
+                                showInfo4 = !showInfo4;
+                              });
+                            },
+                          ),
+                        ],
                       ),
-                      Text(
-                        "Daily total: R ${dailyTotal.toStringAsFixed(2)}",
-                        style: const TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.bold,
-                        ),
+
+                      uiTools.infoContainer(
+                        showInfo: showInfo4,
+
+                        infoText:
+                            "Daily habits are recurring expenses that occur "
+                            "on a daily basis. Examples include coffee, "
+                            "snacks, transport costs, cigarettes, or other "
+                            "small daily purchases. The monthly projection "
+                            "is calculated by multiplying the daily total "
+                            "by the number of days in the month.",
                       ),
 
                       const SizedBox(height: 10.0),
+
                       Column(
                         children: [
                           TextField(
                             controller: dailyHabitNameController,
+
                             keyboardType: TextInputType.text,
+
                             decoration: const InputDecoration(
                               labelText: "Daily Cost Name",
+
                               hintText: "Enter the name for the item/activity",
+
                               border: OutlineInputBorder(),
                             ),
                           ),
+
                           const SizedBox(height: 10.0),
+
                           TextField(
                             controller: dailyHabitController,
+
                             keyboardType: TextInputType.number,
+
                             decoration: const InputDecoration(
                               labelText: "Daily Expense",
+
                               hintText: "Enter the expense amount",
+
                               border: OutlineInputBorder(),
                             ),
                           ),
+
                           const SizedBox(height: 10.0),
+
                           SizedBox(
                             width: double.infinity,
+
                             child: OutlinedButton(
                               onPressed: () {
                                 if (dailyHabitNameController.text.isEmpty ||
@@ -712,6 +851,7 @@ class _StartUpPageState extends State<StartUpPage> {
 
                                 String habitName =
                                     dailyHabitNameController.text;
+
                                 double habitCost =
                                     double.tryParse(
                                       dailyHabitController.text,
@@ -726,22 +866,28 @@ class _StartUpPageState extends State<StartUpPage> {
                                 setState(() {
                                   if (editingIndex != -1) {
                                     dHabits.insert(editingIndex, hab1);
+
                                     editingIndex = -1;
                                   } else {
                                     dHabits.add(hab1);
                                   }
 
                                   dailyHabitNameController.clear();
+
                                   dailyHabitController.clear();
                                 });
                               },
+
                               style: OutlinedButton.styleFrom(
                                 backgroundColor: Colors.teal[100],
+
                                 padding: const EdgeInsets.all(12),
+
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(15),
                                 ),
                               ),
+
                               child: Text(
                                 editingIndex != -1
                                     ? "Update Daily Habit"
@@ -754,29 +900,40 @@ class _StartUpPageState extends State<StartUpPage> {
 
                       if (dHabits.isNotEmpty) ...[
                         const SizedBox(height: 15),
+
                         SizedBox(
                           width: double.infinity,
+
                           child: DataTable(
                             headingRowColor: WidgetStateProperty.all(
                               Colors.teal[700],
                             ),
+
                             dataRowColor: WidgetStateProperty.all(Colors.cyan),
+
                             columns: const [
                               DataColumn(label: Text("Name:")),
+
                               DataColumn(label: Text("Cost:")),
+
                               DataColumn(label: Text("Actions:")),
                             ],
+
                             rows: dHabits.asMap().entries.map((entry) {
                               int index = entry.key;
+
                               var hab = entry.value;
+
                               return DataRow(
                                 cells: [
                                   DataCell(Text(hab.getName)),
+
                                   DataCell(
                                     Text(
                                       "R ${hab.costDHabit.toStringAsFixed(2)}",
                                     ),
                                   ),
+
                                   DataCell(
                                     Center(
                                       child: Row(
@@ -791,22 +948,26 @@ class _StartUpPageState extends State<StartUpPage> {
 
                                               if (editingIndex == index) {
                                                 editingIndex = -1;
+
                                                 dailyHabitNameController
                                                     .clear();
+
                                                 dailyHabitController.clear();
                                               }
                                             });
                                           }),
 
-                                          SizedBox(width: 4),
+                                          const SizedBox(width: 4),
 
                                           uiTools.itemEditBtn(() {
                                             setState(() {
                                               dailyHabitNameController.text =
                                                   hab.getName;
+
                                               dailyHabitController.text = hab
                                                   .getCost
                                                   .toString();
+
                                               editingIndex = index;
 
                                               dHabits.removeAt(index);

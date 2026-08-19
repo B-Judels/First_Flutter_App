@@ -133,8 +133,8 @@ class _ServicePage extends State<ServicePage> {
                         showInfo: showInfo,
                         infoText:
                             "Services are recurring monthly expenses such as "
-                            "subscriptions, internet, cellphone contracts, "
-                            "streaming services, etc.",
+                            "Electricity Bill, Internet Bill, Cellphone Contracts, "
+                            "Water Bill, Monthly Class Fees, etc.",
                       ),
 
                       const SizedBox(height: 10.0),

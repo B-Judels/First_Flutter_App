@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import 'package:freeuse_monthly_expense_tracker/models/DebitOrder.dart';
 import 'package:freeuse_monthly_expense_tracker/custom_tools/logicTools.dart';
 import 'package:freeuse_monthly_expense_tracker/custom_tools/uiTools.dart';
@@ -17,6 +18,11 @@ class _DebitOrderPage extends State<DebitOrderPage> {
   int editingIndex = -1;
 
   bool isLoading = true;
+
+  // Controls the information container
+  bool showInfo = false;
+
+  final uiTools = Uitools();
 
   Future<void> _loadDatabaseData() async {
     try {
@@ -40,9 +46,8 @@ class _DebitOrderPage extends State<DebitOrderPage> {
   }
 
   final TextEditingController debitNameController = TextEditingController();
-  final TextEditingController debitCostController = TextEditingController();
 
-  final uiTools = Uitools();
+  final TextEditingController debitCostController = TextEditingController();
 
   @override
   void dispose() {
@@ -60,12 +65,14 @@ class _DebitOrderPage extends State<DebitOrderPage> {
   @override
   Widget build(BuildContext context) {
     double totalDebitOrders = 0;
+
     for (int i = 0; i < debitOrders.length; i++) {
       totalDebitOrders += debitOrders[i].getCost;
     }
 
     return Scaffold(
       backgroundColor: Colors.teal[100],
+
       appBar: AppBar(
         title: Center(
           child: Text(
@@ -75,38 +82,73 @@ class _DebitOrderPage extends State<DebitOrderPage> {
         ),
         backgroundColor: Colors.teal[700],
       ),
+
       body: SingleChildScrollView(
         child: Center(
           child: Padding(
             padding: const EdgeInsets.all(2.0),
+
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.start,
+
               children: [
                 Container(
                   margin: const EdgeInsets.all(10),
                   padding: const EdgeInsets.all(10),
+
                   decoration: BoxDecoration(
                     color: Colors.teal[300],
                     borderRadius: BorderRadius.circular(5),
                   ),
+
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
+
                     children: [
-                      const Text(
-                        "Monthly Debit Orders",
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                        ),
+                      Row(
+                        children: [
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Text(
+                                "Monthly Debit Orders",
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+
+                              Text(
+                                "Total Debit Orders: R ${totalDebitOrders.toStringAsFixed(2)}",
+                                style: const TextStyle(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ],
+                          ),
+
+                          const Spacer(),
+
+                          uiTools.infoButton(
+                            showInfo: showInfo,
+                            onPressed: () {
+                              setState(() {
+                                showInfo = !showInfo;
+                              });
+                            },
+                          ),
+                        ],
                       ),
 
-                      Text(
-                        "Total Debit Orders: R ${totalDebitOrders.toStringAsFixed(2)}",
-                        style: const TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w600,
-                        ),
+                      uiTools.infoContainer(
+                        showInfo: showInfo,
+                        infoText:
+                            "Debit orders are recurring payments that are "
+                            "automatically deducted from your bank account. "
+                            "Examples include Streaming Services, Loan Repayments, "
+                            "Subscriptions, and other regular payments.",
                       ),
 
                       const SizedBox(height: 10.0),
@@ -116,16 +158,20 @@ class _DebitOrderPage extends State<DebitOrderPage> {
                           TextField(
                             controller: debitNameController,
                             keyboardType: TextInputType.text,
+
                             decoration: const InputDecoration(
                               labelText: "Debit Order Name",
                               hintText: "Enter the name for the debit order",
                               border: OutlineInputBorder(),
                             ),
                           ),
+
                           const SizedBox(height: 10.0),
+
                           TextField(
                             controller: debitCostController,
                             keyboardType: TextInputType.number,
+
                             decoration: const InputDecoration(
                               labelText: "Monthly Expense",
                               hintText:
@@ -133,9 +179,12 @@ class _DebitOrderPage extends State<DebitOrderPage> {
                               border: OutlineInputBorder(),
                             ),
                           ),
+
                           const SizedBox(height: 10.0),
+
                           SizedBox(
                             width: double.infinity,
+
                             child: OutlinedButton(
                               onPressed: () {
                                 if (debitNameController.text.isEmpty ||
@@ -144,6 +193,7 @@ class _DebitOrderPage extends State<DebitOrderPage> {
                                 }
 
                                 String debitName = debitNameController.text;
+
                                 double debitCost =
                                     double.tryParse(debitCostController.text) ??
                                     0;
@@ -158,6 +208,7 @@ class _DebitOrderPage extends State<DebitOrderPage> {
                                     debitOrders.add(order);
                                   } else {
                                     debitOrders.insert(editingIndex, order);
+
                                     editingIndex = -1;
                                   }
                                 });
@@ -165,13 +216,16 @@ class _DebitOrderPage extends State<DebitOrderPage> {
                                 debitNameController.clear();
                                 debitCostController.clear();
                               },
+
                               style: OutlinedButton.styleFrom(
                                 backgroundColor: Colors.teal[100],
                                 padding: const EdgeInsets.all(12),
+
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(15),
                                 ),
                               ),
+
                               child: Text(
                                 editingIndex == -1
                                     ? "Add Debit Order"
@@ -184,32 +238,42 @@ class _DebitOrderPage extends State<DebitOrderPage> {
 
                       if (debitOrders.isNotEmpty) ...[
                         const SizedBox(height: 15),
+
                         Center(
                           child: SizedBox(
                             width: double.infinity,
+
                             child: DataTable(
                               headingRowColor: WidgetStateProperty.all(
                                 Colors.teal[700],
                               ),
+
                               dataRowColor: WidgetStateProperty.all(
                                 Colors.cyan,
                               ),
+
                               columns: const [
                                 DataColumn(label: Text("Name:")),
+
                                 DataColumn(label: Text("Cost:")),
+
                                 DataColumn(label: Text("Actions:")),
                               ],
+
                               rows: debitOrders.asMap().entries.map((entry) {
                                 int index = entry.key;
                                 var orderer = entry.value;
+
                                 return DataRow(
                                   cells: [
                                     DataCell(Text(orderer.getName)),
+
                                     DataCell(
                                       Text(
                                         "R ${orderer.getCost.toStringAsFixed(2)}",
                                       ),
                                     ),
+
                                     DataCell(
                                       Row(
                                         mainAxisSize: MainAxisSize.min,
@@ -224,21 +288,24 @@ class _DebitOrderPage extends State<DebitOrderPage> {
 
                                               if (editingIndex == index) {
                                                 editingIndex = -1;
+
                                                 debitNameController.clear();
                                                 debitCostController.clear();
                                               }
                                             });
                                           }),
 
-                                          SizedBox(width: 4),
+                                          const SizedBox(width: 4),
 
                                           uiTools.itemEditBtn(() {
                                             setState(() {
                                               debitNameController.text =
                                                   orderer.getName;
+
                                               debitCostController.text = orderer
                                                   .getCost
                                                   .toString();
+
                                               editingIndex = index;
 
                                               debitOrders.removeAt(index);
@@ -258,18 +325,21 @@ class _DebitOrderPage extends State<DebitOrderPage> {
                   ),
                 ),
 
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
 
                 if (editingIndex == -1)
                   Center(
                     child: Padding(
                       padding: const EdgeInsets.all(5.0),
+
                       child: SizedBox(
                         width: double.infinity,
+
                         child: OutlinedButton(
                           style: OutlinedButton.styleFrom(
                             backgroundColor: Colors.lightBlue[200],
                           ),
+
                           onPressed: () async {
                             await DatabaseHelper.instance.replaceDebitOrders(
                               debitOrders,
@@ -285,6 +355,7 @@ class _DebitOrderPage extends State<DebitOrderPage> {
 
                             Navigator.pop(context);
                           },
+
                           child: const Text("Update"),
                         ),
                       ),

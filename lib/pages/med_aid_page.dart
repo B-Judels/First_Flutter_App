@@ -20,6 +20,8 @@ class _MedAidPage extends State<MedAidPage> {
 
   bool isLoading = true;
 
+  bool showInfo = false;
+
   Future<void> _loadDatabaseData() async {
     try {
       final db = DatabaseHelper.instance;
@@ -60,11 +62,6 @@ class _MedAidPage extends State<MedAidPage> {
 
   @override
   Widget build(BuildContext context) {
-    double totalMedAidCost = 0;
-    for (int i = 0; i < medAids.length; i++) {
-      totalMedAidCost += medAids[i].getMedAidCost;
-    }
-
     return Scaffold(
       backgroundColor: Colors.teal[100],
       appBar: AppBar(
@@ -94,20 +91,38 @@ class _MedAidPage extends State<MedAidPage> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text(
-                        "Monthly Insurance",
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                        ),
+                      Row(
+                        children: [
+                          Column(
+                            children: [
+                              const Text(
+                                "Insurance",
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
+                          ),
+                          Spacer(),
+
+                          uiTools.infoButton(
+                            showInfo: showInfo,
+                            onPressed: () {
+                              setState(() {
+                                showInfo = !showInfo;
+                              });
+                            },
+                          ),
+                        ],
                       ),
 
-                      Text(
-                        "Total Insurance: R ${totalMedAidCost.toStringAsFixed(2)}",
-                        style: const TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.bold,
-                        ),
+                      uiTools.infoContainer(
+                        showInfo: showInfo,
+                        infoText:
+                            "Any Insurance, for example\n"
+                            "Health Insurance/Medical Aid, Car Insurance,\n "
+                            "Home Insurance, etc.",
                       ),
 
                       const SizedBox(height: 10.0),

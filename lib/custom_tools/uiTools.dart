@@ -189,6 +189,11 @@ class Uitools {
 
   Widget infoButton({required bool showInfo, required VoidCallback onPressed}) {
     return OutlinedButton(
+      style: OutlinedButton.styleFrom(
+        backgroundColor: Colors.white,
+        textStyle: TextStyle(color: Colors.lightBlue),
+        side: BorderSide(color: Colors.lightBlue, width: 1),
+      ),
       onPressed: onPressed,
       child: Text(showInfo ? "Hide Info" : "Info"),
     );
