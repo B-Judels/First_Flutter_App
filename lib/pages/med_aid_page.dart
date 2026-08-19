@@ -212,18 +212,45 @@ class _MedAidPage extends State<MedAidPage> {
                               ),
 
                               columns: const [
-                                DataColumn(label: Text("Name:")),
-                                DataColumn(label: Text("Cost:")),
-                                DataColumn(label: Text("Actions:")),
+                                DataColumn(
+                                  label: Text(
+                                    style: TextStyle(fontSize: 12),
+                                    "Name:",
+                                  ),
+                                  headingRowAlignment: MainAxisAlignment.start,
+                                ),
+
+                                DataColumn(
+                                  label: Text(
+                                    style: TextStyle(fontSize: 12),
+                                    "Cost:",
+                                  ),
+                                  headingRowAlignment: MainAxisAlignment.start,
+                                ),
+
+                                DataColumn(
+                                  columnWidth: FixedColumnWidth(125),
+                                  label: Text(
+                                    style: TextStyle(fontSize: 12),
+                                    "Actions:",
+                                  ),
+                                  headingRowAlignment: MainAxisAlignment.start,
+                                ),
                               ],
                               rows: medAids.asMap().entries.map((entry) {
                                 int index = entry.key;
                                 var servicer = entry.value;
                                 return DataRow(
                                   cells: [
-                                    DataCell(Text(servicer.getName)),
                                     DataCell(
                                       Text(
+                                        style: TextStyle(fontSize: 12),
+                                        servicer.getName,
+                                      ),
+                                    ),
+                                    DataCell(
+                                      Text(
+                                        style: TextStyle(fontSize: 12),
                                         "R ${servicer.getMedAidCost.toStringAsFixed(2)}",
                                       ),
                                     ),

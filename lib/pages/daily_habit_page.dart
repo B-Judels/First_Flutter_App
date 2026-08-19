@@ -287,11 +287,30 @@ class _DailyHabitPage extends State<DailyHabitPage> {
                             dataRowColor: WidgetStateProperty.all(Colors.cyan),
 
                             columns: const [
-                              DataColumn(label: Text("Name:")),
+                              DataColumn(
+                                label: Text(
+                                  style: TextStyle(fontSize: 12),
+                                  "Name:",
+                                ),
+                                headingRowAlignment: MainAxisAlignment.start,
+                              ),
 
-                              DataColumn(label: Text("Cost:")),
+                              DataColumn(
+                                label: Text(
+                                  style: TextStyle(fontSize: 12),
+                                  "Cost:",
+                                ),
+                                headingRowAlignment: MainAxisAlignment.start,
+                              ),
 
-                              DataColumn(label: Text("Actions:")),
+                              DataColumn(
+                                columnWidth: FixedColumnWidth(125),
+                                label: Text(
+                                  style: TextStyle(fontSize: 12),
+                                  "Actions:",
+                                ),
+                                headingRowAlignment: MainAxisAlignment.start,
+                              ),
                             ],
 
                             rows: dHabits.asMap().entries.map((entry) {
@@ -301,10 +320,16 @@ class _DailyHabitPage extends State<DailyHabitPage> {
 
                               return DataRow(
                                 cells: [
-                                  DataCell(Text(hab.getName)),
+                                  DataCell(
+                                    Text(
+                                      style: TextStyle(fontSize: 12),
+                                      hab.getName,
+                                    ),
+                                  ),
 
                                   DataCell(
                                     Text(
+                                      style: TextStyle(fontSize: 12),
                                       "R ${hab.costDHabit.toStringAsFixed(2)}",
                                     ),
                                   ),

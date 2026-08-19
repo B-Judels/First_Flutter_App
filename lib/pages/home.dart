@@ -37,6 +37,8 @@ class _HomeState extends State<Home> {
   int selectedYear = DateTime.now().year;
   int selectedMonth = DateTime.now().month;
 
+  final TextEditingController incomeController = TextEditingController();
+
   int daysInMonth = DateTime(
     DateTime.now().year,
     DateTime.now().month + 1,
@@ -595,7 +597,7 @@ class _HomeState extends State<Home> {
                               ),
                             ),
 
-                            const SizedBox(width: 10),
+                            const SizedBox(width: 8),
 
                             Container(
                               width: 2,
@@ -605,6 +607,8 @@ class _HomeState extends State<Home> {
                                 borderRadius: BorderRadius.circular(20),
                               ),
                             ),
+
+                            const SizedBox(width: 8),
 
                             Expanded(
                               flex: 5,
@@ -656,14 +660,41 @@ class _HomeState extends State<Home> {
                   child: Center(
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+
                       children: [
+                        Container(
+                          width: double.infinity,
+                          padding: const EdgeInsets.all(10),
+                          decoration: BoxDecoration(
+                            color: Colors.grey[100],
+                            borderRadius: BorderRadius.circular(20),
+                            border: Border.all(color: Colors.black, width: 2),
+                          ),
+                          child: Column(
+                            children: [
+                              TextField(
+                                controller: incomeController,
+                                keyboardType: TextInputType.number,
+                                decoration: InputDecoration(
+                                  labelText: "Monthly Income",
+                                  hintText: "Enter your monthly income",
+                                  border: OutlineInputBorder(),
+                                ),
+                              ),
+                              SizedBox(height: 10),
+
+                              // OutlinedButton(onPressed: onPressed(){}, child: Text("Update"))
+                            ],
+                          ),
+                        ),
+
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
                             Expanded(
                               child: Center(
                                 child: uiTools.imgBtnTitleContainer(
-                                  "Monthly Debit Orders",
+                                  "Debit Orders",
                                   "images/automatic-payment.png",
                                   () async {
                                     await Navigator.push(
@@ -686,13 +717,13 @@ class _HomeState extends State<Home> {
                             Expanded(
                               child: Center(
                                 child: uiTools.imgBtnTitleContainer(
-                                  "Daily habit costs",
-                                  "images/24-hours-service.png",
+                                  "Services",
+                                  "images/attendant.png",
                                   () async {
                                     await Navigator.push(
                                       context,
                                       uiTools.smoothPageRoute(
-                                        const DailyHabitPage(),
+                                        const ServicePage(),
                                       ),
                                     );
 
@@ -714,7 +745,7 @@ class _HomeState extends State<Home> {
                             Expanded(
                               child: Center(
                                 child: uiTools.imgBtnTitleContainer(
-                                  "Insurance",
+                                  "Insurances",
                                   "images/healthcare.png",
                                   () async {
                                     await Navigator.push(
@@ -737,13 +768,13 @@ class _HomeState extends State<Home> {
                             Expanded(
                               child: Center(
                                 child: uiTools.imgBtnTitleContainer(
-                                  "Monthly Services",
-                                  "images/attendant.png",
+                                  "Daily Habits",
+                                  "images/24-hours-service.png",
                                   () async {
                                     await Navigator.push(
                                       context,
                                       uiTools.smoothPageRoute(
-                                        const ServicePage(),
+                                        const DailyHabitPage(),
                                       ),
                                     );
 

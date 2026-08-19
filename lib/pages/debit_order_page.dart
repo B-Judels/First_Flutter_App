@@ -253,11 +253,30 @@ class _DebitOrderPage extends State<DebitOrderPage> {
                               ),
 
                               columns: const [
-                                DataColumn(label: Text("Name:")),
+                                DataColumn(
+                                  label: Text(
+                                    style: TextStyle(fontSize: 12),
+                                    "Name:",
+                                  ),
+                                  headingRowAlignment: MainAxisAlignment.start,
+                                ),
 
-                                DataColumn(label: Text("Cost:")),
+                                DataColumn(
+                                  label: Text(
+                                    style: TextStyle(fontSize: 12),
+                                    "Cost:",
+                                  ),
+                                  headingRowAlignment: MainAxisAlignment.start,
+                                ),
 
-                                DataColumn(label: Text("Actions:")),
+                                DataColumn(
+                                  columnWidth: FixedColumnWidth(125),
+                                  label: Text(
+                                    style: TextStyle(fontSize: 12),
+                                    "Actions:",
+                                  ),
+                                  headingRowAlignment: MainAxisAlignment.start,
+                                ),
                               ],
 
                               rows: debitOrders.asMap().entries.map((entry) {
@@ -266,10 +285,16 @@ class _DebitOrderPage extends State<DebitOrderPage> {
 
                                 return DataRow(
                                   cells: [
-                                    DataCell(Text(orderer.getName)),
+                                    DataCell(
+                                      Text(
+                                        style: TextStyle(fontSize: 12),
+                                        orderer.getName,
+                                      ),
+                                    ),
 
                                     DataCell(
                                       Text(
+                                        style: TextStyle(fontSize: 12),
                                         "R ${orderer.getCost.toStringAsFixed(2)}",
                                       ),
                                     ),
