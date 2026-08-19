@@ -62,7 +62,7 @@ class _StartUpPageState extends State<StartUpPage> {
         title: Center(
           child: Text(
             style: TextStyle(color: Colors.blueGrey[50]),
-            "Monthly Expense Tracker: ",
+            "Monthly Budget Planner",
           ),
         ),
         backgroundColor: Colors.teal[700],

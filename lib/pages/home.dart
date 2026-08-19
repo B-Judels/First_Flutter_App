@@ -317,7 +317,7 @@ class _HomeState extends State<Home> {
         title: Center(
           child: Text(
             style: TextStyle(color: Colors.blueGrey[50]),
-            "Monthly Expense Tracker",
+            "Monthly Budget Planner",
           ),
         ),
         backgroundColor: Colors.teal[700],

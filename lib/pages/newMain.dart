@@ -15,7 +15,7 @@ class Newmain extends StatelessWidget {
         title: Center(
           child: Text(
             style: TextStyle(color: Colors.blueGrey[50]),
-            "Monthly Expence Tracker: ",
+            "Monthly Budget Planner",
           ),
         ),
         backgroundColor: Colors.teal[700],

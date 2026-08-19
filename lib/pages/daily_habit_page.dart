@@ -86,7 +86,7 @@ class _DailyHabitPage extends State<DailyHabitPage> {
       appBar: AppBar(
         title: Center(
           child: Text(
-            "Monthly Expense Tracker: ",
+            "Monthly Budget Planner",
             style: TextStyle(color: Colors.blueGrey[50]),
           ),
         ),

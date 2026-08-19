@@ -76,7 +76,7 @@ class _DebitOrderPage extends State<DebitOrderPage> {
       appBar: AppBar(
         title: Center(
           child: Text(
-            "Monthly Expense Tracker:",
+            "Monthly Budget Planner",
             style: TextStyle(color: Colors.blueGrey[50]),
           ),
         ),
