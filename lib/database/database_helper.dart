@@ -199,6 +199,18 @@ class DatabaseHelper {
     });
   }
 
+  Future<void> replaceUserSettings(List<UserSettings> settingsList) async {
+    final db = await database;
+
+    await db.transaction((txn) async {
+      await txn.delete('user_settings');
+
+      for (UserSettings sett in settingsList) {
+        await txn.insert('user_settings', {'Income': sett.getIncome});
+      }
+    });
+  }
+
   Future<void> deleteAllData() async {
     final db = await database;
 

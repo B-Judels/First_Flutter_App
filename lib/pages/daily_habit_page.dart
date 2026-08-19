@@ -117,9 +117,6 @@ class _DailyHabitPage extends State<DailyHabitPage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
 
                     children: [
-                      // --------------------------------------------------
-                      // TITLE + TOTALS + INFO BUTTON
-                      // --------------------------------------------------
                       Row(
                         children: [
                           Column(

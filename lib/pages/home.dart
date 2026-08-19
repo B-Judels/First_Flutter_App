@@ -93,7 +93,14 @@ class _HomeState extends State<Home> {
     final total = debitTotal + serviceTotal + medTotal + habitTotal;
 
     if (total == 0) {
-      return [PieChartSectionData(value: 1, title: "No Expenses", radius: 80)];
+      return [
+        PieChartSectionData(
+          value: 1,
+          title: "No \nExpenses",
+          titleStyle: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+          radius: 60,
+        ),
+      ];
     }
 
     return [
@@ -662,31 +669,7 @@ class _HomeState extends State<Home> {
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
 
                       children: [
-                        Container(
-                          width: double.infinity,
-                          padding: const EdgeInsets.all(10),
-                          decoration: BoxDecoration(
-                            color: Colors.grey[100],
-                            borderRadius: BorderRadius.circular(20),
-                            border: Border.all(color: Colors.black, width: 2),
-                          ),
-                          child: Column(
-                            children: [
-                              TextField(
-                                controller: incomeController,
-                                keyboardType: TextInputType.number,
-                                decoration: InputDecoration(
-                                  labelText: "Monthly Income",
-                                  hintText: "Enter your monthly income",
-                                  border: OutlineInputBorder(),
-                                ),
-                              ),
-                              SizedBox(height: 10),
-
-                              // OutlinedButton(onPressed: onPressed(){}, child: Text("Update"))
-                            ],
-                          ),
-                        ),
+                        SizedBox(height: 5),
 
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -789,6 +772,116 @@ class _HomeState extends State<Home> {
                         ),
                       ],
                     ),
+                  ),
+                ),
+
+                Container(
+                  margin: EdgeInsets.all(10),
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                    color: Colors.grey[100],
+                    borderRadius: BorderRadius.circular(20),
+                    border: Border.all(color: Colors.black, width: 2),
+                  ),
+                  child: Column(
+                    children: [
+                      TextField(
+                        controller: incomeController,
+                        keyboardType: TextInputType.number,
+                        decoration: InputDecoration(
+                          labelText: "Monthly Income",
+                          hintText: "Update your monthly income",
+                          border: OutlineInputBorder(),
+                        ),
+                      ),
+
+                      SizedBox(height: 10),
+
+                      SizedBox(
+                        width: double.infinity,
+
+                        child: OutlinedButton(
+                          style: OutlinedButton.styleFrom(
+                            backgroundColor: Colors.teal[100],
+                          ),
+                          onPressed: () async {
+                            double newIncome =
+                                double.tryParse(incomeController.text) ?? 0;
+
+                            UserSettings newSettings = UserSettings(
+                              userIncome: newIncome,
+                            );
+
+                            bool? confirmUpdate = await showDialog<bool>(
+                              context: context,
+                              builder: (context) {
+                                return AlertDialog(
+                                  title: const Text("Update Income?"),
+                                  content: Text(
+                                    "Are you sure you want to update your monthly income to "
+                                    "R ${newIncome.toStringAsFixed(2)}?",
+                                  ),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () {
+                                        Navigator.pop(context, false);
+                                      },
+                                      child: const Text("Cancel"),
+                                    ),
+                                    ElevatedButton(
+                                      onPressed: () {
+                                        Navigator.pop(context, true);
+                                      },
+                                      child: const Text("Update"),
+                                    ),
+                                  ],
+                                );
+                              },
+                            );
+
+                            if (confirmUpdate != true) {
+                              return;
+                            }
+
+                            try {
+                              setState(() {
+                                if (userSettings.isNotEmpty) {
+                                  userSettings[0] = newSettings;
+                                } else {
+                                  userSettings.add(newSettings);
+                                }
+                              });
+
+                              await DatabaseHelper.instance.replaceUserSettings(
+                                userSettings,
+                              );
+
+                              if (!mounted) return;
+
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text("Income updated!"),
+                                ),
+                              );
+
+                              incomeController.clear();
+                            } catch (e) {
+                              debugPrint("Error updating income: $e");
+
+                              if (!mounted) return;
+
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text("Failed to update income."),
+                                ),
+                              );
+                            }
+                          },
+                          child: Text("Update"),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ],

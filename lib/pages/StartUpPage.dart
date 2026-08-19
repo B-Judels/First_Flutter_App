@@ -266,11 +266,33 @@ class _StartUpPageState extends State<StartUpPage> {
                                   ),
 
                                   columns: const [
-                                    DataColumn(label: Text("Name:")),
+                                    DataColumn(
+                                      label: Text(
+                                        style: TextStyle(fontSize: 12),
+                                        "Name:",
+                                      ),
+                                      headingRowAlignment:
+                                          MainAxisAlignment.start,
+                                    ),
 
-                                    DataColumn(label: Text("Cost:")),
+                                    DataColumn(
+                                      label: Text(
+                                        style: TextStyle(fontSize: 12),
+                                        "Cost:",
+                                      ),
+                                      headingRowAlignment:
+                                          MainAxisAlignment.start,
+                                    ),
 
-                                    DataColumn(label: Text("Actions:")),
+                                    DataColumn(
+                                      columnWidth: FixedColumnWidth(125),
+                                      label: Text(
+                                        style: TextStyle(fontSize: 12),
+                                        "Actions:",
+                                      ),
+                                      headingRowAlignment:
+                                          MainAxisAlignment.start,
+                                    ),
                                   ],
 
                                   rows: debitOrders.asMap().entries.map((
@@ -281,10 +303,16 @@ class _StartUpPageState extends State<StartUpPage> {
 
                                     return DataRow(
                                       cells: [
-                                        DataCell(Text(orderer.getName)),
+                                        DataCell(
+                                          Text(
+                                            style: TextStyle(fontSize: 12),
+                                            orderer.getName,
+                                          ),
+                                        ),
 
                                         DataCell(
                                           Text(
+                                            style: TextStyle(fontSize: 12),
                                             "R ${orderer.getCost.toStringAsFixed(2)}",
                                           ),
                                         ),
@@ -473,18 +501,48 @@ class _StartUpPageState extends State<StartUpPage> {
                                   ),
 
                                   columns: const [
-                                    DataColumn(label: Text("Name:")),
-                                    DataColumn(label: Text("Cost:")),
-                                    DataColumn(label: Text("Actions:")),
+                                    DataColumn(
+                                      label: Text(
+                                        style: TextStyle(fontSize: 12),
+                                        "Name:",
+                                      ),
+                                      headingRowAlignment:
+                                          MainAxisAlignment.start,
+                                    ),
+
+                                    DataColumn(
+                                      label: Text(
+                                        style: TextStyle(fontSize: 12),
+                                        "Cost:",
+                                      ),
+                                      headingRowAlignment:
+                                          MainAxisAlignment.start,
+                                    ),
+
+                                    DataColumn(
+                                      columnWidth: FixedColumnWidth(125),
+                                      label: Text(
+                                        style: TextStyle(fontSize: 12),
+                                        "Actions:",
+                                      ),
+                                      headingRowAlignment:
+                                          MainAxisAlignment.start,
+                                    ),
                                   ],
                                   rows: medAids.asMap().entries.map((entry) {
                                     int index = entry.key;
                                     var servicer = entry.value;
                                     return DataRow(
                                       cells: [
-                                        DataCell(Text(servicer.getName)),
                                         DataCell(
                                           Text(
+                                            style: TextStyle(fontSize: 12),
+                                            servicer.getName,
+                                          ),
+                                        ),
+                                        DataCell(
+                                          Text(
+                                            style: TextStyle(fontSize: 12),
                                             "R ${servicer.getMedAidCost.toStringAsFixed(2)}",
                                           ),
                                         ),
@@ -676,18 +734,45 @@ class _StartUpPageState extends State<StartUpPage> {
                                 Colors.cyan,
                               ),
                               columns: const [
-                                DataColumn(label: Text("Name:")),
-                                DataColumn(label: Text("Cost:")),
-                                DataColumn(label: Text("Actions:")),
+                                DataColumn(
+                                  label: Text(
+                                    style: TextStyle(fontSize: 12),
+                                    "Name:",
+                                  ),
+                                  headingRowAlignment: MainAxisAlignment.start,
+                                ),
+
+                                DataColumn(
+                                  label: Text(
+                                    style: TextStyle(fontSize: 12),
+                                    "Cost:",
+                                  ),
+                                  headingRowAlignment: MainAxisAlignment.start,
+                                ),
+
+                                DataColumn(
+                                  columnWidth: FixedColumnWidth(125),
+                                  label: Text(
+                                    style: TextStyle(fontSize: 12),
+                                    "Actions:",
+                                  ),
+                                  headingRowAlignment: MainAxisAlignment.start,
+                                ),
                               ],
                               rows: services.asMap().entries.map((entry) {
                                 int index = entry.key;
                                 var servicer = entry.value;
                                 return DataRow(
                                   cells: [
-                                    DataCell(Text(servicer.getName)),
                                     DataCell(
                                       Text(
+                                        style: TextStyle(fontSize: 12),
+                                        servicer.getName,
+                                      ),
+                                    ),
+                                    DataCell(
+                                      Text(
+                                        style: TextStyle(fontSize: 12),
                                         "R ${servicer.getCost.toStringAsFixed(2)}",
                                       ),
                                     ),
@@ -778,7 +863,6 @@ class _StartUpPageState extends State<StartUpPage> {
 
                           const Spacer(),
 
-                          // INFO BUTTON
                           uiTools.infoButton(
                             showInfo: showInfo4,
 
@@ -912,11 +996,30 @@ class _StartUpPageState extends State<StartUpPage> {
                             dataRowColor: WidgetStateProperty.all(Colors.cyan),
 
                             columns: const [
-                              DataColumn(label: Text("Name:")),
+                              DataColumn(
+                                label: Text(
+                                  style: TextStyle(fontSize: 12),
+                                  "Name:",
+                                ),
+                                headingRowAlignment: MainAxisAlignment.start,
+                              ),
 
-                              DataColumn(label: Text("Cost:")),
+                              DataColumn(
+                                label: Text(
+                                  style: TextStyle(fontSize: 12),
+                                  "Cost:",
+                                ),
+                                headingRowAlignment: MainAxisAlignment.start,
+                              ),
 
-                              DataColumn(label: Text("Actions:")),
+                              DataColumn(
+                                columnWidth: FixedColumnWidth(125),
+                                label: Text(
+                                  style: TextStyle(fontSize: 12),
+                                  "Actions:",
+                                ),
+                                headingRowAlignment: MainAxisAlignment.start,
+                              ),
                             ],
 
                             rows: dHabits.asMap().entries.map((entry) {
@@ -926,10 +1029,16 @@ class _StartUpPageState extends State<StartUpPage> {
 
                               return DataRow(
                                 cells: [
-                                  DataCell(Text(hab.getName)),
+                                  DataCell(
+                                    Text(
+                                      style: TextStyle(fontSize: 12),
+                                      hab.getName,
+                                    ),
+                                  ),
 
                                   DataCell(
                                     Text(
+                                      style: TextStyle(fontSize: 12),
                                       "R ${hab.costDHabit.toStringAsFixed(2)}",
                                     ),
                                   ),
@@ -1000,6 +1109,36 @@ class _StartUpPageState extends State<StartUpPage> {
                         ),
                       ),
                       onPressed: () async {
+                        if (incomeController.text.trim().isEmpty) {
+                          if (!mounted) return;
+
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text("Please enter an income to track."),
+                            ),
+                          );
+
+                          return;
+                        }
+
+                        double? income = double.tryParse(
+                          incomeController.text.trim(),
+                        );
+
+                        if (income == null || income <= 0) {
+                          if (!mounted) return;
+
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text(
+                                "Please enter a valid income amount.",
+                              ),
+                            ),
+                          );
+
+                          return;
+                        }
+
                         try {
                           for (DebitOrder order in debitOrders) {
                             await DatabaseHelper.instance.insertDebitOrder(
