@@ -121,7 +121,7 @@ class NewMain extends StatelessWidget {
         backgroundColor: Colors.teal[700],
         title: Center(
           child: Text(
-            "Monthly Expense Tracker",
+            "Monthly Budget Planner",
             style: TextStyle(color: Colors.blueGrey[50]),
           ),
         ),
