@@ -268,7 +268,7 @@ class _StartUpPageState extends State<StartUpPage> {
                                     columns: [
                                       DataColumn(
                                         label: Text(
-                                          style: uiTools.tableTextStyle(),
+                                          style: uiTools.tableHeaderStyle(),
                                           "Name:",
                                         ),
                                         headingRowAlignment:
@@ -277,7 +277,7 @@ class _StartUpPageState extends State<StartUpPage> {
 
                                       DataColumn(
                                         label: Text(
-                                          style: uiTools.tableTextStyle(),
+                                          style: uiTools.tableHeaderStyle(),
                                           "Cost:",
                                         ),
                                         headingRowAlignment:
@@ -287,7 +287,7 @@ class _StartUpPageState extends State<StartUpPage> {
                                       DataColumn(
                                         columnWidth: FixedColumnWidth(125),
                                         label: Text(
-                                          style: uiTools.tableTextStyle(),
+                                          style: uiTools.tableHeaderStyle(),
                                           "Actions:",
                                         ),
                                         headingRowAlignment:
@@ -504,7 +504,7 @@ class _StartUpPageState extends State<StartUpPage> {
                                     columns: [
                                       DataColumn(
                                         label: Text(
-                                          style: uiTools.tableTextStyle(),
+                                          style: uiTools.tableHeaderStyle(),
                                           "Name:",
                                         ),
                                         headingRowAlignment:
@@ -513,7 +513,7 @@ class _StartUpPageState extends State<StartUpPage> {
 
                                       DataColumn(
                                         label: Text(
-                                          style: uiTools.tableTextStyle(),
+                                          style: uiTools.tableHeaderStyle(),
                                           "Cost:",
                                         ),
                                         headingRowAlignment:
@@ -523,7 +523,7 @@ class _StartUpPageState extends State<StartUpPage> {
                                       DataColumn(
                                         columnWidth: FixedColumnWidth(125),
                                         label: Text(
-                                          style: uiTools.tableTextStyle(),
+                                          style: uiTools.tableHeaderStyle(),
                                           "Actions:",
                                         ),
                                         headingRowAlignment:
@@ -737,7 +737,7 @@ class _StartUpPageState extends State<StartUpPage> {
                                 columns: [
                                   DataColumn(
                                     label: Text(
-                                      style: uiTools.tableTextStyle(),
+                                      style: uiTools.tableHeaderStyle(),
                                       "Name:",
                                     ),
                                     headingRowAlignment:
@@ -746,7 +746,7 @@ class _StartUpPageState extends State<StartUpPage> {
 
                                   DataColumn(
                                     label: Text(
-                                      style: uiTools.tableTextStyle(),
+                                      style: uiTools.tableHeaderStyle(),
                                       "Cost:",
                                     ),
                                     headingRowAlignment:
@@ -756,7 +756,7 @@ class _StartUpPageState extends State<StartUpPage> {
                                   DataColumn(
                                     columnWidth: FixedColumnWidth(125),
                                     label: Text(
-                                      style: uiTools.tableTextStyle(),
+                                      style: uiTools.tableHeaderStyle(),
                                       "Actions:",
                                     ),
                                     headingRowAlignment:
@@ -997,7 +997,7 @@ class _StartUpPageState extends State<StartUpPage> {
                               columns: [
                                 DataColumn(
                                   label: Text(
-                                    style: uiTools.tableTextStyle(),
+                                    style: uiTools.tableHeaderStyle(),
                                     "Name:",
                                   ),
                                   headingRowAlignment: MainAxisAlignment.start,
@@ -1005,7 +1005,7 @@ class _StartUpPageState extends State<StartUpPage> {
 
                                 DataColumn(
                                   label: Text(
-                                    style: uiTools.tableTextStyle(),
+                                    style: uiTools.tableHeaderStyle(),
                                     "Cost:",
                                   ),
                                   headingRowAlignment: MainAxisAlignment.start,
@@ -1014,7 +1014,7 @@ class _StartUpPageState extends State<StartUpPage> {
                                 DataColumn(
                                   columnWidth: FixedColumnWidth(125),
                                   label: Text(
-                                    style: uiTools.tableTextStyle(),
+                                    style: uiTools.tableHeaderStyle(),
                                     "Actions:",
                                   ),
                                   headingRowAlignment: MainAxisAlignment.start,

@@ -226,7 +226,7 @@ class _DebitOrderPage extends State<DebitOrderPage> {
                               columns: [
                                 DataColumn(
                                   label: Text(
-                                    style: uiTools.tableTextStyle(),
+                                    style: uiTools.tableHeaderStyle(),
                                     "Name:",
                                   ),
                                   headingRowAlignment: MainAxisAlignment.start,
@@ -234,7 +234,7 @@ class _DebitOrderPage extends State<DebitOrderPage> {
 
                                 DataColumn(
                                   label: Text(
-                                    style: uiTools.tableTextStyle(),
+                                    style: uiTools.tableHeaderStyle(),
                                     "Cost:",
                                   ),
                                   headingRowAlignment: MainAxisAlignment.start,
@@ -243,7 +243,7 @@ class _DebitOrderPage extends State<DebitOrderPage> {
                                 DataColumn(
                                   columnWidth: FixedColumnWidth(125),
                                   label: Text(
-                                    style: uiTools.tableTextStyle(),
+                                    style: uiTools.tableHeaderStyle(),
                                     "Actions:",
                                   ),
                                   headingRowAlignment: MainAxisAlignment.start,

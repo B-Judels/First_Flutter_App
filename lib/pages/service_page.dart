@@ -221,7 +221,7 @@ class _ServicePage extends State<ServicePage> {
                               columns: [
                                 DataColumn(
                                   label: Text(
-                                    style: uiTools.tableTextStyle(),
+                                    style: uiTools.tableHeaderStyle(),
                                     "Name:",
                                   ),
                                   headingRowAlignment: MainAxisAlignment.start,
@@ -229,7 +229,7 @@ class _ServicePage extends State<ServicePage> {
 
                                 DataColumn(
                                   label: Text(
-                                    style: uiTools.tableTextStyle(),
+                                    style: uiTools.tableHeaderStyle(),
                                     "Cost:",
                                   ),
                                   headingRowAlignment: MainAxisAlignment.start,
@@ -238,7 +238,7 @@ class _ServicePage extends State<ServicePage> {
                                 DataColumn(
                                   columnWidth: FixedColumnWidth(125),
                                   label: Text(
-                                    style: uiTools.tableTextStyle(),
+                                    style: uiTools.tableHeaderStyle(),
                                     "Actions:",
                                   ),
                                   headingRowAlignment: MainAxisAlignment.start,

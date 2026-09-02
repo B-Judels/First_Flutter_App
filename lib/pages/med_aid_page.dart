@@ -209,7 +209,7 @@ class _MedAidPage extends State<MedAidPage> {
                               columns: [
                                 DataColumn(
                                   label: Text(
-                                    style: uiTools.tableTextStyle(),
+                                    style: uiTools.tableHeaderStyle(),
                                     "Name:",
                                   ),
                                   headingRowAlignment: MainAxisAlignment.start,
@@ -217,7 +217,7 @@ class _MedAidPage extends State<MedAidPage> {
 
                                 DataColumn(
                                   label: Text(
-                                    style: uiTools.tableTextStyle(),
+                                    style: uiTools.tableHeaderStyle(),
                                     "Cost:",
                                   ),
                                   headingRowAlignment: MainAxisAlignment.start,
@@ -226,7 +226,7 @@ class _MedAidPage extends State<MedAidPage> {
                                 DataColumn(
                                   columnWidth: FixedColumnWidth(125),
                                   label: Text(
-                                    style: uiTools.tableTextStyle(),
+                                    style: uiTools.tableHeaderStyle(),
                                     "Actions:",
                                   ),
                                   headingRowAlignment: MainAxisAlignment.start,

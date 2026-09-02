@@ -273,7 +273,7 @@ class _DailyHabitPage extends State<DailyHabitPage> {
                             columns: [
                               DataColumn(
                                 label: Text(
-                                  style: uiTools.tableTextStyle(),
+                                  style: uiTools.tableHeaderStyle(),
                                   "Name:",
                                 ),
                                 headingRowAlignment: MainAxisAlignment.start,
@@ -281,7 +281,7 @@ class _DailyHabitPage extends State<DailyHabitPage> {
 
                               DataColumn(
                                 label: Text(
-                                  style: uiTools.tableTextStyle(),
+                                  style: uiTools.tableHeaderStyle(),
                                   "Cost:",
                                 ),
                                 headingRowAlignment: MainAxisAlignment.start,
@@ -290,7 +290,7 @@ class _DailyHabitPage extends State<DailyHabitPage> {
                               DataColumn(
                                 columnWidth: FixedColumnWidth(125),
                                 label: Text(
-                                  style: uiTools.tableTextStyle(),
+                                  style: uiTools.tableHeaderStyle(),
                                   "Actions:",
                                 ),
                                 headingRowAlignment: MainAxisAlignment.start,
