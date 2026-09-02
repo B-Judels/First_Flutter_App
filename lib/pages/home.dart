@@ -11,6 +11,7 @@ import 'package:freeuse_monthly_expense_tracker/models/MedicalAid.dart';
 import 'package:freeuse_monthly_expense_tracker/models/DailyHabit.dart';
 import 'package:freeuse_monthly_expense_tracker/models/UserSettings.dart';
 import 'package:freeuse_monthly_expense_tracker/database/database_helper.dart';
+import 'package:freeuse_monthly_expense_tracker/pages/StartUpPage.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -97,7 +98,7 @@ class _HomeState extends State<Home> {
         PieChartSectionData(
           value: 1,
           title: "No \nExpenses",
-          titleStyle: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+          titleStyle: uiTools.tableHeaderStyle(),
           radius: 60,
         ),
       ];
@@ -106,55 +107,55 @@ class _HomeState extends State<Home> {
     return [
       PieChartSectionData(
         value: debitTotal,
-        color: Colors.red[300],
-        borderSide: const BorderSide(
-          color: Colors.black,
+        color: uiTools.debitOrderColor1(),
+        borderSide: BorderSide(
+          color: uiTools.borderColor1(),
           width: 1,
           style: BorderStyle.solid,
         ),
         title:
             "${((debitTotal / currentMonthTotal) * 100).toStringAsFixed(0)}%",
-        titleStyle: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+        titleStyle: uiTools.tableHeaderStyle(),
 
         radius: 60,
       ),
       PieChartSectionData(
         value: serviceTotal,
-        color: Colors.lightBlue[300],
-        borderSide: const BorderSide(
-          color: Colors.black,
+        color: uiTools.serviceColor1(),
+        borderSide: BorderSide(
+          color: uiTools.borderColor1(),
           width: 1,
           style: BorderStyle.solid,
         ),
         title:
             "${((serviceTotal / currentMonthTotal) * 100).toStringAsFixed(0)}%",
-        titleStyle: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+        titleStyle: uiTools.tableHeaderStyle(),
         radius: 60,
       ),
       PieChartSectionData(
         value: medTotal,
-        color: Colors.lightGreen[300],
-        borderSide: const BorderSide(
-          color: Colors.black,
+        color: uiTools.medicalInsuranceColor1(),
+        borderSide: BorderSide(
+          color: uiTools.borderColor1(),
           width: 1,
           style: BorderStyle.solid,
         ),
         title: "${((medTotal / currentMonthTotal) * 100).toStringAsFixed(0)}%",
-        titleStyle: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+        titleStyle: uiTools.tableHeaderStyle(),
 
         radius: 60,
       ),
       PieChartSectionData(
         value: habitTotal,
-        color: Colors.purple[200],
-        borderSide: const BorderSide(
-          color: Colors.black,
+        color: uiTools.dailyHabitColor1(),
+        borderSide: BorderSide(
+          color: uiTools.borderColor1(),
           width: 1,
           style: BorderStyle.solid,
         ),
         title:
             "${((habitTotal / currentMonthTotal) * 100).toStringAsFixed(0)}%",
-        titleStyle: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+        titleStyle: uiTools.tableHeaderStyle(),
 
         radius: 60,
       ),
@@ -275,6 +276,47 @@ class _HomeState extends State<Home> {
     return months[month - 1];
   }
 
+  Future<void> _startNew(BuildContext context) async {
+    final shouldDelete = await showDialog<bool>(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text("Start New?"),
+          content: const Text(
+            "Starting a new expense tracker will delete all "
+            "previously stored data.\n\n"
+            "Are you sure you want to continue?",
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context, false);
+              },
+              child: const Text("Cancel"),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.pop(context, true);
+              },
+              child: const Text("Delete & Start New"),
+            ),
+          ],
+        );
+      },
+    );
+
+    if (shouldDelete != true) return;
+
+    await DatabaseHelper.instance.deleteAllData();
+
+    if (!context.mounted) return;
+
+    Navigator.pushReplacement(
+      context,
+      uiTools.smoothPageRoute(const StartUpPage()),
+    );
+  }
+
   @override
   void initState() {
     super.initState();
@@ -321,15 +363,16 @@ class _HomeState extends State<Home> {
         : 0;
 
     return Scaffold(
-      backgroundColor: Colors.teal[100],
+      backgroundColor: uiTools.pageBackgroundColor1(),
       appBar: AppBar(
+        iconTheme: IconThemeData(color: uiTools.appBarIconColor()),
         title: Center(
           child: Text(
-            style: TextStyle(color: Colors.blueGrey[50]),
+            style: uiTools.appBarTitleStyle(),
             "Monthly Budget Planner",
           ),
         ),
-        backgroundColor: Colors.teal[700],
+        backgroundColor: uiTools.appBarColor1(),
       ),
       body: SingleChildScrollView(
         child: SafeArea(
@@ -345,14 +388,14 @@ class _HomeState extends State<Home> {
 
                   padding: const EdgeInsets.all(1.0),
                   decoration: BoxDecoration(
-                    color: Colors.teal[300],
+                    color: uiTools.sectionHeaderColor1(),
                     borderRadius: BorderRadius.circular(5),
                   ),
-                  child: Center(
-                    child: Text(
-                      style: TextStyle(fontSize: 20),
-                      "Tracked Data:",
-                    ),
+                  child: Row(
+                    children: [
+                      Text("Tracked Data:", style: uiTools.sectionTitleStyle()),
+                      const Spacer(),
+                    ],
                   ),
                 ),
 
@@ -362,18 +405,15 @@ class _HomeState extends State<Home> {
 
                   padding: const EdgeInsets.all(10.0),
                   decoration: BoxDecoration(
-                    color: Colors.grey[100],
+                    color: uiTools.cardColor1(),
                     borderRadius: BorderRadius.circular(20),
-                    border: Border.all(color: Colors.black, width: 2),
+                    border: Border.all(color: uiTools.borderColor1(), width: 2),
                   ),
                   child: Column(
                     children: [
                       Center(
                         child: Text(
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                          ),
+                          style: uiTools.sectionTitleStyle(),
                           "Total Monthly Expenses:",
                         ),
                       ),
@@ -388,56 +428,32 @@ class _HomeState extends State<Home> {
                             children: [
                               Text(
                                 "Current Monthly Income:",
-                                style: const TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 13,
-                                  fontWeight: FontWeight.bold,
-                                ),
+                                style: uiTools.summaryTextStyle(),
                               ),
                               Text(
                                 "R ${userSettings.isNotEmpty ? userSettings[0].getIncome.toStringAsFixed(2) : "0.00"}",
-                                style: const TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 13,
-                                  fontWeight: FontWeight.bold,
-                                ),
+                                style: uiTools.summaryTextStyle(),
                               ),
 
                               SizedBox(height: 5),
 
                               Text(
                                 "Current Monthly Expenses:",
-                                style: const TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 13,
-                                  fontWeight: FontWeight.bold,
-                                ),
+                                style: uiTools.summaryTextStyle(),
                               ),
                               Text(
                                 "R ${currentMonthTotal.toStringAsFixed(2)}",
-                                style: const TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 13,
-                                  fontWeight: FontWeight.bold,
-                                ),
+                                style: uiTools.summaryTextStyle(),
                               ),
                               SizedBox(height: 5),
 
                               Text(
                                 "End of Month Prediction:",
-                                style: const TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 13,
-                                  fontWeight: FontWeight.bold,
-                                ),
+                                style: uiTools.summaryTextStyle(),
                               ),
                               Text(
                                 "R ${endMonthPredict.toStringAsFixed(2)}",
-                                style: const TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 13,
-                                  fontWeight: FontWeight.bold,
-                                ),
+                                style: uiTools.summaryTextStyle(),
                               ),
                             ],
                           ),
@@ -459,10 +475,7 @@ class _HomeState extends State<Home> {
 
                               Text(
                                 "${_monthName(selectedMonth)}: $daysInMonth days.",
-                                style: const TextStyle(
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.bold,
-                                ),
+                                style: uiTools.tableHeaderStyle(),
                               ),
                             ],
                           ),
@@ -474,7 +487,7 @@ class _HomeState extends State<Home> {
                         width: double.infinity,
                         height: 2,
                         decoration: BoxDecoration(
-                          color: Colors.grey[600],
+                          color: uiTools.mutedTextColor(),
                           borderRadius: BorderRadius.circular(20),
                         ),
                       ),
@@ -483,10 +496,7 @@ class _HomeState extends State<Home> {
 
                       Center(
                         child: Text(
-                          style: TextStyle(
-                            fontSize: 15,
-                            fontWeight: FontWeight.bold,
-                          ),
+                          style: uiTools.summaryTextStyle(),
                           "Monthly Expenses Per Category:",
                         ),
                       ),
@@ -507,19 +517,16 @@ class _HomeState extends State<Home> {
                                       width: double.infinity,
                                       margin: const EdgeInsets.only(bottom: 4),
                                       decoration: BoxDecoration(
-                                        color: Colors.red[300],
+                                        color: uiTools.debitOrderColor1(),
                                         borderRadius: BorderRadius.circular(5),
                                         border: Border.all(
-                                          color: Colors.black,
+                                          color: uiTools.borderColor1(),
                                           width: 1,
                                         ),
                                       ),
                                       child: Center(
                                         child: Text(
-                                          style: TextStyle(
-                                            fontSize: 12,
-                                            fontWeight: FontWeight.bold,
-                                          ),
+                                          style: uiTools.tableHeaderStyle(),
                                           "Debit Total:\nR${debitTotal.toStringAsFixed(2)}",
                                           textAlign: TextAlign.center,
                                         ),
@@ -532,19 +539,16 @@ class _HomeState extends State<Home> {
                                       width: double.infinity,
                                       margin: const EdgeInsets.only(bottom: 4),
                                       decoration: BoxDecoration(
-                                        color: Colors.lightBlue[300],
+                                        color: uiTools.serviceColor1(),
                                         borderRadius: BorderRadius.circular(5),
                                         border: Border.all(
-                                          color: Colors.black,
+                                          color: uiTools.borderColor1(),
                                           width: 1,
                                         ),
                                       ),
                                       child: Center(
                                         child: Text(
-                                          style: TextStyle(
-                                            fontSize: 12,
-                                            fontWeight: FontWeight.bold,
-                                          ),
+                                          style: uiTools.tableHeaderStyle(),
                                           "Service Total:\nR${serviceTotal.toStringAsFixed(2)}",
                                           textAlign: TextAlign.center,
                                         ),
@@ -557,19 +561,16 @@ class _HomeState extends State<Home> {
                                       width: double.infinity,
                                       margin: const EdgeInsets.only(bottom: 4),
                                       decoration: BoxDecoration(
-                                        color: Colors.lightGreen[300],
+                                        color: uiTools.medicalInsuranceColor1(),
                                         borderRadius: BorderRadius.circular(5),
                                         border: Border.all(
-                                          color: Colors.black,
+                                          color: uiTools.borderColor1(),
                                           width: 1,
                                         ),
                                       ),
                                       child: Center(
                                         child: Text(
-                                          style: TextStyle(
-                                            fontSize: 12,
-                                            fontWeight: FontWeight.bold,
-                                          ),
+                                          style: uiTools.tableHeaderStyle(),
                                           "Insurance Total:\nR${medTotal.toStringAsFixed(2)}",
                                           textAlign: TextAlign.center,
                                         ),
@@ -581,19 +582,16 @@ class _HomeState extends State<Home> {
                                     child: Container(
                                       width: double.infinity,
                                       decoration: BoxDecoration(
-                                        color: Colors.purple[200],
+                                        color: uiTools.dailyHabitColor1(),
                                         borderRadius: BorderRadius.circular(5),
                                         border: Border.all(
-                                          color: Colors.black,
+                                          color: uiTools.borderColor1(),
                                           width: 1,
                                         ),
                                       ),
                                       child: Center(
                                         child: Text(
-                                          style: TextStyle(
-                                            fontSize: 12,
-                                            fontWeight: FontWeight.bold,
-                                          ),
+                                          style: uiTools.tableHeaderStyle(),
                                           "Daily Habits Total:\nR${habitTotal.toStringAsFixed(2)}",
                                           textAlign: TextAlign.center,
                                         ),
@@ -610,7 +608,7 @@ class _HomeState extends State<Home> {
                               width: 2,
                               height: 160,
                               decoration: BoxDecoration(
-                                color: Colors.grey[600],
+                                color: uiTools.mutedTextColor(),
                                 borderRadius: BorderRadius.circular(20),
                               ),
                             ),
@@ -652,233 +650,265 @@ class _HomeState extends State<Home> {
 
                   padding: const EdgeInsets.all(1.0),
                   decoration: BoxDecoration(
-                    color: Colors.teal[300],
+                    color: uiTools.sectionHeaderColor1(),
                     borderRadius: BorderRadius.circular(5),
                   ),
                   child: Center(
-                    child: Text(style: TextStyle(fontSize: 20), "Manage Data:"),
-                  ),
-                ),
-
-                Container(
-                  width: double.infinity,
-                  padding: const EdgeInsets.all(10.0),
-
-                  child: Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-
-                      children: [
-                        SizedBox(height: 5),
-
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            Expanded(
-                              child: Center(
-                                child: uiTools.imgBtnTitleContainer(
-                                  "Debit Orders",
-                                  "images/automatic-payment.png",
-                                  () async {
-                                    await Navigator.push(
-                                      context,
-                                      uiTools.smoothPageRoute(
-                                        const DebitOrderPage(),
-                                      ),
-                                    );
-
-                                    if (!mounted) return;
-
-                                    await _loadDatabaseData();
-                                  },
-                                ),
-                              ),
-                            ),
-
-                            SizedBox(width: 10),
-
-                            Expanded(
-                              child: Center(
-                                child: uiTools.imgBtnTitleContainer(
-                                  "Services",
-                                  "images/attendant.png",
-                                  () async {
-                                    await Navigator.push(
-                                      context,
-                                      uiTools.smoothPageRoute(
-                                        const ServicePage(),
-                                      ),
-                                    );
-
-                                    if (!mounted) return;
-
-                                    await _loadDatabaseData();
-                                  },
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-
-                        SizedBox(height: 10),
-
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            Expanded(
-                              child: Center(
-                                child: uiTools.imgBtnTitleContainer(
-                                  "Insurances",
-                                  "images/healthcare.png",
-                                  () async {
-                                    await Navigator.push(
-                                      context,
-                                      uiTools.smoothPageRoute(
-                                        const MedAidPage(),
-                                      ),
-                                    );
-
-                                    if (!mounted) return;
-
-                                    await _loadDatabaseData();
-                                  },
-                                ),
-                              ),
-                            ),
-
-                            SizedBox(width: 10),
-
-                            Expanded(
-                              child: Center(
-                                child: uiTools.imgBtnTitleContainer(
-                                  "Daily Habits",
-                                  "images/24-hours-service.png",
-                                  () async {
-                                    await Navigator.push(
-                                      context,
-                                      uiTools.smoothPageRoute(
-                                        const DailyHabitPage(),
-                                      ),
-                                    );
-
-                                    if (!mounted) return;
-
-                                    await _loadDatabaseData();
-                                  },
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
+                    child: Text(
+                      style: uiTools.sectionTitleStyle(),
+                      "Manage Data:",
                     ),
                   ),
                 ),
 
                 Container(
-                  margin: EdgeInsets.all(10),
-                  width: double.infinity,
-                  padding: const EdgeInsets.all(10),
-                  decoration: BoxDecoration(
-                    color: Colors.grey[100],
-                    borderRadius: BorderRadius.circular(20),
-                    border: Border.all(color: Colors.black, width: 2),
-                  ),
                   child: Column(
                     children: [
-                      TextField(
-                        controller: incomeController,
-                        keyboardType: TextInputType.number,
-                        decoration: InputDecoration(
-                          labelText: "Monthly Income",
-                          hintText: "Update your monthly income",
-                          border: OutlineInputBorder(),
+                      Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.all(10.0),
+
+                        child: Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+
+                            children: [
+                              SizedBox(height: 5),
+
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  Expanded(
+                                    child: Center(
+                                      child: uiTools.imgBtnTitleContainer(
+                                        "Debit Orders",
+                                        "images/automatic-payment.png",
+                                        () async {
+                                          await Navigator.push(
+                                            context,
+                                            uiTools.smoothPageRoute(
+                                              const DebitOrderPage(),
+                                            ),
+                                          );
+
+                                          if (!mounted) return;
+
+                                          await _loadDatabaseData();
+                                        },
+                                      ),
+                                    ),
+                                  ),
+
+                                  SizedBox(width: 10),
+
+                                  Expanded(
+                                    child: Center(
+                                      child: uiTools.imgBtnTitleContainer(
+                                        "Services",
+                                        "images/attendant.png",
+                                        () async {
+                                          await Navigator.push(
+                                            context,
+                                            uiTools.smoothPageRoute(
+                                              const ServicePage(),
+                                            ),
+                                          );
+
+                                          if (!mounted) return;
+
+                                          await _loadDatabaseData();
+                                        },
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+
+                              SizedBox(height: 10),
+
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  Expanded(
+                                    child: Center(
+                                      child: uiTools.imgBtnTitleContainer(
+                                        "Insurances",
+                                        "images/healthcare.png",
+                                        () async {
+                                          await Navigator.push(
+                                            context,
+                                            uiTools.smoothPageRoute(
+                                              const MedAidPage(),
+                                            ),
+                                          );
+
+                                          if (!mounted) return;
+
+                                          await _loadDatabaseData();
+                                        },
+                                      ),
+                                    ),
+                                  ),
+
+                                  SizedBox(width: 10),
+
+                                  Expanded(
+                                    child: Center(
+                                      child: uiTools.imgBtnTitleContainer(
+                                        "Daily Habits",
+                                        "images/24-hours-service.png",
+                                        () async {
+                                          await Navigator.push(
+                                            context,
+                                            uiTools.smoothPageRoute(
+                                              const DailyHabitPage(),
+                                            ),
+                                          );
+
+                                          if (!mounted) return;
+
+                                          await _loadDatabaseData();
+                                        },
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
                         ),
                       ),
 
-                      SizedBox(height: 10),
-
-                      SizedBox(
+                      Container(
+                        margin: EdgeInsets.all(10),
                         width: double.infinity,
-
-                        child: OutlinedButton(
-                          style: OutlinedButton.styleFrom(
-                            backgroundColor: Colors.teal[100],
+                        padding: const EdgeInsets.all(10),
+                        decoration: BoxDecoration(
+                          color: uiTools.cardColor1(),
+                          borderRadius: BorderRadius.circular(20),
+                          border: Border.all(
+                            color: uiTools.borderColor1(),
+                            width: 2,
                           ),
-                          onPressed: () async {
-                            double newIncome =
-                                double.tryParse(incomeController.text) ?? 0;
+                        ),
+                        child: Column(
+                          children: [
+                            TextField(
+                              controller: incomeController,
+                              keyboardType: TextInputType.number,
+                              decoration: uiTools.inputDecoration(
+                                labelText: "Monthly Income",
+                                hintText: "Update your monthly income",
+                              ),
+                            ),
 
-                            UserSettings newSettings = UserSettings(
-                              userIncome: newIncome,
-                            );
+                            SizedBox(height: 10),
 
-                            bool? confirmUpdate = await showDialog<bool>(
-                              context: context,
-                              builder: (context) {
-                                return AlertDialog(
-                                  title: const Text("Update Income?"),
-                                  content: Text(
-                                    "Are you sure you want to update your monthly income to "
-                                    "R ${newIncome.toStringAsFixed(2)}?",
-                                  ),
-                                  actions: [
-                                    TextButton(
-                                      onPressed: () {
-                                        Navigator.pop(context, false);
-                                      },
-                                      child: const Text("Cancel"),
-                                    ),
-                                    ElevatedButton(
-                                      onPressed: () {
-                                        Navigator.pop(context, true);
-                                      },
-                                      child: const Text("Update"),
-                                    ),
-                                  ],
-                                );
-                              },
-                            );
+                            SizedBox(
+                              width: double.infinity,
 
-                            if (confirmUpdate != true) {
-                              return;
-                            }
-
-                            try {
-                              setState(() {
-                                if (userSettings.isNotEmpty) {
-                                  userSettings[0] = newSettings;
-                                } else {
-                                  userSettings.add(newSettings);
-                                }
-                              });
-
-                              await DatabaseHelper.instance.replaceUserSettings(
-                                userSettings,
-                              );
-
-                              if (!mounted) return;
-
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text("Income updated!"),
+                              child: OutlinedButton(
+                                style: OutlinedButton.styleFrom(
+                                  backgroundColor: uiTools
+                                      .pageBackgroundColor1(),
                                 ),
-                              );
+                                onPressed: () async {
+                                  double newIncome =
+                                      double.tryParse(incomeController.text) ??
+                                      0;
 
-                              incomeController.clear();
-                            } catch (e) {
-                              debugPrint("Error updating income: $e");
+                                  UserSettings newSettings = UserSettings(
+                                    userIncome: newIncome,
+                                  );
 
-                              if (!mounted) return;
+                                  bool? confirmUpdate = await showDialog<bool>(
+                                    context: context,
+                                    builder: (context) {
+                                      return AlertDialog(
+                                        title: const Text("Update Income?"),
+                                        content: Text(
+                                          "Are you sure you want to update your monthly income to "
+                                          "R ${newIncome.toStringAsFixed(2)}?",
+                                        ),
+                                        actions: [
+                                          TextButton(
+                                            onPressed: () {
+                                              Navigator.pop(context, false);
+                                            },
+                                            child: const Text("Cancel"),
+                                          ),
+                                          ElevatedButton(
+                                            onPressed: () {
+                                              Navigator.pop(context, true);
+                                            },
+                                            child: const Text("Update"),
+                                          ),
+                                        ],
+                                      );
+                                    },
+                                  );
 
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text("Failed to update income."),
-                                ),
-                              );
-                            }
-                          },
-                          child: Text("Update"),
+                                  if (confirmUpdate != true) {
+                                    return;
+                                  }
+
+                                  try {
+                                    setState(() {
+                                      if (userSettings.isNotEmpty) {
+                                        userSettings[0] = newSettings;
+                                      } else {
+                                        userSettings.add(newSettings);
+                                      }
+                                    });
+
+                                    await DatabaseHelper.instance
+                                        .replaceUserSettings(userSettings);
+
+                                    if (!mounted) return;
+
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                        content: Text("Income updated!"),
+                                      ),
+                                    );
+
+                                    incomeController.clear();
+                                  } catch (e) {
+                                    debugPrint("Error updating income: $e");
+
+                                    if (!mounted) return;
+
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                        content: Text(
+                                          "Failed to update income.",
+                                        ),
+                                      ),
+                                    );
+                                  }
+                                },
+                                child: Text("Update"),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+
+                      SizedBox(height: 15),
+
+                      Container(
+                        margin: EdgeInsets.all(10),
+                        child: SizedBox(
+                          width: double.infinity,
+
+                          child: OutlinedButton(
+                            onPressed: () async {
+                              await _startNew(context);
+                            },
+                            child: const Text("Reset & Start New"),
+                          ),
                         ),
                       ),
                     ],

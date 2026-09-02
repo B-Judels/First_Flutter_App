@@ -63,15 +63,15 @@ class _MedAidPage extends State<MedAidPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.teal[100],
+      backgroundColor: uiTools.pageBackgroundColor1(),
       appBar: AppBar(
         title: Center(
           child: Text(
             "Monthly Budget Planner",
-            style: TextStyle(color: Colors.blueGrey[50]),
+            style: TextStyle(color: uiTools.titleColor1()),
           ),
         ),
-        backgroundColor: Colors.teal[700],
+        backgroundColor: uiTools.appBarColor1(),
       ),
       body: SingleChildScrollView(
         child: Center(
@@ -85,7 +85,7 @@ class _MedAidPage extends State<MedAidPage> {
                   margin: const EdgeInsets.all(10),
                   padding: const EdgeInsets.all(10),
                   decoration: BoxDecoration(
-                    color: Colors.teal[300],
+                    color: uiTools.sectionHeaderColor1(),
                     borderRadius: BorderRadius.circular(5),
                   ),
                   child: Column(
@@ -95,12 +95,9 @@ class _MedAidPage extends State<MedAidPage> {
                         children: [
                           Column(
                             children: [
-                              const Text(
+                              Text(
                                 "Insurance",
-                                style: TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
-                                ),
+                                style: uiTools.sectionTitleStyle(),
                               ),
                             ],
                           ),
@@ -132,21 +129,19 @@ class _MedAidPage extends State<MedAidPage> {
                           TextField(
                             controller: medicalAidController,
                             keyboardType: TextInputType.text,
-                            decoration: const InputDecoration(
+                            decoration: uiTools.inputDecoration(
                               labelText: "Name of Insurance",
                               hintText: "Enter the name for the Insurance",
-                              border: OutlineInputBorder(),
                             ),
                           ),
                           const SizedBox(height: 10.0),
                           TextField(
                             controller: medicalAidCostController,
                             keyboardType: TextInputType.number,
-                            decoration: const InputDecoration(
+                            decoration: uiTools.inputDecoration(
                               labelText: "Monthly Expense",
                               hintText:
                                   "Enter the expense for the insurance per month",
-                              border: OutlineInputBorder(),
                             ),
                           ),
                           const SizedBox(height: 10.0),
@@ -182,7 +177,7 @@ class _MedAidPage extends State<MedAidPage> {
                                 });
                               },
                               style: OutlinedButton.styleFrom(
-                                backgroundColor: Colors.teal[100],
+                                backgroundColor: uiTools.pageBackgroundColor1(),
                                 padding: const EdgeInsets.all(12),
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(15),
@@ -205,16 +200,16 @@ class _MedAidPage extends State<MedAidPage> {
                             width: double.infinity,
                             child: DataTable(
                               headingRowColor: WidgetStateProperty.all(
-                                Colors.teal[700],
+                                uiTools.appBarColor1(),
                               ),
                               dataRowColor: WidgetStateProperty.all(
-                                Colors.cyan,
+                                uiTools.tableRowColor1(),
                               ),
 
-                              columns: const [
+                              columns: [
                                 DataColumn(
                                   label: Text(
-                                    style: TextStyle(fontSize: 12),
+                                    style: uiTools.tableTextStyle(),
                                     "Name:",
                                   ),
                                   headingRowAlignment: MainAxisAlignment.start,
@@ -222,7 +217,7 @@ class _MedAidPage extends State<MedAidPage> {
 
                                 DataColumn(
                                   label: Text(
-                                    style: TextStyle(fontSize: 12),
+                                    style: uiTools.tableTextStyle(),
                                     "Cost:",
                                   ),
                                   headingRowAlignment: MainAxisAlignment.start,
@@ -231,7 +226,7 @@ class _MedAidPage extends State<MedAidPage> {
                                 DataColumn(
                                   columnWidth: FixedColumnWidth(125),
                                   label: Text(
-                                    style: TextStyle(fontSize: 12),
+                                    style: uiTools.tableTextStyle(),
                                     "Actions:",
                                   ),
                                   headingRowAlignment: MainAxisAlignment.start,
@@ -244,13 +239,13 @@ class _MedAidPage extends State<MedAidPage> {
                                   cells: [
                                     DataCell(
                                       Text(
-                                        style: TextStyle(fontSize: 12),
+                                        style: uiTools.tableTextStyle(),
                                         servicer.getName,
                                       ),
                                     ),
                                     DataCell(
                                       Text(
-                                        style: TextStyle(fontSize: 12),
+                                        style: uiTools.tableTextStyle(),
                                         "R ${servicer.getMedAidCost.toStringAsFixed(2)}",
                                       ),
                                     ),
@@ -316,7 +311,7 @@ class _MedAidPage extends State<MedAidPage> {
                         width: double.infinity,
                         child: OutlinedButton(
                           style: OutlinedButton.styleFrom(
-                            backgroundColor: Colors.lightBlue[200],
+                            backgroundColor: uiTools.appBarColor(),
                           ),
                           onPressed: () async {
                             try {
@@ -345,7 +340,10 @@ class _MedAidPage extends State<MedAidPage> {
 
                             Navigator.pop(context);
                           },
-                          child: const Text("Update"),
+                          child: const Text(
+                            "Update",
+                            style: const TextStyle(color: Colors.white),
+                          ),
                         ),
                       ),
                     ),

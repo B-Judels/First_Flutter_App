@@ -67,15 +67,15 @@ class _ServicePage extends State<ServicePage> {
     }
 
     return Scaffold(
-      backgroundColor: Colors.teal[100],
+      backgroundColor: uiTools.pageBackgroundColor1(),
       appBar: AppBar(
         title: Center(
           child: Text(
             "Monthly Budget Planner",
-            style: TextStyle(color: Colors.blueGrey[50]),
+            style: TextStyle(color: uiTools.titleColor1()),
           ),
         ),
-        backgroundColor: Colors.teal[700],
+        backgroundColor: uiTools.appBarColor1(),
       ),
       body: SingleChildScrollView(
         child: Center(
@@ -89,7 +89,7 @@ class _ServicePage extends State<ServicePage> {
                   margin: const EdgeInsets.all(10),
                   padding: const EdgeInsets.all(10),
                   decoration: BoxDecoration(
-                    color: Colors.teal[300],
+                    color: uiTools.sectionHeaderColor1(),
                     borderRadius: BorderRadius.circular(5),
                   ),
                   child: Column(
@@ -99,20 +99,14 @@ class _ServicePage extends State<ServicePage> {
                         children: [
                           Column(
                             children: [
-                              const Text(
+                              Text(
                                 "Monthly Services",
-                                style: TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
-                                ),
+                                style: uiTools.sectionTitleStyle(),
                               ),
 
                               Text(
                                 "Total Services: R ${totalServiceCost.toStringAsFixed(2)}",
-                                style: const TextStyle(
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.bold,
-                                ),
+                                style: uiTools.summaryTextStyle(),
                               ),
                             ],
                           ),
@@ -144,21 +138,19 @@ class _ServicePage extends State<ServicePage> {
                           TextField(
                             controller: serviceNameController,
                             keyboardType: TextInputType.text,
-                            decoration: const InputDecoration(
+                            decoration: uiTools.inputDecoration(
                               labelText: "Service Name",
                               hintText: "Enter the name of the service",
-                              border: OutlineInputBorder(),
                             ),
                           ),
                           const SizedBox(height: 10.0),
                           TextField(
                             controller: serviceCostController,
                             keyboardType: TextInputType.number,
-                            decoration: const InputDecoration(
+                            decoration: uiTools.inputDecoration(
                               labelText: "Monthly Expense",
                               hintText:
                                   "Enter the expense for the service per month",
-                              border: OutlineInputBorder(),
                             ),
                           ),
                           const SizedBox(height: 10.0),
@@ -198,7 +190,7 @@ class _ServicePage extends State<ServicePage> {
                                 serviceCostController.clear();
                               },
                               style: OutlinedButton.styleFrom(
-                                backgroundColor: Colors.teal[100],
+                                backgroundColor: uiTools.pageBackgroundColor1(),
                                 padding: const EdgeInsets.all(12),
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(15),
@@ -221,15 +213,15 @@ class _ServicePage extends State<ServicePage> {
                             width: double.infinity,
                             child: DataTable(
                               headingRowColor: WidgetStateProperty.all(
-                                Colors.teal[700],
+                                uiTools.appBarColor1(),
                               ),
                               dataRowColor: WidgetStateProperty.all(
-                                Colors.cyan,
+                                uiTools.tableRowColor1(),
                               ),
-                              columns: const [
+                              columns: [
                                 DataColumn(
                                   label: Text(
-                                    style: TextStyle(fontSize: 12),
+                                    style: uiTools.tableTextStyle(),
                                     "Name:",
                                   ),
                                   headingRowAlignment: MainAxisAlignment.start,
@@ -237,7 +229,7 @@ class _ServicePage extends State<ServicePage> {
 
                                 DataColumn(
                                   label: Text(
-                                    style: TextStyle(fontSize: 12),
+                                    style: uiTools.tableTextStyle(),
                                     "Cost:",
                                   ),
                                   headingRowAlignment: MainAxisAlignment.start,
@@ -246,7 +238,7 @@ class _ServicePage extends State<ServicePage> {
                                 DataColumn(
                                   columnWidth: FixedColumnWidth(125),
                                   label: Text(
-                                    style: TextStyle(fontSize: 12),
+                                    style: uiTools.tableTextStyle(),
                                     "Actions:",
                                   ),
                                   headingRowAlignment: MainAxisAlignment.start,
@@ -259,13 +251,13 @@ class _ServicePage extends State<ServicePage> {
                                   cells: [
                                     DataCell(
                                       Text(
-                                        style: TextStyle(fontSize: 12),
+                                        style: uiTools.tableTextStyle(),
                                         servicer.getName,
                                       ),
                                     ),
                                     DataCell(
                                       Text(
-                                        style: TextStyle(fontSize: 12),
+                                        style: uiTools.tableTextStyle(),
                                         "R ${servicer.getCost.toStringAsFixed(2)}",
                                       ),
                                     ),
@@ -329,7 +321,7 @@ class _ServicePage extends State<ServicePage> {
                         width: double.infinity,
                         child: OutlinedButton(
                           style: OutlinedButton.styleFrom(
-                            backgroundColor: Colors.lightBlue[200],
+                            backgroundColor: uiTools.appBarColor(),
                           ),
                           onPressed: () async {
                             try {
@@ -358,7 +350,10 @@ class _ServicePage extends State<ServicePage> {
 
                             Navigator.pop(context);
                           },
-                          child: const Text("Update"),
+                          child: const Text(
+                            "Update",
+                            style: const TextStyle(color: Colors.white),
+                          ),
                         ),
                       ),
                     ),

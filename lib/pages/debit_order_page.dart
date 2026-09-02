@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 import 'package:freeuse_monthly_expense_tracker/models/DebitOrder.dart';
 import 'package:freeuse_monthly_expense_tracker/custom_tools/logicTools.dart';
 import 'package:freeuse_monthly_expense_tracker/custom_tools/uiTools.dart';
@@ -15,14 +14,13 @@ class DebitOrderPage extends StatefulWidget {
 class _DebitOrderPage extends State<DebitOrderPage> {
   List<DebitOrder> debitOrders = [];
 
+  final uiTools = Uitools();
+
   int editingIndex = -1;
 
   bool isLoading = true;
 
-  // Controls the information container
   bool showInfo = false;
-
-  final uiTools = Uitools();
 
   Future<void> _loadDatabaseData() async {
     try {
@@ -45,14 +43,15 @@ class _DebitOrderPage extends State<DebitOrderPage> {
     }
   }
 
-  final TextEditingController debitNameController = TextEditingController();
-
-  final TextEditingController debitCostController = TextEditingController();
+  final TextEditingController debitOrderNameController =
+      TextEditingController();
+  final TextEditingController debitOrderCostController =
+      TextEditingController();
 
   @override
   void dispose() {
-    debitNameController.dispose();
-    debitCostController.dispose();
+    debitOrderNameController.dispose();
+    debitOrderCostController.dispose();
     super.dispose();
   }
 
@@ -64,71 +63,56 @@ class _DebitOrderPage extends State<DebitOrderPage> {
 
   @override
   Widget build(BuildContext context) {
-    double totalDebitOrders = 0;
-
+    double totalDebitOrderCost = 0;
     for (int i = 0; i < debitOrders.length; i++) {
-      totalDebitOrders += debitOrders[i].getCost;
+      totalDebitOrderCost += debitOrders[i].getCost;
     }
 
     return Scaffold(
-      backgroundColor: Colors.teal[100],
-
+      backgroundColor: uiTools.pageBackgroundColor1(),
       appBar: AppBar(
         title: Center(
           child: Text(
             "Monthly Budget Planner",
-            style: TextStyle(color: Colors.blueGrey[50]),
+            style: TextStyle(color: uiTools.titleColor1()),
           ),
         ),
-        backgroundColor: Colors.teal[700],
+        backgroundColor: uiTools.appBarColor1(),
       ),
-
       body: SingleChildScrollView(
         child: Center(
           child: Padding(
             padding: const EdgeInsets.all(2.0),
-
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.start,
-
               children: [
                 Container(
                   margin: const EdgeInsets.all(10),
                   padding: const EdgeInsets.all(10),
-
                   decoration: BoxDecoration(
-                    color: Colors.teal[300],
+                    color: uiTools.sectionHeaderColor1(),
                     borderRadius: BorderRadius.circular(5),
                   ),
-
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-
                     children: [
                       Row(
                         children: [
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              const Text(
-                                "Monthly Debit Orders",
-                                style: TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
-                                ),
+                              Text(
+                                "Debit Orders",
+                                style: uiTools.sectionTitleStyle(),
                               ),
 
                               Text(
-                                "Total Debit Orders: R ${totalDebitOrders.toStringAsFixed(2)}",
-                                style: const TextStyle(
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w600,
-                                ),
+                                "Total Debit Orders: R ${totalDebitOrderCost.toStringAsFixed(2)}",
+                                style: uiTools.summaryTextStyle(),
                               ),
                             ],
                           ),
-
                           const Spacer(),
 
                           uiTools.infoButton(
@@ -145,10 +129,10 @@ class _DebitOrderPage extends State<DebitOrderPage> {
                       uiTools.infoContainer(
                         showInfo: showInfo,
                         infoText:
-                            "Debit orders are recurring payments that are "
-                            "automatically deducted from your bank account. "
-                            "Examples include Streaming Services, Loan Repayments, "
-                            "Subscriptions, and other regular payments.",
+                            "Debit orders are fixed recurring monthly "
+                            "payments that are automatically deducted from "
+                            "your account, such as loan repayments, "
+                            "subscriptions, or rent.",
                       ),
 
                       const SizedBox(height: 10.0),
@@ -156,80 +140,71 @@ class _DebitOrderPage extends State<DebitOrderPage> {
                       Column(
                         children: [
                           TextField(
-                            controller: debitNameController,
+                            controller: debitOrderNameController,
                             keyboardType: TextInputType.text,
-
-                            decoration: const InputDecoration(
+                            decoration: uiTools.inputDecoration(
                               labelText: "Debit Order Name",
-                              hintText: "Enter the name for the debit order",
-                              border: OutlineInputBorder(),
+                              hintText: "Enter the name of the debit order",
                             ),
                           ),
-
                           const SizedBox(height: 10.0),
-
                           TextField(
-                            controller: debitCostController,
+                            controller: debitOrderCostController,
                             keyboardType: TextInputType.number,
-
-                            decoration: const InputDecoration(
+                            decoration: uiTools.inputDecoration(
                               labelText: "Monthly Expense",
                               hintText:
-                                  "Enter the expense for the service per month",
-                              border: OutlineInputBorder(),
+                                  "Enter the expense for the debit order per month",
                             ),
                           ),
-
                           const SizedBox(height: 10.0),
-
                           SizedBox(
                             width: double.infinity,
-
                             child: OutlinedButton(
                               onPressed: () {
-                                if (debitNameController.text.isEmpty ||
-                                    debitCostController.text.isEmpty) {
+                                if (debitOrderNameController.text.isEmpty ||
+                                    debitOrderCostController.text.isEmpty) {
                                   return;
                                 }
 
-                                String debitName = debitNameController.text;
+                                String debitOrderName =
+                                    debitOrderNameController.text;
 
-                                double debitCost =
-                                    double.tryParse(debitCostController.text) ??
+                                double debitOrderCost =
+                                    double.tryParse(
+                                      debitOrderCostController.text,
+                                    ) ??
                                     0;
 
-                                DebitOrder order = DebitOrder(
-                                  name: debitName,
-                                  cost: debitCost,
+                                DebitOrder debOrder = DebitOrder(
+                                  name: debitOrderName,
+                                  cost: debitOrderCost,
                                 );
 
                                 setState(() {
-                                  if (editingIndex == -1) {
-                                    debitOrders.add(order);
-                                  } else {
-                                    debitOrders.insert(editingIndex, order);
+                                  if (editingIndex != -1) {
+                                    debitOrders.insert(editingIndex, debOrder);
 
                                     editingIndex = -1;
+                                  } else {
+                                    debitOrders.add(debOrder);
                                   }
+
+                                  debitOrderNameController.clear();
+                                  debitOrderCostController.clear();
                                 });
-
-                                debitNameController.clear();
-                                debitCostController.clear();
                               },
-
                               style: OutlinedButton.styleFrom(
-                                backgroundColor: Colors.teal[100],
+                                backgroundColor: uiTools.pageBackgroundColor1(),
                                 padding: const EdgeInsets.all(12),
-
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(15),
                                 ),
                               ),
-
                               child: Text(
-                                editingIndex == -1
-                                    ? "Add Debit Order"
-                                    : "Update Debit Order",
+                                editingIndex != -1
+                                    ? "Update Debit Order"
+                                    : "Add Debit Order",
                               ),
                             ),
                           ),
@@ -238,24 +213,20 @@ class _DebitOrderPage extends State<DebitOrderPage> {
 
                       if (debitOrders.isNotEmpty) ...[
                         const SizedBox(height: 15),
-
                         Center(
                           child: SizedBox(
                             width: double.infinity,
-
                             child: DataTable(
                               headingRowColor: WidgetStateProperty.all(
-                                Colors.teal[700],
+                                uiTools.appBarColor1(),
                               ),
-
                               dataRowColor: WidgetStateProperty.all(
-                                Colors.cyan,
+                                uiTools.tableRowColor1(),
                               ),
-
-                              columns: const [
+                              columns: [
                                 DataColumn(
                                   label: Text(
-                                    style: TextStyle(fontSize: 12),
+                                    style: uiTools.tableTextStyle(),
                                     "Name:",
                                   ),
                                   headingRowAlignment: MainAxisAlignment.start,
@@ -263,7 +234,7 @@ class _DebitOrderPage extends State<DebitOrderPage> {
 
                                 DataColumn(
                                   label: Text(
-                                    style: TextStyle(fontSize: 12),
+                                    style: uiTools.tableTextStyle(),
                                     "Cost:",
                                   ),
                                   headingRowAlignment: MainAxisAlignment.start,
@@ -272,71 +243,66 @@ class _DebitOrderPage extends State<DebitOrderPage> {
                                 DataColumn(
                                   columnWidth: FixedColumnWidth(125),
                                   label: Text(
-                                    style: TextStyle(fontSize: 12),
+                                    style: uiTools.tableTextStyle(),
                                     "Actions:",
                                   ),
                                   headingRowAlignment: MainAxisAlignment.start,
                                 ),
                               ],
-
                               rows: debitOrders.asMap().entries.map((entry) {
                                 int index = entry.key;
-                                var orderer = entry.value;
-
+                                var order = entry.value;
                                 return DataRow(
                                   cells: [
                                     DataCell(
                                       Text(
-                                        style: TextStyle(fontSize: 12),
-                                        orderer.getName,
+                                        style: uiTools.tableTextStyle(),
+                                        order.getName,
                                       ),
                                     ),
-
                                     DataCell(
                                       Text(
-                                        style: TextStyle(fontSize: 12),
-                                        "R ${orderer.getCost.toStringAsFixed(2)}",
+                                        style: uiTools.tableTextStyle(),
+                                        "R ${order.getCost.toStringAsFixed(2)}",
                                       ),
                                     ),
-
                                     DataCell(
-                                      Row(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          uiTools.itemRemoveBtn(() {
-                                            setState(() {
-                                              debitOrders = const LogicTools()
-                                                  .debitOrderItemRemover(
-                                                    debitOrders,
-                                                    index,
-                                                  );
+                                      Center(
+                                        child: Row(
+                                          children: [
+                                            uiTools.itemRemoveBtn(() {
+                                              setState(() {
+                                                debitOrders = const LogicTools()
+                                                    .debitOrderItemRemover(
+                                                      debitOrders,
+                                                      index,
+                                                    );
 
-                                              if (editingIndex == index) {
-                                                editingIndex = -1;
+                                                if (editingIndex == index) {
+                                                  editingIndex = -1;
+                                                  debitOrderNameController
+                                                      .clear();
+                                                  debitOrderCostController
+                                                      .clear();
+                                                }
+                                              });
+                                            }),
 
-                                                debitNameController.clear();
-                                                debitCostController.clear();
-                                              }
-                                            });
-                                          }),
+                                            const SizedBox(width: 4),
 
-                                          const SizedBox(width: 4),
+                                            uiTools.itemEditBtn(() {
+                                              setState(() {
+                                                debitOrderNameController.text =
+                                                    order.getName;
+                                                debitOrderCostController.text =
+                                                    order.getCost.toString();
+                                                editingIndex = index;
 
-                                          uiTools.itemEditBtn(() {
-                                            setState(() {
-                                              debitNameController.text =
-                                                  orderer.getName;
-
-                                              debitCostController.text = orderer
-                                                  .getCost
-                                                  .toString();
-
-                                              editingIndex = index;
-
-                                              debitOrders.removeAt(index);
-                                            });
-                                          }),
-                                        ],
+                                                debitOrders.removeAt(index);
+                                              });
+                                            }),
+                                          ],
+                                        ),
                                       ),
                                     ),
                                   ],
@@ -352,40 +318,54 @@ class _DebitOrderPage extends State<DebitOrderPage> {
 
                 const SizedBox(height: 20),
 
-                if (editingIndex == -1)
+                if (editingIndex == -1) ...[
                   Center(
                     child: Padding(
                       padding: const EdgeInsets.all(5.0),
-
                       child: SizedBox(
                         width: double.infinity,
-
                         child: OutlinedButton(
                           style: OutlinedButton.styleFrom(
-                            backgroundColor: Colors.lightBlue[200],
+                            backgroundColor: uiTools.appBarColor(),
                           ),
-
                           onPressed: () async {
-                            await DatabaseHelper.instance.replaceDebitOrders(
-                              debitOrders,
-                            );
+                            try {
+                              await DatabaseHelper.instance.replaceDebitOrders(
+                                debitOrders,
+                              );
 
-                            if (!mounted) return;
+                              if (!mounted) return;
 
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text("Debit orders updated!"),
-                              ),
-                            );
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text("Debit orders updated!"),
+                                ),
+                              );
+                            } catch (e) {
+                              debugPrint("Error updating debit orders: $e");
+
+                              if (!mounted) return;
+
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text(
+                                    "Failed to update debit orders.",
+                                  ),
+                                ),
+                              );
+                            }
 
                             Navigator.pop(context);
                           },
-
-                          child: const Text("Update"),
+                          child: const Text(
+                            "Update",
+                            style: const TextStyle(color: Colors.white),
+                          ),
                         ),
                       ),
                     ),
                   ),
+                ],
               ],
             ),
           ),
