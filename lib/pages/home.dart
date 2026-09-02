@@ -21,6 +21,10 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+  bool _showManageData = false;
+
+  final GlobalKey _manageDataKey = GlobalKey();
+
   final uiTools = Uitools();
 
   bool isLoading = true;
@@ -386,16 +390,17 @@ class _HomeState extends State<Home> {
                   margin: EdgeInsets.all(2.0),
                   width: double.maxFinite,
 
-                  padding: const EdgeInsets.all(1.0),
+                  padding: const EdgeInsets.all(10.0),
                   decoration: BoxDecoration(
                     color: uiTools.sectionHeaderColor1(),
                     borderRadius: BorderRadius.circular(5),
                   ),
-                  child: Row(
-                    children: [
-                      Text("Tracked Data:", style: uiTools.sectionTitleStyle()),
-                      const Spacer(),
-                    ],
+
+                  child: Center(
+                    child: Text(
+                      "Tracked Data:",
+                      style: uiTools.sectionTitleStyle(),
+                    ),
                   ),
                 ),
 
@@ -645,274 +650,336 @@ class _HomeState extends State<Home> {
                 ),
 
                 Container(
-                  margin: EdgeInsets.all(2.0),
+                  margin: const EdgeInsets.all(2.0),
                   width: double.maxFinite,
-
-                  padding: const EdgeInsets.all(1.0),
+                  padding: const EdgeInsets.all(10.0),
                   decoration: BoxDecoration(
                     color: uiTools.sectionHeaderColor1(),
                     borderRadius: BorderRadius.circular(5),
                   ),
-                  child: Center(
-                    child: Text(
-                      style: uiTools.sectionTitleStyle(),
-                      "Manage Data:",
-                    ),
+                  child: Row(
+                    children: [
+                      Text("Manage Data:", style: uiTools.sectionTitleStyle()),
+
+                      const Spacer(),
+                      uiTools.burgerMenuBtn(() {
+                        setState(() {
+                          _showManageData = !_showManageData;
+                        });
+
+                        if (_showManageData) {
+                          Future.delayed(const Duration(milliseconds: 450), () {
+                            if (!mounted) return;
+
+                            final targetContext = _manageDataKey.currentContext;
+
+                            if (targetContext != null) {
+                              Scrollable.ensureVisible(
+                                targetContext,
+                                duration: const Duration(milliseconds: 500),
+                                curve: Curves.easeInOut,
+                                alignment: 1.0,
+                              );
+                            }
+                          });
+                        }
+                      }, _showManageData),
+                    ],
                   ),
                 ),
 
-                Container(
-                  child: Column(
-                    children: [
-                      Container(
-                        width: double.infinity,
-                        padding: const EdgeInsets.all(10.0),
-
-                        child: Center(
+                AnimatedSize(
+                  duration: const Duration(milliseconds: 350),
+                  curve: Curves.easeInOut,
+                  child: _showManageData
+                      ? Container(
+                          key: _manageDataKey,
                           child: Column(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-
                             children: [
-                              SizedBox(height: 5),
+                              Container(
+                                width: double.infinity,
+                                padding: const EdgeInsets.all(10.0),
 
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceEvenly,
-                                children: [
-                                  Expanded(
-                                    child: Center(
-                                      child: uiTools.imgBtnTitleContainer(
-                                        "Debit Orders",
-                                        "images/automatic-payment.png",
-                                        () async {
-                                          await Navigator.push(
-                                            context,
-                                            uiTools.smoothPageRoute(
-                                              const DebitOrderPage(),
+                                child: Center(
+                                  child: Column(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceEvenly,
+
+                                    children: [
+                                      SizedBox(height: 5),
+
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceEvenly,
+                                        children: [
+                                          Expanded(
+                                            child: Center(
+                                              child: uiTools.imgBtnTitleContainer(
+                                                "Debit Orders",
+                                                "images/automatic-payment.png",
+                                                () async {
+                                                  await Navigator.push(
+                                                    context,
+                                                    uiTools.smoothPageRoute(
+                                                      const DebitOrderPage(),
+                                                    ),
+                                                  );
+
+                                                  if (!mounted) return;
+
+                                                  await _loadDatabaseData();
+                                                },
+                                              ),
                                             ),
-                                          );
-
-                                          if (!mounted) return;
-
-                                          await _loadDatabaseData();
-                                        },
-                                      ),
-                                    ),
-                                  ),
-
-                                  SizedBox(width: 10),
-
-                                  Expanded(
-                                    child: Center(
-                                      child: uiTools.imgBtnTitleContainer(
-                                        "Services",
-                                        "images/attendant.png",
-                                        () async {
-                                          await Navigator.push(
-                                            context,
-                                            uiTools.smoothPageRoute(
-                                              const ServicePage(),
-                                            ),
-                                          );
-
-                                          if (!mounted) return;
-
-                                          await _loadDatabaseData();
-                                        },
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-
-                              SizedBox(height: 10),
-
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceEvenly,
-                                children: [
-                                  Expanded(
-                                    child: Center(
-                                      child: uiTools.imgBtnTitleContainer(
-                                        "Insurances",
-                                        "images/healthcare.png",
-                                        () async {
-                                          await Navigator.push(
-                                            context,
-                                            uiTools.smoothPageRoute(
-                                              const MedAidPage(),
-                                            ),
-                                          );
-
-                                          if (!mounted) return;
-
-                                          await _loadDatabaseData();
-                                        },
-                                      ),
-                                    ),
-                                  ),
-
-                                  SizedBox(width: 10),
-
-                                  Expanded(
-                                    child: Center(
-                                      child: uiTools.imgBtnTitleContainer(
-                                        "Daily Habits",
-                                        "images/24-hours-service.png",
-                                        () async {
-                                          await Navigator.push(
-                                            context,
-                                            uiTools.smoothPageRoute(
-                                              const DailyHabitPage(),
-                                            ),
-                                          );
-
-                                          if (!mounted) return;
-
-                                          await _loadDatabaseData();
-                                        },
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-
-                      Container(
-                        margin: EdgeInsets.all(10),
-                        width: double.infinity,
-                        padding: const EdgeInsets.all(10),
-                        decoration: BoxDecoration(
-                          color: uiTools.cardColor1(),
-                          borderRadius: BorderRadius.circular(20),
-                          border: Border.all(
-                            color: uiTools.borderColor1(),
-                            width: 2,
-                          ),
-                        ),
-                        child: Column(
-                          children: [
-                            TextField(
-                              controller: incomeController,
-                              keyboardType: TextInputType.number,
-                              decoration: uiTools.inputDecoration(
-                                labelText: "Monthly Income",
-                                hintText: "Update your monthly income",
-                              ),
-                            ),
-
-                            SizedBox(height: 10),
-
-                            SizedBox(
-                              width: double.infinity,
-
-                              child: OutlinedButton(
-                                style: OutlinedButton.styleFrom(
-                                  backgroundColor: uiTools
-                                      .pageBackgroundColor1(),
-                                ),
-                                onPressed: () async {
-                                  double newIncome =
-                                      double.tryParse(incomeController.text) ??
-                                      0;
-
-                                  UserSettings newSettings = UserSettings(
-                                    userIncome: newIncome,
-                                  );
-
-                                  bool? confirmUpdate = await showDialog<bool>(
-                                    context: context,
-                                    builder: (context) {
-                                      return AlertDialog(
-                                        title: const Text("Update Income?"),
-                                        content: Text(
-                                          "Are you sure you want to update your monthly income to "
-                                          "R ${newIncome.toStringAsFixed(2)}?",
-                                        ),
-                                        actions: [
-                                          TextButton(
-                                            onPressed: () {
-                                              Navigator.pop(context, false);
-                                            },
-                                            child: const Text("Cancel"),
                                           ),
-                                          ElevatedButton(
-                                            onPressed: () {
-                                              Navigator.pop(context, true);
-                                            },
-                                            child: const Text("Update"),
+
+                                          SizedBox(width: 10),
+
+                                          Expanded(
+                                            child: Center(
+                                              child: uiTools
+                                                  .imgBtnTitleContainer(
+                                                    "Services",
+                                                    "images/attendant.png",
+                                                    () async {
+                                                      await Navigator.push(
+                                                        context,
+                                                        uiTools.smoothPageRoute(
+                                                          const ServicePage(),
+                                                        ),
+                                                      );
+
+                                                      if (!mounted) return;
+
+                                                      await _loadDatabaseData();
+                                                    },
+                                                  ),
+                                            ),
                                           ),
                                         ],
-                                      );
-                                    },
-                                  );
-
-                                  if (confirmUpdate != true) {
-                                    return;
-                                  }
-
-                                  try {
-                                    setState(() {
-                                      if (userSettings.isNotEmpty) {
-                                        userSettings[0] = newSettings;
-                                      } else {
-                                        userSettings.add(newSettings);
-                                      }
-                                    });
-
-                                    await DatabaseHelper.instance
-                                        .replaceUserSettings(userSettings);
-
-                                    if (!mounted) return;
-
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      const SnackBar(
-                                        content: Text("Income updated!"),
                                       ),
-                                    );
 
-                                    incomeController.clear();
-                                  } catch (e) {
-                                    debugPrint("Error updating income: $e");
+                                      SizedBox(height: 10),
 
-                                    if (!mounted) return;
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceEvenly,
+                                        children: [
+                                          Expanded(
+                                            child: Center(
+                                              child: uiTools
+                                                  .imgBtnTitleContainer(
+                                                    "Insurances",
+                                                    "images/healthcare.png",
+                                                    () async {
+                                                      await Navigator.push(
+                                                        context,
+                                                        uiTools.smoothPageRoute(
+                                                          const MedAidPage(),
+                                                        ),
+                                                      );
 
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      const SnackBar(
-                                        content: Text(
-                                          "Failed to update income.",
-                                        ),
+                                                      if (!mounted) return;
+
+                                                      await _loadDatabaseData();
+                                                    },
+                                                  ),
+                                            ),
+                                          ),
+
+                                          SizedBox(width: 10),
+
+                                          Expanded(
+                                            child: Center(
+                                              child: uiTools.imgBtnTitleContainer(
+                                                "Daily Habits",
+                                                "images/24-hours-service.png",
+                                                () async {
+                                                  await Navigator.push(
+                                                    context,
+                                                    uiTools.smoothPageRoute(
+                                                      const DailyHabitPage(),
+                                                    ),
+                                                  );
+
+                                                  if (!mounted) return;
+
+                                                  await _loadDatabaseData();
+                                                },
+                                              ),
+                                            ),
+                                          ),
+                                        ],
                                       ),
-                                    );
-                                  }
-                                },
-                                child: Text("Update"),
+                                    ],
+                                  ),
+                                ),
                               ),
-                            ),
-                          ],
-                        ),
-                      ),
 
-                      SizedBox(height: 15),
+                              Container(
+                                margin: EdgeInsets.all(10),
+                                width: double.infinity,
+                                padding: const EdgeInsets.all(10),
+                                decoration: BoxDecoration(
+                                  color: uiTools.cardColor1(),
+                                  borderRadius: BorderRadius.circular(20),
+                                  border: Border.all(
+                                    color: uiTools.borderColor1(),
+                                    width: 2,
+                                  ),
+                                ),
+                                child: Column(
+                                  children: [
+                                    TextField(
+                                      controller: incomeController,
+                                      keyboardType: TextInputType.number,
+                                      decoration: uiTools.inputDecoration(
+                                        labelText: "Monthly Income",
+                                        hintText: "Update your monthly income",
+                                      ),
+                                    ),
 
-                      Container(
-                        margin: EdgeInsets.all(10),
-                        child: SizedBox(
-                          width: double.infinity,
+                                    SizedBox(height: 10),
 
-                          child: OutlinedButton(
-                            onPressed: () async {
-                              await _startNew(context);
-                            },
-                            child: const Text("Reset & Start New"),
+                                    SizedBox(
+                                      width: double.infinity,
+
+                                      child: OutlinedButton(
+                                        style: OutlinedButton.styleFrom(
+                                          backgroundColor: uiTools
+                                              .pageBackgroundColor1(),
+                                        ),
+                                        onPressed: () async {
+                                          double newIncome =
+                                              double.tryParse(
+                                                incomeController.text,
+                                              ) ??
+                                              0;
+
+                                          UserSettings newSettings =
+                                              UserSettings(
+                                                userIncome: newIncome,
+                                              );
+
+                                          bool?
+                                          confirmUpdate = await showDialog<bool>(
+                                            context: context,
+                                            builder: (context) {
+                                              return AlertDialog(
+                                                title: const Text(
+                                                  "Update Income?",
+                                                ),
+                                                content: Text(
+                                                  "Are you sure you want to update your monthly income to "
+                                                  "R ${newIncome.toStringAsFixed(2)}?",
+                                                ),
+                                                actions: [
+                                                  TextButton(
+                                                    onPressed: () {
+                                                      Navigator.pop(
+                                                        context,
+                                                        false,
+                                                      );
+                                                    },
+                                                    child: const Text("Cancel"),
+                                                  ),
+                                                  ElevatedButton(
+                                                    onPressed: () {
+                                                      Navigator.pop(
+                                                        context,
+                                                        true,
+                                                      );
+                                                    },
+                                                    child: const Text("Update"),
+                                                  ),
+                                                ],
+                                              );
+                                            },
+                                          );
+
+                                          if (confirmUpdate != true) {
+                                            return;
+                                          }
+
+                                          try {
+                                            setState(() {
+                                              if (userSettings.isNotEmpty) {
+                                                userSettings[0] = newSettings;
+                                              } else {
+                                                userSettings.add(newSettings);
+                                              }
+                                            });
+
+                                            await DatabaseHelper.instance
+                                                .replaceUserSettings(
+                                                  userSettings,
+                                                );
+
+                                            if (!mounted) return;
+
+                                            ScaffoldMessenger.of(
+                                              context,
+                                            ).showSnackBar(
+                                              const SnackBar(
+                                                content: Text(
+                                                  "Income updated!",
+                                                ),
+                                              ),
+                                            );
+
+                                            incomeController.clear();
+                                          } catch (e) {
+                                            debugPrint(
+                                              "Error updating income: $e",
+                                            );
+
+                                            if (!mounted) return;
+
+                                            ScaffoldMessenger.of(
+                                              context,
+                                            ).showSnackBar(
+                                              const SnackBar(
+                                                content: Text(
+                                                  "Failed to update income.",
+                                                ),
+                                              ),
+                                            );
+                                          }
+                                        },
+                                        child: Text("Update"),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+
+                              SizedBox(height: 15),
+
+                              Container(
+                                margin: EdgeInsets.all(10),
+                                child: SizedBox(
+                                  width: double.infinity,
+
+                                  child: OutlinedButton(
+                                    style: OutlinedButton.styleFrom(
+                                      backgroundColor: uiTools.appBarColor(),
+                                    ),
+                                    onPressed: () async {
+                                      await _startNew(context);
+                                    },
+                                    child: const Text(
+                                      "Reset & Start New",
+                                      style: TextStyle(color: Colors.white),
+                                    ),
+                                  ),
+                                ),
+                              ),
+
+                              SizedBox(height: 15),
+                            ],
                           ),
-                        ),
-                      ),
-                    ],
-                  ),
+                        )
+                      : const SizedBox.shrink(),
                 ),
               ],
             ),

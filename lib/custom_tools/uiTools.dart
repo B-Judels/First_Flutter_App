@@ -286,6 +286,27 @@ class Uitools {
     );
   }
 
+  OutlinedButton burgerMenuBtn(VoidCallback onPressed, bool isOpen) {
+    return OutlinedButton(
+      onPressed: onPressed,
+      style: OutlinedButton.styleFrom(
+        foregroundColor: textColor(),
+        backgroundColor: Colors.white,
+        side: BorderSide(color: appBarColor(), width: 1),
+        shape: const CircleBorder(),
+        padding: EdgeInsets.zero,
+        minimumSize: const Size(45, 45),
+        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+      ),
+      child: AnimatedRotation(
+        turns: isOpen ? 0.25 : 0,
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeInOut,
+        child: Image.asset("images/menu-burger.png", width: 30, height: 30),
+      ),
+    );
+  }
+
   OutlinedButton itemEditBtn(VoidCallback onPressed) {
     return OutlinedButton(
       onPressed: onPressed,
