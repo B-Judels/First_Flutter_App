@@ -32,7 +32,7 @@ class StartupRouter extends StatelessWidget {
   Future<Widget> _checkDatabase() async {
     final userSettings = await DatabaseHelper.instance.getUserSettings();
 
-    await Future.delayed(const Duration(seconds: 3));
+    await Future.delayed(const Duration(seconds: 2));
 
     if (userSettings.isEmpty) {
       return const StartUpPage();

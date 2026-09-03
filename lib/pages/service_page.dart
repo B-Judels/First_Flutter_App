@@ -211,96 +211,105 @@ class _ServicePage extends State<ServicePage> {
                         Center(
                           child: SizedBox(
                             width: double.infinity,
-                            child: DataTable(
-                              headingRowColor: WidgetStateProperty.all(
-                                uiTools.appBarColor1(),
-                              ),
-                              dataRowColor: WidgetStateProperty.all(
-                                uiTools.tableRowColor1(),
-                              ),
-                              columns: [
-                                DataColumn(
-                                  label: Text(
-                                    style: uiTools.tableHeaderStyle(),
-                                    "Name:",
-                                  ),
-                                  headingRowAlignment: MainAxisAlignment.start,
+                            child: SingleChildScrollView(
+                              scrollDirection: Axis.horizontal,
+                              child: DataTable(
+                                headingRowColor: WidgetStateProperty.all(
+                                  uiTools.appBarColor1(),
                                 ),
-
-                                DataColumn(
-                                  label: Text(
-                                    style: uiTools.tableHeaderStyle(),
-                                    "Cost:",
-                                  ),
-                                  headingRowAlignment: MainAxisAlignment.start,
+                                dataRowColor: WidgetStateProperty.all(
+                                  uiTools.tableRowColor1(),
                                 ),
-
-                                DataColumn(
-                                  columnWidth: FixedColumnWidth(125),
-                                  label: Text(
-                                    style: uiTools.tableHeaderStyle(),
-                                    "Actions:",
-                                  ),
-                                  headingRowAlignment: MainAxisAlignment.start,
-                                ),
-                              ],
-                              rows: services.asMap().entries.map((entry) {
-                                int index = entry.key;
-                                var servicer = entry.value;
-                                return DataRow(
-                                  cells: [
-                                    DataCell(
-                                      Text(
-                                        style: uiTools.tableTextStyle(),
-                                        servicer.getName,
-                                      ),
+                                columns: [
+                                  DataColumn(
+                                    label: Text(
+                                      style: uiTools.tableHeaderStyle(),
+                                      "Name:",
                                     ),
-                                    DataCell(
-                                      Text(
-                                        style: uiTools.tableTextStyle(),
-                                        "R ${servicer.getCost.toStringAsFixed(2)}",
-                                      ),
+                                    headingRowAlignment:
+                                        MainAxisAlignment.start,
+                                  ),
+
+                                  DataColumn(
+                                    label: Text(
+                                      style: uiTools.tableHeaderStyle(),
+                                      "Cost:",
                                     ),
-                                    DataCell(
-                                      Center(
-                                        child: Row(
-                                          children: [
-                                            uiTools.itemRemoveBtn(() {
-                                              setState(() {
-                                                services = const LogicTools()
-                                                    .serviceItemRemover(
-                                                      services,
-                                                      index,
-                                                    );
+                                    headingRowAlignment:
+                                        MainAxisAlignment.start,
+                                  ),
 
-                                                if (editingIndex == index) {
-                                                  editingIndex = -1;
-                                                  serviceNameController.clear();
-                                                  serviceCostController.clear();
-                                                }
-                                              });
-                                            }),
-
-                                            SizedBox(width: 4),
-
-                                            uiTools.itemEditBtn(() {
-                                              setState(() {
-                                                serviceNameController.text =
-                                                    servicer.getName;
-                                                serviceCostController.text =
-                                                    servicer.getCost.toString();
-                                                editingIndex = index;
-
-                                                services.removeAt(index);
-                                              });
-                                            }),
-                                          ],
+                                  DataColumn(
+                                    columnWidth: FixedColumnWidth(125),
+                                    label: Text(
+                                      style: uiTools.tableHeaderStyle(),
+                                      "Actions:",
+                                    ),
+                                    headingRowAlignment:
+                                        MainAxisAlignment.start,
+                                  ),
+                                ],
+                                rows: services.asMap().entries.map((entry) {
+                                  int index = entry.key;
+                                  var servicer = entry.value;
+                                  return DataRow(
+                                    cells: [
+                                      DataCell(
+                                        Text(
+                                          style: uiTools.tableTextStyle(),
+                                          servicer.getName,
                                         ),
                                       ),
-                                    ),
-                                  ],
-                                );
-                              }).toList(),
+                                      DataCell(
+                                        Text(
+                                          style: uiTools.tableTextStyle(),
+                                          "R ${servicer.getCost.toStringAsFixed(2)}",
+                                        ),
+                                      ),
+                                      DataCell(
+                                        Center(
+                                          child: Row(
+                                            children: [
+                                              uiTools.itemRemoveBtn(() {
+                                                setState(() {
+                                                  services = const LogicTools()
+                                                      .serviceItemRemover(
+                                                        services,
+                                                        index,
+                                                      );
+
+                                                  if (editingIndex == index) {
+                                                    editingIndex = -1;
+                                                    serviceNameController
+                                                        .clear();
+                                                    serviceCostController
+                                                        .clear();
+                                                  }
+                                                });
+                                              }),
+
+                                              SizedBox(width: 4),
+
+                                              uiTools.itemEditBtn(() {
+                                                setState(() {
+                                                  serviceNameController.text =
+                                                      servicer.getName;
+                                                  serviceCostController.text =
+                                                      servicer.getCost
+                                                          .toString();
+                                                  editingIndex = index;
+
+                                                  services.removeAt(index);
+                                                });
+                                              }),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  );
+                                }).toList(),
+                              ),
                             ),
                           ),
                         ),

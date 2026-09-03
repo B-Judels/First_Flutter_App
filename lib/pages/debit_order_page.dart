@@ -216,98 +216,107 @@ class _DebitOrderPage extends State<DebitOrderPage> {
                         Center(
                           child: SizedBox(
                             width: double.infinity,
-                            child: DataTable(
-                              headingRowColor: WidgetStateProperty.all(
-                                uiTools.appBarColor1(),
-                              ),
-                              dataRowColor: WidgetStateProperty.all(
-                                uiTools.tableRowColor1(),
-                              ),
-                              columns: [
-                                DataColumn(
-                                  label: Text(
-                                    style: uiTools.tableHeaderStyle(),
-                                    "Name:",
-                                  ),
-                                  headingRowAlignment: MainAxisAlignment.start,
+                            child: SingleChildScrollView(
+                              scrollDirection: Axis.horizontal,
+                              child: DataTable(
+                                headingRowColor: WidgetStateProperty.all(
+                                  uiTools.appBarColor1(),
                                 ),
-
-                                DataColumn(
-                                  label: Text(
-                                    style: uiTools.tableHeaderStyle(),
-                                    "Cost:",
-                                  ),
-                                  headingRowAlignment: MainAxisAlignment.start,
+                                dataRowColor: WidgetStateProperty.all(
+                                  uiTools.tableRowColor1(),
                                 ),
-
-                                DataColumn(
-                                  columnWidth: FixedColumnWidth(125),
-                                  label: Text(
-                                    style: uiTools.tableHeaderStyle(),
-                                    "Actions:",
-                                  ),
-                                  headingRowAlignment: MainAxisAlignment.start,
-                                ),
-                              ],
-                              rows: debitOrders.asMap().entries.map((entry) {
-                                int index = entry.key;
-                                var order = entry.value;
-                                return DataRow(
-                                  cells: [
-                                    DataCell(
-                                      Text(
-                                        style: uiTools.tableTextStyle(),
-                                        order.getName,
-                                      ),
+                                columns: [
+                                  DataColumn(
+                                    label: Text(
+                                      style: uiTools.tableHeaderStyle(),
+                                      "Name:",
                                     ),
-                                    DataCell(
-                                      Text(
-                                        style: uiTools.tableTextStyle(),
-                                        "R ${order.getCost.toStringAsFixed(2)}",
-                                      ),
+                                    headingRowAlignment:
+                                        MainAxisAlignment.start,
+                                  ),
+
+                                  DataColumn(
+                                    label: Text(
+                                      style: uiTools.tableHeaderStyle(),
+                                      "Cost:",
                                     ),
-                                    DataCell(
-                                      Center(
-                                        child: Row(
-                                          children: [
-                                            uiTools.itemRemoveBtn(() {
-                                              setState(() {
-                                                debitOrders = const LogicTools()
-                                                    .debitOrderItemRemover(
-                                                      debitOrders,
-                                                      index,
-                                                    );
+                                    headingRowAlignment:
+                                        MainAxisAlignment.start,
+                                  ),
 
-                                                if (editingIndex == index) {
-                                                  editingIndex = -1;
-                                                  debitOrderNameController
-                                                      .clear();
-                                                  debitOrderCostController
-                                                      .clear();
-                                                }
-                                              });
-                                            }),
-
-                                            const SizedBox(width: 4),
-
-                                            uiTools.itemEditBtn(() {
-                                              setState(() {
-                                                debitOrderNameController.text =
-                                                    order.getName;
-                                                debitOrderCostController.text =
-                                                    order.getCost.toString();
-                                                editingIndex = index;
-
-                                                debitOrders.removeAt(index);
-                                              });
-                                            }),
-                                          ],
+                                  DataColumn(
+                                    columnWidth: FixedColumnWidth(125),
+                                    label: Text(
+                                      style: uiTools.tableHeaderStyle(),
+                                      "Actions:",
+                                    ),
+                                    headingRowAlignment:
+                                        MainAxisAlignment.start,
+                                  ),
+                                ],
+                                rows: debitOrders.asMap().entries.map((entry) {
+                                  int index = entry.key;
+                                  var order = entry.value;
+                                  return DataRow(
+                                    cells: [
+                                      DataCell(
+                                        Text(
+                                          style: uiTools.tableTextStyle(),
+                                          order.getName,
                                         ),
                                       ),
-                                    ),
-                                  ],
-                                );
-                              }).toList(),
+                                      DataCell(
+                                        Text(
+                                          style: uiTools.tableTextStyle(),
+                                          "R ${order.getCost.toStringAsFixed(2)}",
+                                        ),
+                                      ),
+                                      DataCell(
+                                        Center(
+                                          child: Row(
+                                            children: [
+                                              uiTools.itemRemoveBtn(() {
+                                                setState(() {
+                                                  debitOrders =
+                                                      const LogicTools()
+                                                          .debitOrderItemRemover(
+                                                            debitOrders,
+                                                            index,
+                                                          );
+
+                                                  if (editingIndex == index) {
+                                                    editingIndex = -1;
+                                                    debitOrderNameController
+                                                        .clear();
+                                                    debitOrderCostController
+                                                        .clear();
+                                                  }
+                                                });
+                                              }),
+
+                                              const SizedBox(width: 4),
+
+                                              uiTools.itemEditBtn(() {
+                                                setState(() {
+                                                  debitOrderNameController
+                                                          .text =
+                                                      order.getName;
+                                                  debitOrderCostController
+                                                      .text = order.getCost
+                                                      .toString();
+                                                  editingIndex = index;
+
+                                                  debitOrders.removeAt(index);
+                                                });
+                                              }),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  );
+                                }).toList(),
+                              ),
                             ),
                           ),
                         ),

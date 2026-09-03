@@ -261,109 +261,112 @@ class _DailyHabitPage extends State<DailyHabitPage> {
                         SizedBox(
                           width: double.infinity,
 
-                          child: DataTable(
-                            headingRowColor: WidgetStateProperty.all(
-                              uiTools.appBarColor1(),
-                            ),
-
-                            dataRowColor: WidgetStateProperty.all(
-                              uiTools.tableRowColor1(),
-                            ),
-
-                            columns: [
-                              DataColumn(
-                                label: Text(
-                                  style: uiTools.tableHeaderStyle(),
-                                  "Name:",
-                                ),
-                                headingRowAlignment: MainAxisAlignment.start,
+                          child: SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: DataTable(
+                              headingRowColor: WidgetStateProperty.all(
+                                uiTools.appBarColor1(),
                               ),
 
-                              DataColumn(
-                                label: Text(
-                                  style: uiTools.tableHeaderStyle(),
-                                  "Cost:",
-                                ),
-                                headingRowAlignment: MainAxisAlignment.start,
+                              dataRowColor: WidgetStateProperty.all(
+                                uiTools.tableRowColor1(),
                               ),
 
-                              DataColumn(
-                                columnWidth: FixedColumnWidth(125),
-                                label: Text(
-                                  style: uiTools.tableHeaderStyle(),
-                                  "Actions:",
-                                ),
-                                headingRowAlignment: MainAxisAlignment.start,
-                              ),
-                            ],
-
-                            rows: dHabits.asMap().entries.map((entry) {
-                              int index = entry.key;
-
-                              var hab = entry.value;
-
-                              return DataRow(
-                                cells: [
-                                  DataCell(
-                                    Text(
-                                      style: uiTools.tableTextStyle(),
-                                      hab.getName,
-                                    ),
+                              columns: [
+                                DataColumn(
+                                  label: Text(
+                                    style: uiTools.tableHeaderStyle(),
+                                    "Name:",
                                   ),
+                                  headingRowAlignment: MainAxisAlignment.start,
+                                ),
 
-                                  DataCell(
-                                    Text(
-                                      style: uiTools.tableTextStyle(),
-                                      "R ${hab.costDHabit.toStringAsFixed(2)}",
-                                    ),
+                                DataColumn(
+                                  label: Text(
+                                    style: uiTools.tableHeaderStyle(),
+                                    "Cost:",
                                   ),
+                                  headingRowAlignment: MainAxisAlignment.start,
+                                ),
 
-                                  DataCell(
-                                    Center(
-                                      child: Row(
-                                        children: [
-                                          uiTools.itemRemoveBtn(() {
-                                            setState(() {
-                                              dHabits = const LogicTools()
-                                                  .dHabitItemRemover(
-                                                    dHabits,
-                                                    index,
-                                                  );
+                                DataColumn(
+                                  columnWidth: FixedColumnWidth(125),
+                                  label: Text(
+                                    style: uiTools.tableHeaderStyle(),
+                                    "Actions:",
+                                  ),
+                                  headingRowAlignment: MainAxisAlignment.start,
+                                ),
+                              ],
 
-                                              if (editingIndex == index) {
-                                                editingIndex = -1;
+                              rows: dHabits.asMap().entries.map((entry) {
+                                int index = entry.key;
 
-                                                dailyHabitNameController
-                                                    .clear();
+                                var hab = entry.value;
 
-                                                dailyHabitController.clear();
-                                              }
-                                            });
-                                          }),
-
-                                          const SizedBox(width: 4),
-
-                                          uiTools.itemEditBtn(() {
-                                            setState(() {
-                                              dailyHabitNameController.text =
-                                                  hab.getName;
-
-                                              dailyHabitController.text = hab
-                                                  .getCost
-                                                  .toString();
-
-                                              editingIndex = index;
-
-                                              dHabits.removeAt(index);
-                                            });
-                                          }),
-                                        ],
+                                return DataRow(
+                                  cells: [
+                                    DataCell(
+                                      Text(
+                                        style: uiTools.tableTextStyle(),
+                                        hab.getName,
                                       ),
                                     ),
-                                  ),
-                                ],
-                              );
-                            }).toList(),
+
+                                    DataCell(
+                                      Text(
+                                        style: uiTools.tableTextStyle(),
+                                        "R ${hab.costDHabit.toStringAsFixed(2)}",
+                                      ),
+                                    ),
+
+                                    DataCell(
+                                      Center(
+                                        child: Row(
+                                          children: [
+                                            uiTools.itemRemoveBtn(() {
+                                              setState(() {
+                                                dHabits = const LogicTools()
+                                                    .dHabitItemRemover(
+                                                      dHabits,
+                                                      index,
+                                                    );
+
+                                                if (editingIndex == index) {
+                                                  editingIndex = -1;
+
+                                                  dailyHabitNameController
+                                                      .clear();
+
+                                                  dailyHabitController.clear();
+                                                }
+                                              });
+                                            }),
+
+                                            const SizedBox(width: 4),
+
+                                            uiTools.itemEditBtn(() {
+                                              setState(() {
+                                                dailyHabitNameController.text =
+                                                    hab.getName;
+
+                                                dailyHabitController.text = hab
+                                                    .getCost
+                                                    .toString();
+
+                                                editingIndex = index;
+
+                                                dHabits.removeAt(index);
+                                              });
+                                            }),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                );
+                              }).toList(),
+                            ),
                           ),
                         ),
                       ],

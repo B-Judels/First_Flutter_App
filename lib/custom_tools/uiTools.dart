@@ -190,7 +190,7 @@ class Uitools {
       decoration: BoxDecoration(
         color: cardColor(),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: borderColor(), width: 1),
+        border: Border.all(color: Colors.blueGrey, width: 1),
       ),
       child: Column(
         children: [
@@ -246,7 +246,7 @@ class Uitools {
       style: OutlinedButton.styleFrom(
         foregroundColor: textColor(),
         backgroundColor: accentLightColor(),
-        side: BorderSide(color: borderColor(), width: 1),
+        side: BorderSide(color: appBarColor(), width: 1),
         shape: const CircleBorder(),
         padding: EdgeInsets.zero,
         minimumSize: const Size(55, 55),
@@ -276,13 +276,13 @@ class Uitools {
       style: OutlinedButton.styleFrom(
         foregroundColor: textColor(),
         backgroundColor: debitOrderColor(),
-        side: BorderSide(color: borderColor(), width: .75),
+        side: BorderSide(color: appBarColor(), width: .75),
         shape: const CircleBorder(),
         padding: EdgeInsets.zero,
-        minimumSize: const Size(35, 35),
+        minimumSize: const Size(33, 33),
         tapTargetSize: MaterialTapTargetSize.shrinkWrap,
       ),
-      child: Image.asset("images/trash.png", width: 20, height: 20),
+      child: Image.asset("images/trash.png", width: 18, height: 18),
     );
   }
 
@@ -313,13 +313,13 @@ class Uitools {
       style: OutlinedButton.styleFrom(
         foregroundColor: textColor(),
         backgroundColor: medicalInsuranceColor(),
-        side: BorderSide(color: borderColor(), width: .75),
+        side: BorderSide(color: appBarColor(), width: .75),
         shape: const CircleBorder(),
         padding: EdgeInsets.zero,
-        minimumSize: const Size(35, 35),
+        minimumSize: const Size(33, 33),
         tapTargetSize: MaterialTapTargetSize.shrinkWrap,
       ),
-      child: Image.asset("images/pencil.png", width: 20, height: 20),
+      child: Image.asset("images/pencil.png", width: 18, height: 18),
     );
   }
 
