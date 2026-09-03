@@ -1,15 +1,11 @@
 import 'package:flutter/material.dart';
+
 import 'package:freeuse_monthly_expense_tracker/pages/loading_page.dart';
 import 'package:freeuse_monthly_expense_tracker/pages/home.dart';
 import 'package:freeuse_monthly_expense_tracker/pages/StartUpPage.dart';
 import 'package:freeuse_monthly_expense_tracker/database/database_helper.dart';
-import 'package:google_fonts/google_fonts.dart';
 
-Future<void> main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-
-  await GoogleFonts.pendingFonts([GoogleFonts.oswald()]);
-
+void main() {
   runApp(const MyApp());
 }
 
@@ -32,7 +28,7 @@ class StartupRouter extends StatelessWidget {
   Future<Widget> _checkDatabase() async {
     final userSettings = await DatabaseHelper.instance.getUserSettings();
 
-    await Future.delayed(const Duration(seconds: 2));
+    await Future.delayed(const Duration(seconds: 3));
 
     if (userSettings.isEmpty) {
       return const StartUpPage();
