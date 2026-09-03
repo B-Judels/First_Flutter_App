@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
-
+import 'package:freeuse_monthly_expense_tracker/pages/loading_page.dart';
 import 'package:freeuse_monthly_expense_tracker/pages/home.dart';
 import 'package:freeuse_monthly_expense_tracker/pages/StartUpPage.dart';
 import 'package:freeuse_monthly_expense_tracker/database/database_helper.dart';
+import 'package:google_fonts/google_fonts.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  await GoogleFonts.pendingFonts([GoogleFonts.oswald()]);
+
   runApp(const MyApp());
 }
 
@@ -27,6 +32,8 @@ class StartupRouter extends StatelessWidget {
   Future<Widget> _checkDatabase() async {
     final userSettings = await DatabaseHelper.instance.getUserSettings();
 
+    await Future.delayed(const Duration(seconds: 3));
+
     if (userSettings.isEmpty) {
       return const StartUpPage();
     }
@@ -40,9 +47,7 @@ class StartupRouter extends StatelessWidget {
       future: _checkDatabase(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Scaffold(
-            body: Center(child: CircularProgressIndicator()),
-          );
+          return const LoadingPage();
         }
 
         if (snapshot.hasError) {

@@ -38,6 +38,8 @@ dependencies:
   fl_chart: ^1.2.0
   just_the_tooltip: ^0.0.12
 
+  google_fonts: ^6.0.0
+
 
   
 
@@ -48,6 +50,10 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
+
+  
+
+  
 
 
   # The "flutter_lints" package below contains a set of recommended lints to
@@ -82,6 +88,15 @@ flutter:
     - images/startNew.png
     - images/continue.png
     - images/menu-burger.png
+    - images/BD_Loader2_0degrees.png
+    - images/BD_Loader2_45degrees.png
+    - images/BD_Loader2_90degrees.png
+    - images/BD_Loader2_135degrees.png
+    - images/BD_Loader2_180degrees.png
+    - images/BD_Loader2_225degrees.png
+    - images/BD_Loader2_270degrees.png
+    - images/BD_Loader2_315degrees.png
+
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
