@@ -1,9 +1,12 @@
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
+
 import 'package:freeuse_monthly_expense_tracker/models/DebitOrder.dart';
 import 'package:freeuse_monthly_expense_tracker/models/Service.dart';
 import 'package:freeuse_monthly_expense_tracker/models/MedicalAid.dart';
 import 'package:freeuse_monthly_expense_tracker/models/DailyHabit.dart';
+import 'package:freeuse_monthly_expense_tracker/models/WeeklyHabit.dart';
+import 'package:freeuse_monthly_expense_tracker/models/BiWeeklyHabit.dart';
 import 'package:freeuse_monthly_expense_tracker/models/UserSettings.dart';
 
 class DatabaseHelper {
@@ -17,6 +20,7 @@ class DatabaseHelper {
     if (_database != null) return _database!;
 
     _database = await _initDB('expense_tracker.db');
+
     return _database!;
   }
 
@@ -36,44 +40,60 @@ class DatabaseHelper {
 
   Future<void> _createDB(Database db, int version) async {
     await db.execute('''
-  CREATE TABLE user_settings (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    income REAL NOT NULL
-  )
-''');
+      CREATE TABLE user_settings (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        income REAL NOT NULL,
+        currency TEXT NOT NULL
+      )
+    ''');
 
     await db.execute('''
       CREATE TABLE debit_orders (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    name TEXT NOT NULL,
-    cost REAL NOT NULL
-)
-     ''');
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT NOT NULL,
+        cost REAL NOT NULL
+      )
+    ''');
 
     await db.execute('''
       CREATE TABLE daily_habits (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    name TEXT NOT NULL,
-    cost REAL NOT NULL
-)
-''');
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT NOT NULL,
+        cost REAL NOT NULL
+      )
+    ''');
 
     await db.execute('''
       CREATE TABLE services (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    name TEXT NOT NULL,
-    cost REAL NOT NULL
-
-)
-''');
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT NOT NULL,
+        cost REAL NOT NULL
+      )
+    ''');
 
     await db.execute('''
       CREATE TABLE medical_aid (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    name TEXT NOT NULL,
-    cost REAL NOT NULL
-)
-''');
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT NOT NULL,
+        cost REAL NOT NULL
+      )
+    ''');
+
+    await db.execute('''
+      CREATE TABLE weekly_habits (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT NOT NULL,
+        cost REAL NOT NULL
+      )
+    ''');
+
+    await db.execute('''
+      CREATE TABLE bi_weekly_habits (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT NOT NULL,
+        cost REAL NOT NULL
+      )
+    ''');
   }
 
   Future<void> close() async {
@@ -95,6 +115,18 @@ class DatabaseHelper {
     return maps.map((map) => UserSettings.fromMap(map)).toList();
   }
 
+  Future<void> replaceUserSettings(List<UserSettings> settingsList) async {
+    final db = await database;
+
+    await db.transaction((txn) async {
+      await txn.delete('user_settings');
+
+      for (UserSettings sett in settingsList) {
+        await txn.insert('user_settings', sett.toMap());
+      }
+    });
+  }
+
   Future<int> insertDebitOrder(DebitOrder order) async {
     final db = await database;
 
@@ -107,6 +139,18 @@ class DatabaseHelper {
     final maps = await db.query('debit_orders');
 
     return maps.map((map) => DebitOrder.fromMap(map)).toList();
+  }
+
+  Future<void> replaceDebitOrders(List<DebitOrder> orders) async {
+    final db = await database;
+
+    await db.transaction((txn) async {
+      await txn.delete('debit_orders');
+
+      for (DebitOrder order in orders) {
+        await txn.insert('debit_orders', order.toMap());
+      }
+    });
   }
 
   Future<int> insertService(Service service) async {
@@ -123,6 +167,18 @@ class DatabaseHelper {
     return maps.map((map) => Service.fromMap(map)).toList();
   }
 
+  Future<void> replaceServices(List<Service> services) async {
+    final db = await database;
+
+    await db.transaction((txn) async {
+      await txn.delete('services');
+
+      for (Service service in services) {
+        await txn.insert('services', service.toMap());
+      }
+    });
+  }
+
   Future<int> insertMedicalAid(MedicalAid medicalAid) async {
     final db = await database;
 
@@ -135,6 +191,18 @@ class DatabaseHelper {
     final maps = await db.query('medical_aid');
 
     return maps.map((map) => MedicalAid.fromMap(map)).toList();
+  }
+
+  Future<void> replaceMedicalAids(List<MedicalAid> medicalAids) async {
+    final db = await database;
+
+    await db.transaction((txn) async {
+      await txn.delete('medical_aid');
+
+      for (MedicalAid medicalAid in medicalAids) {
+        await txn.insert('medical_aid', medicalAid.toMap());
+      }
+    });
   }
 
   Future<int> insertDailyHabit(DailyHabit habit) async {
@@ -151,18 +219,6 @@ class DatabaseHelper {
     return maps.map((map) => DailyHabit.fromMap(map)).toList();
   }
 
-  Future<void> replaceDebitOrders(List<DebitOrder> orders) async {
-    final db = await database;
-
-    await db.transaction((txn) async {
-      await txn.delete('debit_orders');
-
-      for (DebitOrder order in orders) {
-        await txn.insert('debit_orders', order.toMap());
-      }
-    });
-  }
-
   Future<void> replaceDailyHabits(List<DailyHabit> habits) async {
     final db = await database;
 
@@ -175,38 +231,54 @@ class DatabaseHelper {
     });
   }
 
-  Future<void> replaceMedicalAids(List<MedicalAid> medicalAids) async {
+  Future<int> insertWeeklyHabit(WeeklyHabit habit) async {
+    final db = await database;
+
+    return await db.insert('weekly_habits', habit.toMap());
+  }
+
+  Future<List<WeeklyHabit>> getWeeklyHabits() async {
+    final db = await database;
+
+    final maps = await db.query('weekly_habits');
+
+    return maps.map((map) => WeeklyHabit.fromMap(map)).toList();
+  }
+
+  Future<void> replaceWeeklyHabits(List<WeeklyHabit> habits) async {
     final db = await database;
 
     await db.transaction((txn) async {
-      await txn.delete('medical_aid');
+      await txn.delete('weekly_habits');
 
-      for (MedicalAid medicalAid in medicalAids) {
-        await txn.insert('medical_aid', medicalAid.toMap());
+      for (WeeklyHabit habit in habits) {
+        await txn.insert('weekly_habits', habit.toMap());
       }
     });
   }
 
-  Future<void> replaceServices(List<Service> services) async {
+  Future<int> insertBiWeeklyHabit(BiWeeklyHabit habit) async {
     final db = await database;
 
-    await db.transaction((txn) async {
-      await txn.delete('services');
-
-      for (Service service in services) {
-        await txn.insert('services', service.toMap());
-      }
-    });
+    return await db.insert('bi_weekly_habits', habit.toMap());
   }
 
-  Future<void> replaceUserSettings(List<UserSettings> settingsList) async {
+  Future<List<BiWeeklyHabit>> getBiWeeklyHabits() async {
+    final db = await database;
+
+    final maps = await db.query('bi_weekly_habits');
+
+    return maps.map((map) => BiWeeklyHabit.fromMap(map)).toList();
+  }
+
+  Future<void> replaceBiWeeklyHabits(List<BiWeeklyHabit> habits) async {
     final db = await database;
 
     await db.transaction((txn) async {
-      await txn.delete('user_settings');
+      await txn.delete('bi_weekly_habits');
 
-      for (UserSettings sett in settingsList) {
-        await txn.insert('user_settings', {'Income': sett.getIncome});
+      for (BiWeeklyHabit habit in habits) {
+        await txn.insert('bi_weekly_habits', habit.toMap());
       }
     });
   }
@@ -220,6 +292,8 @@ class DatabaseHelper {
       await txn.delete('services');
       await txn.delete('medical_aid');
       await txn.delete('daily_habits');
+      await txn.delete('weekly_habits');
+      await txn.delete('bi_weekly_habits');
     });
   }
 }

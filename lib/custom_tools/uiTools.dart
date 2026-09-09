@@ -3,10 +3,6 @@ import 'package:flutter/material.dart';
 class Uitools {
   const Uitools();
 
-  // ─────────────────────────────────────────────────────────────────────────
-  // App colour palette
-  // Calm, high-contrast neutrals with a single teal accent.
-  // ─────────────────────────────────────────────────────────────────────────
   Color pageBackgroundColor() => const Color(0xFFF4F7F9);
   Color appBarColor() => const Color(0xFF1F3545);
   Color appBarIconColor() => Colors.white;
@@ -19,16 +15,13 @@ class Uitools {
   Color accentColor() => const Color(0xFF2F6F6D);
   Color accentLightColor() => const Color(0xFFE7F2F1);
 
-  // Category colours are intentionally soft so they remain pleasant beside
-  // the main teal palette.
-  Color debitOrderColor() => const Color(0xFFD96B5F);
-  Color serviceColor() => const Color(0xFF5C8FB3);
+  Color debitOrderColor() => const Color(0xFFC6534A);
+  Color serviceColor() => const Color(0xFFFFB300);
   Color medicalInsuranceColor() => const Color(0xFF5E9B78);
   Color dailyHabitColor() => const Color(0xFF8970AD);
 
   Color tableRowColor() => const Color(0xFFF0F6F5);
 
-  // Existing page APIs kept for compatibility with the current pages.
   Color pageBackgroundColor1() => pageBackgroundColor();
   Color appBarColor1() => appBarColor();
   Color sectionHeaderColor1() => sectionHeaderColor();
@@ -40,11 +33,10 @@ class Uitools {
   Color serviceColor1() => serviceColor();
   Color medicalInsuranceColor1() => medicalInsuranceColor();
   Color dailyHabitColor1() => dailyHabitColor();
+  Color dailyHabitColor2() => const Color(0xFF59467D);
+  Color dailyHabitColor3() => const Color(0xFF45418D);
   Color tableRowColor1() => tableRowColor();
 
-  // ─────────────────────────────────────────────────────────────────────────
-  // Consistent typography
-  // ─────────────────────────────────────────────────────────────────────────
   TextStyle appBarTitleStyle() => const TextStyle(
     fontFamily: 'Roboto',
     fontSize: 18,
@@ -152,9 +144,6 @@ class Uitools {
     );
   }
 
-  // ─────────────────────────────────────────────────────────────────────────
-  // Image / navigation tiles
-  // ─────────────────────────────────────────────────────────────────────────
   Widget imgBtnTitleContainer(
     String title,
     String imgDir,

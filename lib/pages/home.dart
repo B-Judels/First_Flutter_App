@@ -9,6 +9,8 @@ import 'package:freeuse_monthly_expense_tracker/models/DebitOrder.dart';
 import 'package:freeuse_monthly_expense_tracker/models/Service.dart';
 import 'package:freeuse_monthly_expense_tracker/models/MedicalAid.dart';
 import 'package:freeuse_monthly_expense_tracker/models/DailyHabit.dart';
+import 'package:freeuse_monthly_expense_tracker/models/WeeklyHabit.dart';
+import 'package:freeuse_monthly_expense_tracker/models/BiWeeklyHabit.dart';
 import 'package:freeuse_monthly_expense_tracker/models/UserSettings.dart';
 import 'package:freeuse_monthly_expense_tracker/database/database_helper.dart';
 import 'package:freeuse_monthly_expense_tracker/pages/StartUpPage.dart';
@@ -39,6 +41,10 @@ class _HomeState extends State<Home> {
 
   List<DailyHabit> dailyHabits = [];
 
+  List<WeeklyHabit> weeklyHabits = [];
+
+  List<BiWeeklyHabit> biWeeklyHabits = [];
+
   int selectedYear = DateTime.now().year;
   int selectedMonth = DateTime.now().month;
 
@@ -59,6 +65,8 @@ class _HomeState extends State<Home> {
       final loadedServices = await db.getServices();
       final loadedMedicalAids = await db.getMedicalAids();
       final loadedDailyHabits = await db.getDailyHabits();
+      final loadedWeeklyHabits = await db.getWeeklyHabits();
+      final loadedBiWeeklyHabits = await db.getBiWeeklyHabits();
 
       if (!mounted) return;
 
@@ -68,6 +76,8 @@ class _HomeState extends State<Home> {
         services = loadedServices;
         medicalAids = loadedMedicalAids;
         dailyHabits = loadedDailyHabits;
+        weeklyHabits = loadedWeeklyHabits;
+        biWeeklyHabits = loadedBiWeeklyHabits;
         isLoading = false;
       });
     } catch (e) {
@@ -81,12 +91,17 @@ class _HomeState extends State<Home> {
     }
   }
 
+  String get currency =>
+      userSettings.isNotEmpty ? userSettings[0].getCurrency : "R";
+
   double currentMonthTotal = 0;
 
   double debitTotal = 0;
   double serviceTotal = 0;
   double medTotal = 0;
   double habitTotal = 0;
+  double weeklyHabitTotal = 0;
+  double biWeeklyHabitTotal = 0;
 
   List<PieChartSectionData> pieChartSections(
     double currentMonthTotal,
@@ -94,8 +109,16 @@ class _HomeState extends State<Home> {
     double serviceTotal,
     double medTotal,
     double habitTotal,
+    double weeklyHabitTotal,
+    double biWeeklyHabitTotal,
   ) {
-    final total = debitTotal + serviceTotal + medTotal + habitTotal;
+    final total =
+        debitTotal +
+        serviceTotal +
+        medTotal +
+        habitTotal +
+        weeklyHabitTotal +
+        biWeeklyHabitTotal;
 
     if (total == 0) {
       return [
@@ -161,6 +184,32 @@ class _HomeState extends State<Home> {
             "${((habitTotal / currentMonthTotal) * 100).toStringAsFixed(0)}%",
         titleStyle: uiTools.tableHeaderStyle(),
 
+        radius: 60,
+      ),
+      PieChartSectionData(
+        value: weeklyHabitTotal,
+        color: uiTools.dailyHabitColor2(),
+        borderSide: BorderSide(
+          color: uiTools.borderColor1(),
+          width: 1,
+          style: BorderStyle.solid,
+        ),
+        title:
+            "${((weeklyHabitTotal / currentMonthTotal) * 100).toStringAsFixed(0)}%",
+        titleStyle: uiTools.tableHeaderStyle(),
+        radius: 60,
+      ),
+      PieChartSectionData(
+        value: biWeeklyHabitTotal,
+        color: uiTools.dailyHabitColor3(),
+        borderSide: BorderSide(
+          color: uiTools.borderColor1(),
+          width: 1,
+          style: BorderStyle.solid,
+        ),
+        title:
+            "${((biWeeklyHabitTotal / currentMonthTotal) * 100).toStringAsFixed(0)}%",
+        titleStyle: uiTools.tableHeaderStyle(),
         radius: 60,
       ),
     ];
@@ -338,6 +387,8 @@ class _HomeState extends State<Home> {
     double serviceTotal = 0;
     double medTotal = 0;
     double habitTotal = 0;
+    double weeklyHabitTotal = 0;
+    double biWeeklyHabitTotal = 0;
 
     for (int i = 0; i < services.length; i++) {
       currentMonthTotal = services[i].getCost + currentMonthTotal;
@@ -360,7 +411,21 @@ class _HomeState extends State<Home> {
       habitTotal = (dailyHabits[i].getCost * daysInMonth) + habitTotal;
     }
 
-    double totalSpent = debitTotal + serviceTotal + medTotal + habitTotal;
+    for (int i = 0; i < weeklyHabits.length; i++) {
+      weeklyHabitTotal = (weeklyHabits[i].getCost * 4) + weeklyHabitTotal;
+    }
+
+    for (int i = 0; i < biWeeklyHabits.length; i++) {
+      biWeeklyHabitTotal = (biWeeklyHabits[i].getCost * 2) + biWeeklyHabitTotal;
+    }
+
+    double totalSpent =
+        debitTotal +
+        serviceTotal +
+        medTotal +
+        habitTotal +
+        weeklyHabitTotal +
+        biWeeklyHabitTotal;
 
     double endMonthPredict = userSettings.isNotEmpty
         ? userSettings[0].getIncome - totalSpent
@@ -436,7 +501,7 @@ class _HomeState extends State<Home> {
                                 style: uiTools.summaryTextStyle(),
                               ),
                               Text(
-                                "R ${userSettings.isNotEmpty ? userSettings[0].getIncome.toStringAsFixed(2) : "0.00"}",
+                                "$currency ${userSettings.isNotEmpty ? userSettings[0].getIncome.toStringAsFixed(2) : "0.00"}",
                                 style: uiTools.summaryTextStyle(),
                               ),
 
@@ -447,7 +512,7 @@ class _HomeState extends State<Home> {
                                 style: uiTools.summaryTextStyle(),
                               ),
                               Text(
-                                "R ${currentMonthTotal.toStringAsFixed(2)}",
+                                "$currency ${currentMonthTotal.toStringAsFixed(2)}",
                                 style: uiTools.summaryTextStyle(),
                               ),
                               SizedBox(height: 5),
@@ -457,7 +522,7 @@ class _HomeState extends State<Home> {
                                 style: uiTools.summaryTextStyle(),
                               ),
                               Text(
-                                "R ${endMonthPredict.toStringAsFixed(2)}",
+                                "$currency ${endMonthPredict.toStringAsFixed(2)}",
                                 style: uiTools.summaryTextStyle(),
                               ),
                             ],
@@ -509,7 +574,7 @@ class _HomeState extends State<Home> {
                       SizedBox(height: 15),
 
                       SizedBox(
-                        height: 180,
+                        height: 280,
                         child: Row(
                           children: [
                             Expanded(
@@ -520,6 +585,7 @@ class _HomeState extends State<Home> {
                                   Expanded(
                                     child: Container(
                                       width: double.infinity,
+
                                       margin: const EdgeInsets.only(bottom: 4),
                                       decoration: BoxDecoration(
                                         color: uiTools.debitOrderColor1(),
@@ -532,7 +598,7 @@ class _HomeState extends State<Home> {
                                       child: Center(
                                         child: Text(
                                           style: uiTools.tableHeaderStyle(),
-                                          "Debit Total:\nR${debitTotal.toStringAsFixed(2)}",
+                                          "Debit Total:\n$currency${debitTotal.toStringAsFixed(2)}",
                                           textAlign: TextAlign.center,
                                         ),
                                       ),
@@ -554,7 +620,7 @@ class _HomeState extends State<Home> {
                                       child: Center(
                                         child: Text(
                                           style: uiTools.tableHeaderStyle(),
-                                          "Service Total:\nR${serviceTotal.toStringAsFixed(2)}",
+                                          "Service Total:\n$currency${serviceTotal.toStringAsFixed(2)}",
                                           textAlign: TextAlign.center,
                                         ),
                                       ),
@@ -576,7 +642,7 @@ class _HomeState extends State<Home> {
                                       child: Center(
                                         child: Text(
                                           style: uiTools.tableHeaderStyle(),
-                                          "Insurance Total:\nR${medTotal.toStringAsFixed(2)}",
+                                          "Insurance Total:\n$currency${medTotal.toStringAsFixed(2)}",
                                           textAlign: TextAlign.center,
                                         ),
                                       ),
@@ -597,7 +663,52 @@ class _HomeState extends State<Home> {
                                       child: Center(
                                         child: Text(
                                           style: uiTools.tableHeaderStyle(),
-                                          "Daily Habits Total:\nR${habitTotal.toStringAsFixed(2)}",
+                                          "Daily Habits Total:\n$currency${habitTotal.toStringAsFixed(2)}",
+                                          textAlign: TextAlign.center,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+
+                                  SizedBox(height: 5),
+
+                                  Expanded(
+                                    child: Container(
+                                      width: double.infinity,
+                                      margin: const EdgeInsets.only(bottom: 4),
+                                      decoration: BoxDecoration(
+                                        color: uiTools.dailyHabitColor2(),
+                                        borderRadius: BorderRadius.circular(5),
+                                        border: Border.all(
+                                          color: uiTools.borderColor1(),
+                                          width: 1,
+                                        ),
+                                      ),
+                                      child: Center(
+                                        child: Text(
+                                          style: uiTools.tableHeaderStyle(),
+                                          "Weekly Habits Total:\n$currency${weeklyHabitTotal.toStringAsFixed(2)}",
+                                          textAlign: TextAlign.center,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+
+                                  Expanded(
+                                    child: Container(
+                                      width: double.infinity,
+                                      decoration: BoxDecoration(
+                                        color: uiTools.dailyHabitColor3(),
+                                        borderRadius: BorderRadius.circular(5),
+                                        border: Border.all(
+                                          color: uiTools.borderColor1(),
+                                          width: 1,
+                                        ),
+                                      ),
+                                      child: Center(
+                                        child: Text(
+                                          style: uiTools.tableHeaderStyle(),
+                                          "Bi-Weekly Habits\n Total: $currency${biWeeklyHabitTotal.toStringAsFixed(2)}",
                                           textAlign: TextAlign.center,
                                         ),
                                       ),
@@ -635,6 +746,8 @@ class _HomeState extends State<Home> {
                                         serviceTotal,
                                         medTotal,
                                         habitTotal,
+                                        weeklyHabitTotal,
+                                        biWeeklyHabitTotal,
                                       ),
                                       centerSpaceRadius: 20,
                                     ),
@@ -792,7 +905,7 @@ class _HomeState extends State<Home> {
                                           Expanded(
                                             child: Center(
                                               child: uiTools.imgBtnTitleContainer(
-                                                "Daily Habits",
+                                                "Habits",
                                                 "images/24-hours-service.png",
                                                 () async {
                                                   await Navigator.push(
@@ -859,6 +972,7 @@ class _HomeState extends State<Home> {
                                           UserSettings newSettings =
                                               UserSettings(
                                                 userIncome: newIncome,
+                                                currency: currency,
                                               );
 
                                           bool?
@@ -871,7 +985,7 @@ class _HomeState extends State<Home> {
                                                 ),
                                                 content: Text(
                                                   "Are you sure you want to update your monthly income to "
-                                                  "R ${newIncome.toStringAsFixed(2)}?",
+                                                  "$currency ${newIncome.toStringAsFixed(2)}?",
                                                 ),
                                                 actions: [
                                                   TextButton(
