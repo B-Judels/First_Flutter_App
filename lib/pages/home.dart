@@ -1,6 +1,7 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:freeuse_monthly_expense_tracker/custom_tools/uiTools.dart';
+import 'package:freeuse_monthly_expense_tracker/custom_tools/budgetProgressBar.dart';
 import 'package:freeuse_monthly_expense_tracker/pages/debit_order_page.dart';
 import 'package:freeuse_monthly_expense_tracker/pages/service_page.dart';
 import 'package:freeuse_monthly_expense_tracker/pages/daily_habit_page.dart';
@@ -413,10 +414,12 @@ class _HomeState extends State<Home> {
 
     for (int i = 0; i < weeklyHabits.length; i++) {
       weeklyHabitTotal = (weeklyHabits[i].getCost * 4) + weeklyHabitTotal;
+      currentMonthTotal = weeklyHabitTotal + currentMonthTotal;
     }
 
     for (int i = 0; i < biWeeklyHabits.length; i++) {
       biWeeklyHabitTotal = (biWeeklyHabits[i].getCost * 2) + biWeeklyHabitTotal;
+      currentMonthTotal = biWeeklyHabitTotal + currentMonthTotal;
     }
 
     double totalSpent =
@@ -449,28 +452,8 @@ class _HomeState extends State<Home> {
             padding: const EdgeInsets.all(2.0),
             child: Column(
               children: [
-                SizedBox(height: 5),
-
                 Container(
-                  margin: EdgeInsets.all(2.0),
-                  width: double.maxFinite,
-
-                  padding: const EdgeInsets.all(10.0),
-                  decoration: BoxDecoration(
-                    color: uiTools.sectionHeaderColor1(),
-                    borderRadius: BorderRadius.circular(5),
-                  ),
-
-                  child: Center(
-                    child: Text(
-                      "Tracked Data:",
-                      style: uiTools.sectionTitleStyle(),
-                    ),
-                  ),
-                ),
-
-                Container(
-                  margin: EdgeInsets.all(10.0),
+                  margin: EdgeInsets.all(8.0),
                   width: double.maxFinite,
 
                   padding: const EdgeInsets.all(10.0),
@@ -488,7 +471,7 @@ class _HomeState extends State<Home> {
                         ),
                       ),
 
-                      SizedBox(height: 15),
+                      SizedBox(height: 5),
 
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -496,6 +479,8 @@ class _HomeState extends State<Home> {
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
+                              SizedBox(height: 10),
+
                               Text(
                                 "Current Monthly Income:",
                                 style: uiTools.summaryTextStyle(),
@@ -512,7 +497,7 @@ class _HomeState extends State<Home> {
                                 style: uiTools.summaryTextStyle(),
                               ),
                               Text(
-                                "$currency ${currentMonthTotal.toStringAsFixed(2)}",
+                                "$currency ${totalSpent.toStringAsFixed(2)}",
                                 style: uiTools.summaryTextStyle(),
                               ),
                               SizedBox(height: 5),
@@ -552,7 +537,20 @@ class _HomeState extends State<Home> {
                         ],
                       ),
 
-                      SizedBox(height: 10),
+                      Center(
+                        child: Text(
+                          "Spend & Save ratio:",
+                          style: uiTools.summaryTextStyle(),
+                        ),
+                      ),
+
+                      BudgetProgressBar(
+                        income: userSettings[0].getIncome,
+                        expenses: totalSpent,
+                      ),
+
+                      SizedBox(height: 5),
+
                       Container(
                         width: double.infinity,
                         height: 2,
@@ -562,19 +560,19 @@ class _HomeState extends State<Home> {
                         ),
                       ),
 
-                      SizedBox(height: 15),
+                      SizedBox(height: 10),
 
                       Center(
                         child: Text(
-                          style: uiTools.summaryTextStyle(),
+                          style: uiTools.sectionTitleStyle(),
                           "Monthly Expenses Per Category:",
                         ),
                       ),
 
-                      SizedBox(height: 15),
+                      SizedBox(height: 10),
 
                       SizedBox(
-                        height: 280,
+                        height: 270,
                         child: Row(
                           children: [
                             Expanded(
@@ -582,6 +580,74 @@ class _HomeState extends State<Home> {
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
+                                  Expanded(
+                                    child: Container(
+                                      width: double.infinity,
+                                      decoration: BoxDecoration(
+                                        color: uiTools.dailyHabitColor1(),
+                                        borderRadius: BorderRadius.circular(5),
+                                        border: Border.all(
+                                          color: uiTools.borderColor1(),
+                                          width: 1,
+                                        ),
+                                      ),
+                                      child: Center(
+                                        child: Text(
+                                          style: uiTools.tableHeaderStyle(),
+                                          "Daily Habits Total:\n$currency${habitTotal.toStringAsFixed(2)}",
+                                          textAlign: TextAlign.center,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+
+                                  SizedBox(height: 5),
+
+                                  Expanded(
+                                    child: Container(
+                                      width: double.infinity,
+                                      margin: const EdgeInsets.only(bottom: 4),
+                                      decoration: BoxDecoration(
+                                        color: uiTools.dailyHabitColor2(),
+                                        borderRadius: BorderRadius.circular(5),
+                                        border: Border.all(
+                                          color: uiTools.borderColor1(),
+                                          width: 1,
+                                        ),
+                                      ),
+                                      child: Center(
+                                        child: Text(
+                                          style: uiTools.tableHeaderStyle(),
+                                          "Weekly Habits Total:\n$currency${weeklyHabitTotal.toStringAsFixed(2)}",
+                                          textAlign: TextAlign.center,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+
+                                  Expanded(
+                                    child: Container(
+                                      width: double.infinity,
+                                      decoration: BoxDecoration(
+                                        color: uiTools.dailyHabitColor3(),
+                                        borderRadius: BorderRadius.circular(5),
+                                        border: Border.all(
+                                          color: uiTools.borderColor1(),
+                                          width: 1,
+                                        ),
+                                      ),
+                                      child: Center(
+                                        child: Text(
+                                          style: uiTools.tableHeaderStyle(),
+                                          "Bi-Weekly Habits\n Total: $currency${biWeeklyHabitTotal.toStringAsFixed(2)}",
+                                          textAlign: TextAlign.center,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+
+                                  SizedBox(height: 5),
+
                                   Expanded(
                                     child: Container(
                                       width: double.infinity,
@@ -648,72 +714,6 @@ class _HomeState extends State<Home> {
                                       ),
                                     ),
                                   ),
-
-                                  Expanded(
-                                    child: Container(
-                                      width: double.infinity,
-                                      decoration: BoxDecoration(
-                                        color: uiTools.dailyHabitColor1(),
-                                        borderRadius: BorderRadius.circular(5),
-                                        border: Border.all(
-                                          color: uiTools.borderColor1(),
-                                          width: 1,
-                                        ),
-                                      ),
-                                      child: Center(
-                                        child: Text(
-                                          style: uiTools.tableHeaderStyle(),
-                                          "Daily Habits Total:\n$currency${habitTotal.toStringAsFixed(2)}",
-                                          textAlign: TextAlign.center,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-
-                                  SizedBox(height: 5),
-
-                                  Expanded(
-                                    child: Container(
-                                      width: double.infinity,
-                                      margin: const EdgeInsets.only(bottom: 4),
-                                      decoration: BoxDecoration(
-                                        color: uiTools.dailyHabitColor2(),
-                                        borderRadius: BorderRadius.circular(5),
-                                        border: Border.all(
-                                          color: uiTools.borderColor1(),
-                                          width: 1,
-                                        ),
-                                      ),
-                                      child: Center(
-                                        child: Text(
-                                          style: uiTools.tableHeaderStyle(),
-                                          "Weekly Habits Total:\n$currency${weeklyHabitTotal.toStringAsFixed(2)}",
-                                          textAlign: TextAlign.center,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-
-                                  Expanded(
-                                    child: Container(
-                                      width: double.infinity,
-                                      decoration: BoxDecoration(
-                                        color: uiTools.dailyHabitColor3(),
-                                        borderRadius: BorderRadius.circular(5),
-                                        border: Border.all(
-                                          color: uiTools.borderColor1(),
-                                          width: 1,
-                                        ),
-                                      ),
-                                      child: Center(
-                                        child: Text(
-                                          style: uiTools.tableHeaderStyle(),
-                                          "Bi-Weekly Habits\n Total: $currency${biWeeklyHabitTotal.toStringAsFixed(2)}",
-                                          textAlign: TextAlign.center,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
                                 ],
                               ),
                             ),
@@ -722,7 +722,7 @@ class _HomeState extends State<Home> {
 
                             Container(
                               width: 2,
-                              height: 160,
+                              height: 200,
                               decoration: BoxDecoration(
                                 color: uiTools.mutedTextColor(),
                                 borderRadius: BorderRadius.circular(20),

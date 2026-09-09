@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+
 import 'package:freeuse_monthly_expense_tracker/models/MedicalAid.dart';
+import 'package:freeuse_monthly_expense_tracker/models/UserSettings.dart';
+
 import 'package:freeuse_monthly_expense_tracker/custom_tools/logicTools.dart';
 import 'package:freeuse_monthly_expense_tracker/custom_tools/uiTools.dart';
 import 'package:freeuse_monthly_expense_tracker/database/database_helper.dart';
@@ -13,24 +16,30 @@ class MedAidPage extends StatefulWidget {
 
 class _MedAidPage extends State<MedAidPage> {
   List<MedicalAid> medAids = [];
+  List<UserSettings> userSettings = [];
 
   final uiTools = Uitools();
 
   int editingIndex = -1;
-
   bool isLoading = true;
-
   bool showInfo = false;
+
+  String get currency =>
+      userSettings.isNotEmpty ? userSettings[0].getCurrency : "R";
 
   Future<void> _loadDatabaseData() async {
     try {
       final db = DatabaseHelper.instance;
+
       final loadedMedAids = await db.getMedicalAids();
+      final loadedUserSettings = await db.getUserSettings();
 
       if (!mounted) return;
 
       setState(() {
         medAids = loadedMedAids;
+        userSettings = loadedUserSettings;
+        isLoading = false;
       });
     } catch (e) {
       debugPrint("Database error: $e");
@@ -44,6 +53,7 @@ class _MedAidPage extends State<MedAidPage> {
   }
 
   final TextEditingController medicalAidController = TextEditingController();
+
   final TextEditingController medicalAidCostController =
       TextEditingController();
 
@@ -102,7 +112,6 @@ class _MedAidPage extends State<MedAidPage> {
                             ],
                           ),
                           Spacer(),
-
                           uiTools.infoButton(
                             showInfo: showInfo,
                             onPressed: () {
@@ -113,7 +122,6 @@ class _MedAidPage extends State<MedAidPage> {
                           ),
                         ],
                       ),
-
                       uiTools.infoContainer(
                         showInfo: showInfo,
                         infoText:
@@ -121,9 +129,7 @@ class _MedAidPage extends State<MedAidPage> {
                             "Health Insurance/Medical Aid, Car Insurance,\n "
                             "Home Insurance, etc.",
                       ),
-
                       const SizedBox(height: 10.0),
-
                       Column(
                         children: [
                           TextField(
@@ -169,9 +175,7 @@ class _MedAidPage extends State<MedAidPage> {
 
                                 setState(() {
                                   medAids.add(medAid);
-
                                   editingIndex = -1;
-
                                   medicalAidController.clear();
                                   medicalAidCostController.clear();
                                 });
@@ -192,7 +196,6 @@ class _MedAidPage extends State<MedAidPage> {
                           ),
                         ],
                       ),
-
                       if (medAids.isNotEmpty) ...[
                         const SizedBox(height: 15),
                         Center(
@@ -207,7 +210,6 @@ class _MedAidPage extends State<MedAidPage> {
                                 dataRowColor: WidgetStateProperty.all(
                                   uiTools.tableRowColor1(),
                                 ),
-
                                 columns: [
                                   DataColumn(
                                     label: Text(
@@ -217,7 +219,6 @@ class _MedAidPage extends State<MedAidPage> {
                                     headingRowAlignment:
                                         MainAxisAlignment.start,
                                   ),
-
                                   DataColumn(
                                     label: Text(
                                       style: uiTools.tableHeaderStyle(),
@@ -226,7 +227,6 @@ class _MedAidPage extends State<MedAidPage> {
                                     headingRowAlignment:
                                         MainAxisAlignment.start,
                                   ),
-
                                   DataColumn(
                                     columnWidth: FixedColumnWidth(125),
                                     label: Text(
@@ -240,18 +240,19 @@ class _MedAidPage extends State<MedAidPage> {
                                 rows: medAids.asMap().entries.map((entry) {
                                   int index = entry.key;
                                   var servicer = entry.value;
+
                                   return DataRow(
                                     cells: [
                                       DataCell(
                                         Text(
-                                          style: uiTools.tableTextStyle(),
                                           servicer.getName,
+                                          style: uiTools.tableTextStyle(),
                                         ),
                                       ),
                                       DataCell(
                                         Text(
+                                          "$currency ${servicer.getMedAidCost.toStringAsFixed(2)}",
                                           style: uiTools.tableTextStyle(),
-                                          "R ${servicer.getMedAidCost.toStringAsFixed(2)}",
                                         ),
                                       ),
                                       DataCell(
@@ -275,17 +276,17 @@ class _MedAidPage extends State<MedAidPage> {
                                                   }
                                                 });
                                               }),
-
                                               SizedBox(width: 4),
-
                                               uiTools.itemEditBtn(() {
                                                 setState(() {
                                                   medicalAidController.text =
                                                       servicer.getName;
+
                                                   medicalAidCostController
                                                       .text = servicer
                                                       .getMedAidCost
                                                       .toString();
+
                                                   editingIndex = index;
 
                                                   medAids.removeAt(index);
@@ -306,12 +307,9 @@ class _MedAidPage extends State<MedAidPage> {
                     ],
                   ),
                 ),
-
                 SizedBox(height: 20),
-
                 if (editingIndex == -1) ...[
                   SizedBox(height: 20),
-
                   Center(
                     child: Padding(
                       padding: const EdgeInsets.all(5.0),
@@ -350,7 +348,7 @@ class _MedAidPage extends State<MedAidPage> {
                           },
                           child: const Text(
                             "Update",
-                            style: const TextStyle(color: Colors.white),
+                            style: TextStyle(color: Colors.white),
                           ),
                         ),
                       ),

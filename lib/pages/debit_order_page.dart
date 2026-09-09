@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+
 import 'package:freeuse_monthly_expense_tracker/models/DebitOrder.dart';
+import 'package:freeuse_monthly_expense_tracker/models/UserSettings.dart';
+
 import 'package:freeuse_monthly_expense_tracker/custom_tools/logicTools.dart';
 import 'package:freeuse_monthly_expense_tracker/custom_tools/uiTools.dart';
+
 import 'package:freeuse_monthly_expense_tracker/database/database_helper.dart';
 
 class DebitOrderPage extends StatefulWidget {
@@ -13,24 +17,27 @@ class DebitOrderPage extends StatefulWidget {
 
 class _DebitOrderPage extends State<DebitOrderPage> {
   List<DebitOrder> debitOrders = [];
+  List<UserSettings> userSettings = [];
 
   final uiTools = Uitools();
 
   int editingIndex = -1;
-
   bool isLoading = true;
-
   bool showInfo = false;
 
   Future<void> _loadDatabaseData() async {
     try {
       final db = DatabaseHelper.instance;
+
       final loadedDebitOrders = await db.getDebitOrders();
+      final loadedUserSettings = await db.getUserSettings();
 
       if (!mounted) return;
 
       setState(() {
         debitOrders = loadedDebitOrders;
+        userSettings = loadedUserSettings;
+        isLoading = false;
       });
     } catch (e) {
       debugPrint("Database error: $e");
@@ -43,8 +50,12 @@ class _DebitOrderPage extends State<DebitOrderPage> {
     }
   }
 
+  String get currency =>
+      userSettings.isNotEmpty ? userSettings[0].getCurrency : "R";
+
   final TextEditingController debitOrderNameController =
       TextEditingController();
+
   final TextEditingController debitOrderCostController =
       TextEditingController();
 
@@ -64,6 +75,7 @@ class _DebitOrderPage extends State<DebitOrderPage> {
   @override
   Widget build(BuildContext context) {
     double totalDebitOrderCost = 0;
+
     for (int i = 0; i < debitOrders.length; i++) {
       totalDebitOrderCost += debitOrders[i].getCost;
     }
@@ -106,15 +118,13 @@ class _DebitOrderPage extends State<DebitOrderPage> {
                                 "Debit Orders",
                                 style: uiTools.sectionTitleStyle(),
                               ),
-
                               Text(
-                                "Total Debit Orders: R ${totalDebitOrderCost.toStringAsFixed(2)}",
+                                "Total Debit Orders: $currency ${totalDebitOrderCost.toStringAsFixed(2)}",
                                 style: uiTools.summaryTextStyle(),
                               ),
                             ],
                           ),
                           const Spacer(),
-
                           uiTools.infoButton(
                             showInfo: showInfo,
                             onPressed: () {
@@ -125,7 +135,6 @@ class _DebitOrderPage extends State<DebitOrderPage> {
                           ),
                         ],
                       ),
-
                       uiTools.infoContainer(
                         showInfo: showInfo,
                         infoText:
@@ -134,9 +143,7 @@ class _DebitOrderPage extends State<DebitOrderPage> {
                             "your account, such as loan repayments, "
                             "subscriptions, or rent.",
                       ),
-
                       const SizedBox(height: 10.0),
-
                       Column(
                         children: [
                           TextField(
@@ -184,7 +191,6 @@ class _DebitOrderPage extends State<DebitOrderPage> {
                                 setState(() {
                                   if (editingIndex != -1) {
                                     debitOrders.insert(editingIndex, debOrder);
-
                                     editingIndex = -1;
                                   } else {
                                     debitOrders.add(debOrder);
@@ -210,7 +216,6 @@ class _DebitOrderPage extends State<DebitOrderPage> {
                           ),
                         ],
                       ),
-
                       if (debitOrders.isNotEmpty) ...[
                         const SizedBox(height: 15),
                         Center(
@@ -234,7 +239,6 @@ class _DebitOrderPage extends State<DebitOrderPage> {
                                     headingRowAlignment:
                                         MainAxisAlignment.start,
                                   ),
-
                                   DataColumn(
                                     label: Text(
                                       style: uiTools.tableHeaderStyle(),
@@ -243,7 +247,6 @@ class _DebitOrderPage extends State<DebitOrderPage> {
                                     headingRowAlignment:
                                         MainAxisAlignment.start,
                                   ),
-
                                   DataColumn(
                                     columnWidth: FixedColumnWidth(125),
                                     label: Text(
@@ -257,6 +260,7 @@ class _DebitOrderPage extends State<DebitOrderPage> {
                                 rows: debitOrders.asMap().entries.map((entry) {
                                   int index = entry.key;
                                   var order = entry.value;
+
                                   return DataRow(
                                     cells: [
                                       DataCell(
@@ -268,7 +272,7 @@ class _DebitOrderPage extends State<DebitOrderPage> {
                                       DataCell(
                                         Text(
                                           style: uiTools.tableTextStyle(),
-                                          "R ${order.getCost.toStringAsFixed(2)}",
+                                          "$currency ${order.getCost.toStringAsFixed(2)}",
                                         ),
                                       ),
                                       DataCell(
@@ -293,17 +297,17 @@ class _DebitOrderPage extends State<DebitOrderPage> {
                                                   }
                                                 });
                                               }),
-
                                               const SizedBox(width: 4),
-
                                               uiTools.itemEditBtn(() {
                                                 setState(() {
                                                   debitOrderNameController
                                                           .text =
                                                       order.getName;
+
                                                   debitOrderCostController
                                                       .text = order.getCost
                                                       .toString();
+
                                                   editingIndex = index;
 
                                                   debitOrders.removeAt(index);
@@ -324,9 +328,7 @@ class _DebitOrderPage extends State<DebitOrderPage> {
                     ],
                   ),
                 ),
-
                 const SizedBox(height: 20),
-
                 if (editingIndex == -1) ...[
                   Center(
                     child: Padding(
@@ -368,7 +370,7 @@ class _DebitOrderPage extends State<DebitOrderPage> {
                           },
                           child: const Text(
                             "Update",
-                            style: const TextStyle(color: Colors.white),
+                            style: TextStyle(color: Colors.white),
                           ),
                         ),
                       ),

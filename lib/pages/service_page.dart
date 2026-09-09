@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+
 import 'package:freeuse_monthly_expense_tracker/models/Service.dart';
+import 'package:freeuse_monthly_expense_tracker/models/UserSettings.dart';
+
 import 'package:freeuse_monthly_expense_tracker/custom_tools/logicTools.dart';
 import 'package:freeuse_monthly_expense_tracker/custom_tools/uiTools.dart';
+
 import 'package:freeuse_monthly_expense_tracker/database/database_helper.dart';
 
 class ServicePage extends StatefulWidget {
@@ -13,20 +17,24 @@ class ServicePage extends StatefulWidget {
 
 class _ServicePage extends State<ServicePage> {
   List<Service> services = [];
+  List<UserSettings> userSettings = [];
 
   bool isLoading = true;
-
   bool showInfo = false;
 
   Future<void> _loadDatabaseData() async {
     try {
       final db = DatabaseHelper.instance;
+
       final loadedServices = await db.getServices();
+      final loadedUserSettings = await db.getUserSettings();
 
       if (!mounted) return;
 
       setState(() {
         services = loadedServices;
+        userSettings = loadedUserSettings;
+        isLoading = false;
       });
     } catch (e) {
       debugPrint("Database error: $e");
@@ -39,7 +47,11 @@ class _ServicePage extends State<ServicePage> {
     }
   }
 
+  String get currency =>
+      userSettings.isNotEmpty ? userSettings[0].getCurrency : "R";
+
   final TextEditingController serviceNameController = TextEditingController();
+
   final TextEditingController serviceCostController = TextEditingController();
 
   final uiTools = Uitools();
@@ -62,6 +74,7 @@ class _ServicePage extends State<ServicePage> {
   @override
   Widget build(BuildContext context) {
     double totalServiceCost = 0;
+
     for (int i = 0; i < services.length; i++) {
       totalServiceCost += services[i].getCost;
     }
@@ -103,15 +116,13 @@ class _ServicePage extends State<ServicePage> {
                                 "Monthly Services",
                                 style: uiTools.sectionTitleStyle(),
                               ),
-
                               Text(
-                                "Total Services: R ${totalServiceCost.toStringAsFixed(2)}",
+                                "Total Services: $currency ${totalServiceCost.toStringAsFixed(2)}",
                                 style: uiTools.summaryTextStyle(),
                               ),
                             ],
                           ),
                           Spacer(),
-
                           uiTools.infoButton(
                             showInfo: showInfo,
                             onPressed: () {
@@ -122,7 +133,6 @@ class _ServicePage extends State<ServicePage> {
                           ),
                         ],
                       ),
-
                       uiTools.infoContainer(
                         showInfo: showInfo,
                         infoText:
@@ -130,9 +140,7 @@ class _ServicePage extends State<ServicePage> {
                             "Electricity Bill, Internet Bill, Cellphone Contracts, "
                             "Water Bill, Monthly Class Fees, etc.",
                       ),
-
                       const SizedBox(height: 10.0),
-
                       Column(
                         children: [
                           TextField(
@@ -179,7 +187,6 @@ class _ServicePage extends State<ServicePage> {
                                 setState(() {
                                   if (editingIndex != -1) {
                                     services.insert(editingIndex, serve);
-
                                     editingIndex = -1;
                                   } else {
                                     services.add(serve);
@@ -205,7 +212,6 @@ class _ServicePage extends State<ServicePage> {
                           ),
                         ],
                       ),
-
                       if (services.isNotEmpty) ...[
                         const SizedBox(height: 15),
                         Center(
@@ -229,7 +235,6 @@ class _ServicePage extends State<ServicePage> {
                                     headingRowAlignment:
                                         MainAxisAlignment.start,
                                   ),
-
                                   DataColumn(
                                     label: Text(
                                       style: uiTools.tableHeaderStyle(),
@@ -238,7 +243,6 @@ class _ServicePage extends State<ServicePage> {
                                     headingRowAlignment:
                                         MainAxisAlignment.start,
                                   ),
-
                                   DataColumn(
                                     columnWidth: FixedColumnWidth(125),
                                     label: Text(
@@ -252,6 +256,7 @@ class _ServicePage extends State<ServicePage> {
                                 rows: services.asMap().entries.map((entry) {
                                   int index = entry.key;
                                   var servicer = entry.value;
+
                                   return DataRow(
                                     cells: [
                                       DataCell(
@@ -263,7 +268,7 @@ class _ServicePage extends State<ServicePage> {
                                       DataCell(
                                         Text(
                                           style: uiTools.tableTextStyle(),
-                                          "R ${servicer.getCost.toStringAsFixed(2)}",
+                                          "$currency ${servicer.getCost.toStringAsFixed(2)}",
                                         ),
                                       ),
                                       DataCell(
@@ -287,16 +292,16 @@ class _ServicePage extends State<ServicePage> {
                                                   }
                                                 });
                                               }),
-
                                               SizedBox(width: 4),
-
                                               uiTools.itemEditBtn(() {
                                                 setState(() {
                                                   serviceNameController.text =
                                                       servicer.getName;
+
                                                   serviceCostController.text =
                                                       servicer.getCost
                                                           .toString();
+
                                                   editingIndex = index;
 
                                                   services.removeAt(index);
@@ -317,12 +322,9 @@ class _ServicePage extends State<ServicePage> {
                     ],
                   ),
                 ),
-
                 SizedBox(height: 20),
-
                 if (editingIndex == -1) ...[
                   const SizedBox(height: 20),
-
                   Center(
                     child: Padding(
                       padding: const EdgeInsets.all(5.0),
@@ -361,7 +363,7 @@ class _ServicePage extends State<ServicePage> {
                           },
                           child: const Text(
                             "Update",
-                            style: const TextStyle(color: Colors.white),
+                            style: TextStyle(color: Colors.white),
                           ),
                         ),
                       ),

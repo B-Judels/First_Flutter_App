@@ -222,7 +222,7 @@ class Uitools {
         foregroundColor: textColor(),
         backgroundColor: accentLightColor(),
         padding: const EdgeInsets.all(12),
-        side: BorderSide(color: borderColor(), width: 1),
+        side: BorderSide(color: appBarColor(), width: 1),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
       ),
       child: Image.asset(imgDir, width: 80, height: 80),
