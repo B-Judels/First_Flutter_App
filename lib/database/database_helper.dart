@@ -30,11 +30,12 @@ class DatabaseHelper {
 
     return await openDatabase(
       path,
-      version: 1,
+      version: 2,
       onConfigure: (db) async {
         await db.execute('PRAGMA foreign_keys = ON');
       },
       onCreate: _createDB,
+      onUpgrade: _onUpgrade,
     );
   }
 
@@ -94,6 +95,15 @@ class DatabaseHelper {
         cost REAL NOT NULL
       )
     ''');
+  }
+
+  Future<void> _onUpgrade(Database db, int oldVersion, int newVersion) async {
+    if (oldVersion < 2) {
+      await db.execute('''
+      ALTER TABLE user_settings
+      ADD COLUMN currency TEXT NOT NULL DEFAULT 'R'
+    ''');
+    }
   }
 
   Future<void> close() async {

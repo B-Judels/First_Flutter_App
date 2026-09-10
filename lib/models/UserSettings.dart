@@ -16,10 +16,14 @@ class UserSettings {
   }
 
   factory UserSettings.fromMap(Map<String, dynamic> map) {
+    final savedCurrency = map['currency'];
+
     return UserSettings(
       id: map['id'],
       userIncome: (map['income'] as num).toDouble(),
-      currency: map['currency'] as String,
+      currency: savedCurrency is String && savedCurrency.isNotEmpty
+          ? savedCurrency
+          : "R",
     );
   }
 }
