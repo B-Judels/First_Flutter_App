@@ -1,3 +1,5 @@
+import 'budget.dart';
+
 class MedicalAid {
   final int? id;
   final String name;
@@ -11,6 +13,8 @@ class MedicalAid {
   String get getName => name;
 
   Map<String, dynamic> toMap() {
+    validateMoney(costMedAid);
+    if (name.trim().isEmpty) throw ArgumentError('An expense needs a name.');
     return {'id': id, 'name': name, 'cost': costMedAid};
   }
 

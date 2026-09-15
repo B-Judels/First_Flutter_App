@@ -3,15 +3,20 @@ import 'package:flutter/material.dart';
 class BudgetProgressBar extends StatelessWidget {
   final double income;
   final double expenses;
+  final String currency;
 
   const BudgetProgressBar({
     super.key,
     required this.income,
     required this.expenses,
+    required this.currency,
   });
 
   @override
   Widget build(BuildContext context) {
+    if (!income.isFinite || !expenses.isFinite || income < 0 || expenses < 0) {
+      return const Text('Please correct invalid amounts in Manage Data.');
+    }
     final bool isOverspent = expenses > income;
     final double remainingIncome = income - expenses;
     final double deficit = expenses - income;
@@ -88,11 +93,12 @@ class BudgetProgressBar extends StatelessWidget {
             ),
             const SizedBox(height: 8),
 
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            Wrap(
+              alignment: WrapAlignment.spaceBetween,
+              spacing: 12,
               children: [
                 Text(
-                  'Expenses: \$${expenses.toStringAsFixed(2)}',
+                  'Expenses: $currency ${expenses.toStringAsFixed(2)}',
                   style: TextStyle(
                     color: Colors.red[400],
                     fontWeight: FontWeight.bold,
@@ -100,8 +106,8 @@ class BudgetProgressBar extends StatelessWidget {
                 ),
                 Text(
                   isOverspent
-                      ? 'Remaining: -\$${deficit.toStringAsFixed(2)}'
-                      : 'Remaining: \$${remainingIncome.toStringAsFixed(2)}',
+                      ? 'Remaining: -$currency ${deficit.toStringAsFixed(2)}'
+                      : 'Remaining: $currency ${remainingIncome.toStringAsFixed(2)}',
                   style: TextStyle(
                     color: isOverspent ? Colors.red[900] : Colors.green[400],
                     fontWeight: FontWeight.bold,

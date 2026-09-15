@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class LoadingPage extends StatefulWidget {
   const LoadingPage({super.key});
@@ -82,7 +81,7 @@ class _LoadingPageState extends State<LoadingPage>
             Center(
               child: Text(
                 "Bermonkel Development",
-                style: GoogleFonts.oswald(fontSize: 25),
+                style: const TextStyle(fontFamily: 'Oswald', fontSize: 25),
               ),
             ),
           ],

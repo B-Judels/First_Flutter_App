@@ -1,3 +1,5 @@
+import 'budget.dart';
+
 class UserSettings {
   final int? id;
   final double userIncome;
@@ -12,6 +14,8 @@ class UserSettings {
   String get getCurrency => currency;
 
   Map<String, dynamic> toMap() {
+    validateMoney(userIncome, income: true);
+    if (currency.trim().isEmpty) throw ArgumentError('Currency is required.');
     return {'id': id, 'income': userIncome, 'currency': currency};
   }
 

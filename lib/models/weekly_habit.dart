@@ -1,3 +1,5 @@
+import 'budget.dart';
+
 class WeeklyHabit {
   final int? id;
 
@@ -14,6 +16,8 @@ class WeeklyHabit {
   double get getCost => costWHabit;
 
   Map<String, dynamic> toMap() {
+    validateMoney(costWHabit);
+    if (name.trim().isEmpty) throw ArgumentError('An expense needs a name.');
     return {'id': id, 'name': name, 'cost': costWHabit};
   }
 

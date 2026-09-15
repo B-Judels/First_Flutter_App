@@ -1,23 +1,26 @@
 import 'package:fl_chart/fl_chart.dart';
+import '../models/budget.dart';
+import '../widgets/load_error.dart';
 import 'package:flutter/material.dart';
-import 'package:freeuse_monthly_expense_tracker/custom_tools/uiTools.dart';
-import 'package:freeuse_monthly_expense_tracker/custom_tools/budgetProgressBar.dart';
+import 'package:freeuse_monthly_expense_tracker/custom_tools/ui_tools.dart';
+import 'package:freeuse_monthly_expense_tracker/custom_tools/budget_progress_bar.dart';
 import 'package:freeuse_monthly_expense_tracker/pages/debit_order_page.dart';
 import 'package:freeuse_monthly_expense_tracker/pages/service_page.dart';
 import 'package:freeuse_monthly_expense_tracker/pages/daily_habit_page.dart';
 import 'package:freeuse_monthly_expense_tracker/pages/med_aid_page.dart';
-import 'package:freeuse_monthly_expense_tracker/models/DebitOrder.dart';
-import 'package:freeuse_monthly_expense_tracker/models/Service.dart';
-import 'package:freeuse_monthly_expense_tracker/models/MedicalAid.dart';
-import 'package:freeuse_monthly_expense_tracker/models/DailyHabit.dart';
-import 'package:freeuse_monthly_expense_tracker/models/WeeklyHabit.dart';
-import 'package:freeuse_monthly_expense_tracker/models/BiWeeklyHabit.dart';
-import 'package:freeuse_monthly_expense_tracker/models/UserSettings.dart';
+import 'package:freeuse_monthly_expense_tracker/models/debit_order.dart';
+import 'package:freeuse_monthly_expense_tracker/models/service_model.dart';
+import 'package:freeuse_monthly_expense_tracker/models/medical_aid.dart';
+import 'package:freeuse_monthly_expense_tracker/models/daily_habit.dart';
+import 'package:freeuse_monthly_expense_tracker/models/weekly_habit.dart';
+import 'package:freeuse_monthly_expense_tracker/models/bi_weekly_habit.dart';
+import 'package:freeuse_monthly_expense_tracker/models/user_settings.dart';
 import 'package:freeuse_monthly_expense_tracker/database/database_helper.dart';
-import 'package:freeuse_monthly_expense_tracker/pages/StartUpPage.dart';
+import 'package:freeuse_monthly_expense_tracker/pages/startup_page.dart';
 
 class Home extends StatefulWidget {
-  const Home({super.key});
+  const Home({super.key, this.database});
+  final DatabaseHelper? database;
 
   @override
   State<Home> createState() => _HomeState();
@@ -31,6 +34,10 @@ class _HomeState extends State<Home> {
   final uiTools = Uitools();
 
   bool isLoading = true;
+  bool _loadFailed = false;
+  bool _savingIncome = false;
+  bool _resetting = false;
+  DatabaseHelper get db => widget.database ?? DatabaseHelper.instance;
 
   List<UserSettings> userSettings = [];
 
@@ -58,10 +65,14 @@ class _HomeState extends State<Home> {
   ).day;
 
   Future<void> _loadDatabaseData() async {
+    if (!mounted) return;
+    setState(() {
+      isLoading = true;
+      _loadFailed = false;
+    });
     try {
-      final db = DatabaseHelper.instance;
-
       final loadedUserSettings = await db.getUserSettings();
+      if (loadedUserSettings.isEmpty) throw StateError('Missing settings');
       final loadedDebitOrders = await db.getDebitOrders();
       final loadedServices = await db.getServices();
       final loadedMedicalAids = await db.getMedicalAids();
@@ -88,6 +99,7 @@ class _HomeState extends State<Home> {
 
       setState(() {
         isLoading = false;
+        _loadFailed = true;
       });
     }
   }
@@ -95,17 +107,7 @@ class _HomeState extends State<Home> {
   String get currency =>
       userSettings.isNotEmpty ? userSettings[0].getCurrency : "R";
 
-  double currentMonthTotal = 0;
-
-  double debitTotal = 0;
-  double serviceTotal = 0;
-  double medTotal = 0;
-  double habitTotal = 0;
-  double weeklyHabitTotal = 0;
-  double biWeeklyHabitTotal = 0;
-
   List<PieChartSectionData> pieChartSections(
-    double currentMonthTotal,
     double debitTotal,
     double serviceTotal,
     double medTotal,
@@ -113,6 +115,18 @@ class _HomeState extends State<Home> {
     double weeklyHabitTotal,
     double biWeeklyHabitTotal,
   ) {
+    if ([
+      debitTotal,
+      serviceTotal,
+      medTotal,
+      habitTotal,
+      weeklyHabitTotal,
+      biWeeklyHabitTotal,
+    ].any((amount) => !amount.isFinite || amount < 0)) {
+      return [
+        PieChartSectionData(value: 1, title: 'Review\namounts', radius: 60),
+      ];
+    }
     final total =
         debitTotal +
         serviceTotal +
@@ -141,8 +155,7 @@ class _HomeState extends State<Home> {
           width: 1,
           style: BorderStyle.solid,
         ),
-        title:
-            "${((debitTotal / currentMonthTotal) * 100).toStringAsFixed(0)}%",
+        title: "${((debitTotal / total) * 100).toStringAsFixed(0)}%",
         titleStyle: uiTools.tableHeaderStyle(),
 
         radius: 60,
@@ -155,8 +168,7 @@ class _HomeState extends State<Home> {
           width: 1,
           style: BorderStyle.solid,
         ),
-        title:
-            "${((serviceTotal / currentMonthTotal) * 100).toStringAsFixed(0)}%",
+        title: "${((serviceTotal / total) * 100).toStringAsFixed(0)}%",
         titleStyle: uiTools.tableHeaderStyle(),
         radius: 60,
       ),
@@ -168,7 +180,7 @@ class _HomeState extends State<Home> {
           width: 1,
           style: BorderStyle.solid,
         ),
-        title: "${((medTotal / currentMonthTotal) * 100).toStringAsFixed(0)}%",
+        title: "${((medTotal / total) * 100).toStringAsFixed(0)}%",
         titleStyle: uiTools.tableHeaderStyle(),
 
         radius: 60,
@@ -181,8 +193,7 @@ class _HomeState extends State<Home> {
           width: 1,
           style: BorderStyle.solid,
         ),
-        title:
-            "${((habitTotal / currentMonthTotal) * 100).toStringAsFixed(0)}%",
+        title: "${((habitTotal / total) * 100).toStringAsFixed(0)}%",
         titleStyle: uiTools.tableHeaderStyle(),
 
         radius: 60,
@@ -195,8 +206,7 @@ class _HomeState extends State<Home> {
           width: 1,
           style: BorderStyle.solid,
         ),
-        title:
-            "${((weeklyHabitTotal / currentMonthTotal) * 100).toStringAsFixed(0)}%",
+        title: "${((weeklyHabitTotal / total) * 100).toStringAsFixed(0)}%",
         titleStyle: uiTools.tableHeaderStyle(),
         radius: 60,
       ),
@@ -208,8 +218,7 @@ class _HomeState extends State<Home> {
           width: 1,
           style: BorderStyle.solid,
         ),
-        title:
-            "${((biWeeklyHabitTotal / currentMonthTotal) * 100).toStringAsFixed(0)}%",
+        title: "${((biWeeklyHabitTotal / total) * 100).toStringAsFixed(0)}%",
         titleStyle: uiTools.tableHeaderStyle(),
         radius: 60,
       ),
@@ -331,6 +340,7 @@ class _HomeState extends State<Home> {
   }
 
   Future<void> _startNew(BuildContext context) async {
+    if (_savingIncome || _resetting) return;
     final shouldDelete = await showDialog<bool>(
       context: context,
       builder: (context) {
@@ -361,14 +371,86 @@ class _HomeState extends State<Home> {
 
     if (shouldDelete != true) return;
 
-    await DatabaseHelper.instance.deleteAllData();
+    if (_resetting || !context.mounted) return;
+    setState(() => _resetting = true);
+    try {
+      await db.deleteAllData();
+    } catch (_) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Unable to reset. Please retry.')),
+        );
+      }
+      return;
+    } finally {
+      if (mounted) setState(() => _resetting = false);
+    }
 
     if (!context.mounted) return;
 
     Navigator.pushReplacement(
       context,
-      uiTools.smoothPageRoute(const StartUpPage()),
+      uiTools.smoothPageRoute(StartUpPage(database: widget.database)),
     );
+  }
+
+  @override
+  void dispose() {
+    incomeController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _updateIncome() async {
+    if (_savingIncome || _resetting) return;
+    final error = amountError(incomeController.text, income: true);
+    if (error != null) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(error)));
+      return;
+    }
+    final settings = UserSettings(
+      userIncome: double.parse(incomeController.text.trim()),
+      currency: currency,
+    );
+    setState(() => _savingIncome = true);
+    try {
+      final confirm = await showDialog<bool>(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: const Text('Update income?'),
+          content: Text(
+            'Update monthly income to $currency ${settings.userIncome.toStringAsFixed(2)}?',
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context, false),
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () => Navigator.pop(context, true),
+              child: const Text('Update'),
+            ),
+          ],
+        ),
+      );
+      if (confirm != true || !mounted) return;
+      await db.replaceUserSettings([settings]);
+      if (!mounted) return;
+      setState(() => userSettings = [settings]);
+      incomeController.clear();
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Income updated!')));
+    } catch (_) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Unable to save income. Please retry.')),
+        );
+      }
+    } finally {
+      if (mounted) setState(() => _savingIncome = false);
+    }
   }
 
   @override
@@ -379,49 +461,41 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
+    if (_loadFailed) return LoadError(onRetry: _loadDatabaseData);
     if (isLoading) {
       return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
 
-    double currentMonthTotal = 0;
-    double debitTotal = 0;
-    double serviceTotal = 0;
-    double medTotal = 0;
-    double habitTotal = 0;
-    double weeklyHabitTotal = 0;
-    double biWeeklyHabitTotal = 0;
-
-    for (int i = 0; i < services.length; i++) {
-      currentMonthTotal = services[i].getCost + currentMonthTotal;
-      serviceTotal = serviceTotal + services[i].getCost;
-    }
-
-    for (int i = 0; i < debitOrders.length; i++) {
-      currentMonthTotal = debitOrders[i].getCost + currentMonthTotal;
-      debitTotal = debitTotal + debitOrders[i].getCost;
-    }
-
-    for (int i = 0; i < medicalAids.length; i++) {
-      currentMonthTotal = medicalAids[i].getMedAidCost + currentMonthTotal;
-      medTotal = medTotal + medicalAids[i].getMedAidCost;
-    }
-
-    for (int i = 0; i < dailyHabits.length; i++) {
-      currentMonthTotal =
-          (dailyHabits[i].getCost * daysInMonth) + currentMonthTotal;
-      habitTotal = (dailyHabits[i].getCost * daysInMonth) + habitTotal;
-    }
-
-    for (int i = 0; i < weeklyHabits.length; i++) {
-      weeklyHabitTotal = (weeklyHabits[i].getCost * 4) + weeklyHabitTotal;
-      currentMonthTotal = weeklyHabitTotal + currentMonthTotal;
-    }
-
-    for (int i = 0; i < biWeeklyHabits.length; i++) {
-      biWeeklyHabitTotal = (biWeeklyHabits[i].getCost * 2) + biWeeklyHabitTotal;
-      currentMonthTotal = biWeeklyHabitTotal + currentMonthTotal;
-    }
-
+    final debitTotal = monthlyProjection(
+      debitOrders.map((e) => e.getCost),
+      ExpenseCategory.debitOrders,
+      daysInMonth,
+    );
+    final serviceTotal = monthlyProjection(
+      services.map((e) => e.getCost),
+      ExpenseCategory.services,
+      daysInMonth,
+    );
+    final medTotal = monthlyProjection(
+      medicalAids.map((e) => e.getMedAidCost),
+      ExpenseCategory.insurance,
+      daysInMonth,
+    );
+    final habitTotal = monthlyProjection(
+      dailyHabits.map((e) => e.getCost),
+      ExpenseCategory.daily,
+      daysInMonth,
+    );
+    final weeklyHabitTotal = monthlyProjection(
+      weeklyHabits.map((e) => e.getCost),
+      ExpenseCategory.weekly,
+      daysInMonth,
+    );
+    final biWeeklyHabitTotal = monthlyProjection(
+      biWeeklyHabits.map((e) => e.getCost),
+      ExpenseCategory.biweekly,
+      daysInMonth,
+    );
     double totalSpent =
         debitTotal +
         serviceTotal +
@@ -473,8 +547,10 @@ class _HomeState extends State<Home> {
 
                       SizedBox(height: 5),
 
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                      Wrap(
+                        alignment: WrapAlignment.spaceBetween,
+                        spacing: 16,
+                        runSpacing: 12,
                         children: [
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -513,8 +589,6 @@ class _HomeState extends State<Home> {
                             ],
                           ),
 
-                          const Spacer(),
-
                           Column(
                             children: [
                               SizedBox(
@@ -530,7 +604,7 @@ class _HomeState extends State<Home> {
 
                               Text(
                                 "${_monthName(selectedMonth)}: $daysInMonth days.",
-                                style: uiTools.tableHeaderStyle(),
+                                style: uiTools.bodyTextStyle(),
                               ),
                             ],
                           ),
@@ -545,6 +619,7 @@ class _HomeState extends State<Home> {
                       ),
 
                       BudgetProgressBar(
+                        currency: currency,
                         income: userSettings[0].getIncome,
                         expenses: totalSpent,
                       ),
@@ -741,7 +816,6 @@ class _HomeState extends State<Home> {
                                     PieChartData(
                                       sectionsSpace: 1,
                                       sections: pieChartSections(
-                                        currentMonthTotal,
                                         debitTotal,
                                         serviceTotal,
                                         medTotal,
@@ -782,6 +856,7 @@ class _HomeState extends State<Home> {
 
                         if (_showManageData) {
                           Future.delayed(const Duration(milliseconds: 450), () {
+                            if (!context.mounted) return;
                             if (!mounted) return;
 
                             final targetContext = _manageDataKey.currentContext;
@@ -834,7 +909,10 @@ class _HomeState extends State<Home> {
                                                   await Navigator.push(
                                                     context,
                                                     uiTools.smoothPageRoute(
-                                                      const DebitOrderPage(),
+                                                      DebitOrderPage(
+                                                        database:
+                                                            widget.database,
+                                                      ),
                                                     ),
                                                   );
 
@@ -858,7 +936,10 @@ class _HomeState extends State<Home> {
                                                       await Navigator.push(
                                                         context,
                                                         uiTools.smoothPageRoute(
-                                                          const ServicePage(),
+                                                          ServicePage(
+                                                            database:
+                                                                widget.database,
+                                                          ),
                                                         ),
                                                       );
 
@@ -888,7 +969,10 @@ class _HomeState extends State<Home> {
                                                       await Navigator.push(
                                                         context,
                                                         uiTools.smoothPageRoute(
-                                                          const MedAidPage(),
+                                                          MedAidPage(
+                                                            database:
+                                                                widget.database,
+                                                          ),
                                                         ),
                                                       );
 
@@ -911,7 +995,14 @@ class _HomeState extends State<Home> {
                                                   await Navigator.push(
                                                     context,
                                                     uiTools.smoothPageRoute(
-                                                      const DailyHabitPage(),
+                                                      DailyHabitPage(
+                                                        database:
+                                                            widget.database,
+                                                        month: DateTime(
+                                                          selectedYear,
+                                                          selectedMonth,
+                                                        ),
+                                                      ),
                                                     ),
                                                   );
 
@@ -962,104 +1053,9 @@ class _HomeState extends State<Home> {
                                           backgroundColor: uiTools
                                               .pageBackgroundColor1(),
                                         ),
-                                        onPressed: () async {
-                                          double newIncome =
-                                              double.tryParse(
-                                                incomeController.text,
-                                              ) ??
-                                              0;
-
-                                          UserSettings newSettings =
-                                              UserSettings(
-                                                userIncome: newIncome,
-                                                currency: currency,
-                                              );
-
-                                          bool?
-                                          confirmUpdate = await showDialog<bool>(
-                                            context: context,
-                                            builder: (context) {
-                                              return AlertDialog(
-                                                title: const Text(
-                                                  "Update Income?",
-                                                ),
-                                                content: Text(
-                                                  "Are you sure you want to update your monthly income to "
-                                                  "$currency ${newIncome.toStringAsFixed(2)}?",
-                                                ),
-                                                actions: [
-                                                  TextButton(
-                                                    onPressed: () {
-                                                      Navigator.pop(
-                                                        context,
-                                                        false,
-                                                      );
-                                                    },
-                                                    child: const Text("Cancel"),
-                                                  ),
-                                                  ElevatedButton(
-                                                    onPressed: () {
-                                                      Navigator.pop(
-                                                        context,
-                                                        true,
-                                                      );
-                                                    },
-                                                    child: const Text("Update"),
-                                                  ),
-                                                ],
-                                              );
-                                            },
-                                          );
-
-                                          if (confirmUpdate != true) {
-                                            return;
-                                          }
-
-                                          try {
-                                            setState(() {
-                                              if (userSettings.isNotEmpty) {
-                                                userSettings[0] = newSettings;
-                                              } else {
-                                                userSettings.add(newSettings);
-                                              }
-                                            });
-
-                                            await DatabaseHelper.instance
-                                                .replaceUserSettings(
-                                                  userSettings,
-                                                );
-
-                                            if (!mounted) return;
-
-                                            ScaffoldMessenger.of(
-                                              context,
-                                            ).showSnackBar(
-                                              const SnackBar(
-                                                content: Text(
-                                                  "Income updated!",
-                                                ),
-                                              ),
-                                            );
-
-                                            incomeController.clear();
-                                          } catch (e) {
-                                            debugPrint(
-                                              "Error updating income: $e",
-                                            );
-
-                                            if (!mounted) return;
-
-                                            ScaffoldMessenger.of(
-                                              context,
-                                            ).showSnackBar(
-                                              const SnackBar(
-                                                content: Text(
-                                                  "Failed to update income.",
-                                                ),
-                                              ),
-                                            );
-                                          }
-                                        },
+                                        onPressed: _savingIncome
+                                            ? null
+                                            : _updateIncome,
                                         child: Text("Update"),
                                       ),
                                     ),

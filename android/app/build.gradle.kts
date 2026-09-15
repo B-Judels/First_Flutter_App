@@ -6,11 +6,24 @@ plugins {
     id("dev.flutter.flutter-gradle-plugin")
 }
 
-val keystorePropertiesFile = rootProject.file("key.properties")
+val keystorePropertiesFile = rootProject.file(
+    providers.gradleProperty("signingPropertiesFile").getOrElse("key.properties")
+)
 val keystoreProperties = Properties()
 
 if (keystorePropertiesFile.exists()) {
-    keystoreProperties.load(FileInputStream(keystorePropertiesFile))
+    FileInputStream(keystorePropertiesFile).use { keystoreProperties.load(it) }
+}
+
+val hasReleaseSigning = listOf("keyAlias", "keyPassword", "storeFile", "storePassword")
+    .all { !keystoreProperties.getProperty(it).isNullOrBlank() }
+
+// Debug builds must work without a developer possessing the release key.
+gradle.taskGraph.whenReady {
+    if (allTasks.any { it.project == project && it.name.contains("Release", ignoreCase = true) }
+        && !hasReleaseSigning) {
+        throw GradleException("Release signing is missing. Configure android/key.properties; see README.md.")
+    }
 }
 
 android {
@@ -32,7 +45,7 @@ android {
     }
 
     signingConfigs {
-        create("release") {
+        if (hasReleaseSigning) create("release") {
             keyAlias = keystoreProperties["keyAlias"] as String
             keyPassword = keystoreProperties["keyPassword"] as String
             storeFile = keystoreProperties["storeFile"]?.let { file(it) }
@@ -42,7 +55,7 @@ android {
 
     buildTypes {
         release {
-            signingConfig = signingConfigs.getByName("release")
+            signingConfig = signingConfigs.findByName("release")
         }
     }
 }

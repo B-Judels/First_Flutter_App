@@ -1,7 +1,7 @@
-import 'package:freeuse_monthly_expense_tracker/models/DebitOrder.dart';
-import 'package:freeuse_monthly_expense_tracker/models/Service.dart';
-import 'package:freeuse_monthly_expense_tracker/models/DailyHabit.dart';
-import 'package:freeuse_monthly_expense_tracker/models/MedicalAid.dart';
+import 'package:freeuse_monthly_expense_tracker/models/debit_order.dart';
+import 'package:freeuse_monthly_expense_tracker/models/service_model.dart';
+import 'package:freeuse_monthly_expense_tracker/models/daily_habit.dart';
+import 'package:freeuse_monthly_expense_tracker/models/medical_aid.dart';
 
 class LogicTools {
   const LogicTools();

@@ -1,41 +1,54 @@
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
+import '../models/budget.dart';
 
-import 'package:freeuse_monthly_expense_tracker/models/DebitOrder.dart';
-import 'package:freeuse_monthly_expense_tracker/models/Service.dart';
-import 'package:freeuse_monthly_expense_tracker/models/MedicalAid.dart';
-import 'package:freeuse_monthly_expense_tracker/models/DailyHabit.dart';
-import 'package:freeuse_monthly_expense_tracker/models/WeeklyHabit.dart';
-import 'package:freeuse_monthly_expense_tracker/models/BiWeeklyHabit.dart';
-import 'package:freeuse_monthly_expense_tracker/models/UserSettings.dart';
+import 'package:freeuse_monthly_expense_tracker/models/debit_order.dart';
+import 'package:freeuse_monthly_expense_tracker/models/service_model.dart';
+import 'package:freeuse_monthly_expense_tracker/models/medical_aid.dart';
+import 'package:freeuse_monthly_expense_tracker/models/daily_habit.dart';
+import 'package:freeuse_monthly_expense_tracker/models/weekly_habit.dart';
+import 'package:freeuse_monthly_expense_tracker/models/bi_weekly_habit.dart';
+import 'package:freeuse_monthly_expense_tracker/models/user_settings.dart';
 
 class DatabaseHelper {
   static final DatabaseHelper instance = DatabaseHelper._init();
 
-  DatabaseHelper._init();
+  DatabaseHelper._init() : _factory = null, _path = null;
 
-  static Database? _database;
+  DatabaseHelper.withFactory(DatabaseFactory factory, String path)
+    : _factory = factory,
+      _path = path;
+
+  final DatabaseFactory? _factory;
+  final String? _path;
+
+  Database? _database;
+  Future<Database>? _opening;
 
   Future<Database> get database async {
     if (_database != null) return _database!;
 
-    _database = await _initDB('expense_tracker.db');
-
-    return _database!;
+    try {
+      return _database = await (_opening ??= _initDB('expense_tracker.db'));
+    } finally {
+      _opening = null;
+    }
   }
 
   Future<Database> _initDB(String fileName) async {
-    final dbPath = await getDatabasesPath();
-    final path = join(dbPath, fileName);
+    final factory = _factory ?? databaseFactory;
+    final path = _path ?? join(await factory.getDatabasesPath(), fileName);
 
-    return await openDatabase(
+    return await factory.openDatabase(
       path,
-      version: 2,
-      onConfigure: (db) async {
-        await db.execute('PRAGMA foreign_keys = ON');
-      },
-      onCreate: _createDB,
-      onUpgrade: _onUpgrade,
+      options: OpenDatabaseOptions(
+        version: 2,
+        onConfigure: (db) async {
+          await db.execute('PRAGMA foreign_keys = ON');
+        },
+        onCreate: _createDB,
+        onUpgrade: _onUpgrade,
+      ),
     );
   }
 
@@ -107,34 +120,33 @@ class DatabaseHelper {
   }
 
   Future<void> close() async {
-    final db = await instance.database;
-    await db.close();
+    final db = _database ?? await _opening;
+    await db?.close();
+    _database = null;
   }
 
   Future<int> insertUserSettings(UserSettings settings) async {
+    final row = settings.toMap();
     final db = await database;
-
-    return await db.insert('user_settings', settings.toMap());
+    return db.transaction((txn) async {
+      await txn.delete('user_settings');
+      return txn.insert('user_settings', row);
+    });
   }
 
   Future<List<UserSettings>> getUserSettings() async {
     final db = await database;
 
-    final maps = await db.query('user_settings');
+    final maps = await db.query('user_settings', orderBy: 'id');
 
     return maps.map((map) => UserSettings.fromMap(map)).toList();
   }
 
   Future<void> replaceUserSettings(List<UserSettings> settingsList) async {
-    final db = await database;
-
-    await db.transaction((txn) async {
-      await txn.delete('user_settings');
-
-      for (UserSettings sett in settingsList) {
-        await txn.insert('user_settings', sett.toMap());
-      }
-    });
+    if (settingsList.length != 1) {
+      throw ArgumentError('Exactly one income setting is required.');
+    }
+    await insertUserSettings(settingsList.single);
   }
 
   Future<int> insertDebitOrder(DebitOrder order) async {
@@ -304,6 +316,53 @@ class DatabaseHelper {
       await txn.delete('daily_habits');
       await txn.delete('weekly_habits');
       await txn.delete('bi_weekly_habits');
+    });
+  }
+
+  Future<Map<ExpenseCategory, List<Expense>>> loadExpenses(
+    List<ExpenseCategory> categories,
+  ) async {
+    final db = await database;
+    return db.transaction((txn) async {
+      final result = <ExpenseCategory, List<Expense>>{};
+      for (final category in categories) {
+        result[category] = (await txn.query(
+          category.table,
+          orderBy: 'id',
+        )).map(Expense.fromMap).toList();
+      }
+      return result;
+    });
+  }
+
+  /// Snapshot and validate before the first await, then commit all categories together.
+  Future<void> saveExpenses(
+    Map<ExpenseCategory, List<Expense>> categories, {
+    UserSettings? settings,
+  }) async {
+    final rows = categories.map(
+      (category, items) =>
+          MapEntry(category, items.map((e) => e.toMap()).toList()),
+    );
+    final settingsRow = settings?.toMap();
+    if (settings != null) {
+      validateMoney(settings.userIncome, income: true);
+      if (settings.currency.trim().isEmpty) {
+        throw ArgumentError('Currency is required.');
+      }
+    }
+    final db = await database;
+    await db.transaction((txn) async {
+      for (final entry in rows.entries) {
+        await txn.delete(entry.key.table);
+        for (final row in entry.value) {
+          await txn.insert(entry.key.table, row);
+        }
+      }
+      if (settingsRow != null) {
+        await txn.delete('user_settings');
+        await txn.insert('user_settings', settingsRow);
+      }
     });
   }
 }

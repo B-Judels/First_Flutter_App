@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:freeuse_monthly_expense_tracker/custom_tools/uiTools.dart';
-import 'package:freeuse_monthly_expense_tracker/pages/StartUpPage.dart';
+import 'package:freeuse_monthly_expense_tracker/custom_tools/ui_tools.dart';
+import 'package:freeuse_monthly_expense_tracker/pages/startup_page.dart';
 
 class Newmain extends StatelessWidget {
   Newmain({super.key});
@@ -52,8 +52,6 @@ class Newmain extends StatelessWidget {
                               ),
                             );
                           },
-
-                          child: Text("Start New"),
                           style: OutlinedButton.styleFrom(
                             backgroundColor: Colors.grey[200],
                             padding: const EdgeInsets.all(12),
@@ -61,6 +59,8 @@ class Newmain extends StatelessWidget {
                               borderRadius: BorderRadius.circular(15),
                             ),
                           ),
+
+                          child: Text("Start New"),
                         ),
                       ),
                     ),
@@ -73,8 +73,6 @@ class Newmain extends StatelessWidget {
 
                         child: OutlinedButton(
                           onPressed: () {},
-
-                          child: Text("Continue"),
                           style: OutlinedButton.styleFrom(
                             backgroundColor: Colors.lightBlue[100],
                             padding: const EdgeInsets.all(12),
@@ -82,6 +80,8 @@ class Newmain extends StatelessWidget {
                               borderRadius: BorderRadius.circular(15),
                             ),
                           ),
+
+                          child: Text("Continue"),
                         ),
                       ),
                     ),

@@ -1,3 +1,5 @@
+import 'budget.dart';
+
 class Service {
   final int? id;
   final String serviceName;
@@ -12,6 +14,10 @@ class Service {
   double get getCost => serviceCost;
 
   Map<String, dynamic> toMap() {
+    validateMoney(serviceCost);
+    if (serviceName.trim().isEmpty) {
+      throw ArgumentError('An expense needs a name.');
+    }
     return {'id': id, 'name': serviceName, 'cost': serviceCost};
   }
 
