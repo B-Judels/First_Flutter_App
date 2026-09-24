@@ -36,7 +36,6 @@ class _LoadingPageState extends State<LoadingPage>
   void didChangeDependencies() {
     super.didChangeDependencies();
 
-    // Preload every frame before the animation starts.
     for (final frame in _frames) {
       precacheImage(AssetImage(frame), context);
     }

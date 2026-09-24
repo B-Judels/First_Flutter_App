@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../database/database_helper.dart';
+import '../database/save_error.dart';
 import '../models/user_settings.dart';
 import '../models/budget.dart';
 import '../widgets/draft_guard.dart';
@@ -7,8 +8,9 @@ import '../widgets/expense_section.dart';
 import 'home.dart';
 
 class StartUpPage extends StatefulWidget {
-  const StartUpPage({super.key, this.database});
+  const StartUpPage({super.key, this.database, this.initialExpenses});
   final DatabaseHelper? database;
+  final Map<ExpenseCategory, List<Expense>>? initialExpenses;
   @override
   State<StartUpPage> createState() => _StartUpPageState();
 }
@@ -21,6 +23,19 @@ class _StartUpPageState extends State<StartUpPage> {
   };
   String _currency = 'R';
   bool _saving = false, _dirty = false;
+  bool get _recovering =>
+      widget.initialExpenses?.values.any((items) => items.isNotEmpty) ?? false;
+
+  @override
+  void initState() {
+    super.initState();
+    for (final entry
+        in widget.initialExpenses?.entries ??
+            <MapEntry<ExpenseCategory, List<Expense>>>[]) {
+      _items[entry.key] = List.of(entry.value);
+    }
+  }
+
   @override
   void dispose() {
     _income.dispose();
@@ -28,7 +43,15 @@ class _StartUpPageState extends State<StartUpPage> {
   }
 
   Future<void> _save() async {
-    if (_saving || !_form.currentState!.validate()) return;
+    if (_saving) return;
+    final error = amountError(_income.text, income: true);
+    if (error != null) {
+      _form.currentState!.validate();
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(error)));
+      return;
+    }
     setState(() => _saving = true);
     try {
       await (widget.database ?? DatabaseHelper.instance).saveExpenses(
@@ -43,16 +66,12 @@ class _StartUpPageState extends State<StartUpPage> {
         context,
         MaterialPageRoute(builder: (_) => Home(database: widget.database)),
       );
-    } catch (_) {
+    } catch (error) {
       if (!mounted) return;
       setState(() => _saving = false);
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text(
-            'Unable to save. Your budget is still here; please retry.',
-          ),
-        ),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(saveErrorMessage(error))));
     }
   }
 
@@ -61,7 +80,9 @@ class _StartUpPageState extends State<StartUpPage> {
     dirty: _dirty,
     saving: _saving,
     child: Scaffold(
-      appBar: AppBar(title: const Text('Set up your budget')),
+      appBar: AppBar(
+        title: Text(_recovering ? 'Restore your budget' : 'Set up your budget'),
+      ),
       body: AbsorbPointer(
         absorbing: _saving,
         child: Form(
@@ -69,8 +90,10 @@ class _StartUpPageState extends State<StartUpPage> {
           child: ListView(
             padding: const EdgeInsets.all(16),
             children: [
-              const Text(
-                'Plan your recurring monthly expenses. All amounts are entered manually.',
+              Text(
+                _recovering
+                    ? 'Your saved expenses were found, but monthly income is missing. Enter your income to continue; your expenses have been kept.'
+                    : 'Plan your recurring monthly expenses. All amounts are entered manually.',
               ),
               const SizedBox(height: 16),
               DropdownButtonFormField<String>(
@@ -101,6 +124,7 @@ class _StartUpPageState extends State<StartUpPage> {
               const SizedBox(height: 16),
               for (final category in ExpenseCategory.values)
                 ExpenseSection(
+                  key: ValueKey(category),
                   category: category,
                   items: _items[category]!,
                   currency: _currency,

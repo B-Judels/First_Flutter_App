@@ -428,6 +428,7 @@ class _HomeState extends State<Home> {
               child: const Text('Cancel'),
             ),
             TextButton(
+              style: uiTools.updateButtonStyle(),
               onPressed: () => Navigator.pop(context, true),
               child: const Text('Update'),
             ),
@@ -1049,10 +1050,7 @@ class _HomeState extends State<Home> {
                                       width: double.infinity,
 
                                       child: OutlinedButton(
-                                        style: OutlinedButton.styleFrom(
-                                          backgroundColor: uiTools
-                                              .pageBackgroundColor1(),
-                                        ),
+                                        style: uiTools.updateButtonStyle(),
                                         onPressed: _savingIncome
                                             ? null
                                             : _updateIncome,

@@ -1,4 +1,3 @@
-/// Recurrence is an estimate: four weekly or two fortnightly payments per month.
 enum ExpenseCategory {
   debitOrders('debit_orders', 'Debit Orders'),
   services('services', 'Services'),
@@ -10,6 +9,21 @@ enum ExpenseCategory {
   const ExpenseCategory(this.table, this.label);
   final String table;
   final String label;
+
+  String get description => switch (this) {
+    debitOrders =>
+      'Debit orders are recurring monthly payments automatically deducted from your account, such as loan repayments, subscriptions, or rent.',
+    services =>
+      'Services are recurring monthly expenses such as electricity, internet, cellphone contracts, water, or class fees.',
+    insurance =>
+      'Insurance includes monthly medical aid and other insurance premiums. Enter the amount you pay each month.',
+    daily =>
+      'Daily habits are everyday purchases such as snacks, transport, or drinks. Enter the cost per day; the monthly projection uses the number of days in the selected month.',
+    weekly =>
+      'Weekly habits are purchases or activities paid for each week. Enter the cost per week; the monthly projection estimates four payments.',
+    biweekly =>
+      'Bi-weekly habits are purchases or activities paid for every two weeks. Enter the cost per payment; the monthly projection estimates two payments.',
+  };
 
   int multiplier(int days) => switch (this) {
     daily => days,

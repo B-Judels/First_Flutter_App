@@ -18,7 +18,7 @@ class Newmain extends StatelessWidget {
             "Monthly Budget Planner",
           ),
         ),
-        backgroundColor: Colors.teal[700],
+        backgroundColor: uiTools.appBarColor(),
       ),
       body: SafeArea(
         child: Center(
@@ -94,6 +94,4 @@ class Newmain extends StatelessWidget {
       ),
     );
   }
-
-  //comment to repush
 }

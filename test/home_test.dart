@@ -1,4 +1,5 @@
 import 'package:fl_chart/fl_chart.dart';
+import 'package:freeuse_monthly_expense_tracker/main.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:freeuse_monthly_expense_tracker/models/bi_weekly_habit.dart';
@@ -35,6 +36,18 @@ class HomeDatabase extends FakeDatabase {
 }
 
 void main() {
+  testWidgets('existing settings route straight to home after an update', (
+    tester,
+  ) async {
+    await tester.pumpWidget(MyApp(database: HomeDatabase()));
+    await tester.pumpAndSettle();
+    expect(find.byType(Home), findsOneWidget);
+    expect(find.text('Set up your budget'), findsNothing);
+    expect(
+      tester.widget<BudgetProgressBar>(find.byType(BudgetProgressBar)).income,
+      1000,
+    );
+  });
   testWidgets(
     'dashboard chart and spending agree for multiple weekly expenses',
     (tester) async {

@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import '../models/budget.dart';
 
-/// Editing uses a modal draft; the original list is untouched until confirmation.
-class ExpenseSection extends StatelessWidget {
+class ExpenseSection extends StatefulWidget {
   const ExpenseSection({
     super.key,
     required this.category,
@@ -16,6 +15,18 @@ class ExpenseSection extends StatelessWidget {
   final String currency;
   final int days;
   final ValueChanged<List<Expense>> onChanged;
+
+  @override
+  State<ExpenseSection> createState() => _ExpenseSectionState();
+}
+
+class _ExpenseSectionState extends State<ExpenseSection> {
+  bool _showInfo = false;
+  ExpenseCategory get category => widget.category;
+  List<Expense> get items => widget.items;
+  String get currency => widget.currency;
+  int get days => widget.days;
+  ValueChanged<List<Expense>> get onChanged => widget.onChanged;
 
   Future<void> _edit(BuildContext context, [int? index]) async {
     final result = await showDialog<Expense>(
@@ -40,33 +51,72 @@ class ExpenseSection extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(category.label, style: Theme.of(context).textTheme.titleLarge),
+          Wrap(
+            spacing: 12,
+            crossAxisAlignment: WrapCrossAlignment.center,
+            children: [
+              Text(
+                category.label,
+                style: Theme.of(context).textTheme.titleLarge,
+              ),
+              OutlinedButton.icon(
+                onPressed: () => setState(() => _showInfo = !_showInfo),
+                icon: const Icon(Icons.info_outline),
+                label: Text(_showInfo ? 'Hide Info' : 'Info'),
+              ),
+            ],
+          ),
+          if (_showInfo)
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 12),
+              child: Text(category.description),
+            ),
           Text(
             'Monthly projection: $currency ${projectedTotal(items, category, days).toStringAsFixed(2)}',
           ),
           if (category == ExpenseCategory.weekly ||
               category == ExpenseCategory.biweekly)
             Text('Estimate: ${category.multiplier(days)} payments per month.'),
+          const SizedBox(height: 12),
+          Text(
+            items.isEmpty
+                ? 'No expenses in this category yet.'
+                : 'Expenses (${items.length})',
+          ),
           for (var i = 0; i < items.length; i++)
-            ListTile(
-              contentPadding: EdgeInsets.zero,
-              title: Text(items[i].name),
-              subtitle: Text('$currency ${items[i].cost.toStringAsFixed(2)}'),
-              trailing: Row(
-                mainAxisSize: MainAxisSize.min,
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 12),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  IconButton(
-                    tooltip: 'Edit ${items[i].name}',
-                    icon: const Icon(Icons.edit),
-                    onPressed: () => _edit(context, i),
+                  Text(
+                    items[i].name,
+                    style: Theme.of(context).textTheme.titleMedium,
                   ),
-                  IconButton(
-                    tooltip: 'Delete ${items[i].name}',
-                    icon: const Icon(Icons.delete_outline),
-                    onPressed: () {
-                      final next = List<Expense>.of(items)..removeAt(i);
-                      onChanged(next);
-                    },
+                  Text('$currency ${items[i].cost.toStringAsFixed(2)}'),
+                  Wrap(
+                    spacing: 8,
+                    children: [
+                      Tooltip(
+                        message: 'Edit ${items[i].name}',
+                        child: OutlinedButton.icon(
+                          icon: const Icon(Icons.edit),
+                          label: const Text('Edit'),
+                          onPressed: () => _edit(context, i),
+                        ),
+                      ),
+                      Tooltip(
+                        message: 'Delete ${items[i].name}',
+                        child: OutlinedButton.icon(
+                          icon: const Icon(Icons.delete_outline),
+                          label: const Text('Delete'),
+                          onPressed: () {
+                            final next = List<Expense>.of(items)..removeAt(i);
+                            onChanged(next);
+                          },
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),

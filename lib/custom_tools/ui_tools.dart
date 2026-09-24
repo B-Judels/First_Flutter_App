@@ -5,6 +5,10 @@ class Uitools {
 
   Color pageBackgroundColor() => const Color(0xFFF4F7F9);
   Color appBarColor() => const Color(0xFF1F3545);
+  ButtonStyle updateButtonStyle() => FilledButton.styleFrom(
+    backgroundColor: appBarColor(),
+    foregroundColor: Colors.white,
+  );
   Color appBarIconColor() => Colors.white;
   Color sectionHeaderColor() => const Color(0xFFDCEBEA);
   Color titleColor() => Colors.white;

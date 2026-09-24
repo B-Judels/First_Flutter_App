@@ -116,7 +116,7 @@ void main() {
       expect((await migrated.getUserSettings()).single.currency, 'R');
       expect((await migrated.getUserSettings()).single.userIncome, 2500);
       expect((await migrated.getDebitOrders()).single.cost, 500);
-      expect(await (await migrated.database).getVersion(), 2);
+      expect(await (await migrated.database).getVersion(), 3);
     } finally {
       await migrated.close();
       await databaseFactoryFfi.deleteDatabase(path);
@@ -133,4 +133,96 @@ void main() {
       expect((await helper.database).isOpen, isTrue);
     },
   );
+
+  // These are the layouts from historical releases, not just today's schema
+  // with its version number changed. Older v1 builds had only five tables.
+  for (final layout in [
+    (version: 1, currency: false, habits: false),
+    (version: 1, currency: true, habits: true),
+    (version: 2, currency: true, habits: false),
+  ]) {
+    test(
+      'upgrades historical $layout without losing values and can save',
+      () async {
+        final directory = await Directory.systemTemp.createTemp(
+          'budget-old-release-',
+        );
+        final path = '${directory.path}/expense_tracker.db';
+        final old = await databaseFactoryFfi.openDatabase(
+          path,
+          options: OpenDatabaseOptions(
+            version: layout.version,
+            onCreate: (db, _) async {
+              await db.execute(
+                'CREATE TABLE user_settings (id INTEGER PRIMARY KEY AUTOINCREMENT, income REAL NOT NULL${layout.currency ? ', currency TEXT NOT NULL' : ''})',
+              );
+              await db.insert('user_settings', {
+                'id': 9,
+                'income': 4321.5,
+                if (layout.currency) 'currency': 'GBP',
+              });
+              for (final category in ExpenseCategory.values) {
+                if (!layout.habits &&
+                    [
+                      ExpenseCategory.weekly,
+                      ExpenseCategory.biweekly,
+                    ].contains(category)) {
+                  continue;
+                }
+                await db.execute(
+                  'CREATE TABLE ${category.table} (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL, cost REAL NOT NULL)',
+                );
+                await db.insert(category.table, {
+                  'id': 7,
+                  'name': 'Saved ${category.label}',
+                  'cost': 20.5,
+                });
+              }
+            },
+          ),
+        );
+        await old.close();
+        final upgraded = DatabaseHelper.withFactory(databaseFactoryFfi, path);
+        try {
+          final settings = (await upgraded.getUserSettings()).single;
+          expect(settings.id, 9);
+          expect(settings.userIncome, 4321.5);
+          expect(settings.currency, layout.currency ? 'GBP' : 'R');
+          final expenses = await upgraded.loadExpenses(ExpenseCategory.values);
+          for (final category in ExpenseCategory.values) {
+            if (!layout.habits &&
+                [
+                  ExpenseCategory.weekly,
+                  ExpenseCategory.biweekly,
+                ].contains(category)) {
+              expect(expenses[category], isEmpty);
+            } else {
+              expect(expenses[category]!.single.id, 7);
+              expect(
+                expenses[category]!.single.name,
+                'Saved ${category.label}',
+              );
+              expect(expenses[category]!.single.cost, 20.5);
+            }
+          }
+          expenses[ExpenseCategory.weekly]!.add(
+            const Expense(name: 'New weekly expense', cost: 15),
+          );
+          await upgraded.saveExpenses(expenses, settings: settings);
+          await upgraded.close();
+          expect((await upgraded.getUserSettings()).single.userIncome, 4321.5);
+          expect(
+            (await upgraded.loadExpenses([
+              ExpenseCategory.weekly,
+            ]))[ExpenseCategory.weekly]!.last.name,
+            'New weekly expense',
+          );
+        } finally {
+          await upgraded.close();
+          await databaseFactoryFfi.deleteDatabase(path);
+          await directory.delete();
+        }
+      },
+    );
+  }
 }

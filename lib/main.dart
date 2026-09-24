@@ -2,10 +2,12 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'database/database_helper.dart';
+import 'models/budget.dart';
 import 'pages/loading_page.dart';
 import 'pages/home.dart';
 import 'pages/startup_page.dart';
 import 'widgets/load_error.dart';
+import 'custom_tools/ui_tools.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -27,6 +29,12 @@ class MyApp extends StatelessWidget {
     theme: ThemeData(
       colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF2F6F6D)),
       scaffoldBackgroundColor: const Color(0xFFF4F7F9),
+      appBarTheme: AppBarTheme(
+        backgroundColor: const Uitools().appBarColor(),
+        foregroundColor: Colors.white,
+        surfaceTintColor: Colors.transparent,
+        scrolledUnderElevation: 0,
+      ),
     ),
     home: StartupRouter(database: database),
   );
@@ -41,6 +49,7 @@ class StartupRouter extends StatefulWidget {
 
 class _StartupRouterState extends State<StartupRouter> {
   late Future<bool> _hasBudget;
+  Map<ExpenseCategory, List<Expense>>? _savedExpenses;
   bool get _supported =>
       !kIsWeb &&
       {
@@ -51,12 +60,20 @@ class _StartupRouterState extends State<StartupRouter> {
   @override
   void initState() {
     super.initState();
-    _hasBudget = _supported ? _check() : Future.value(false);
+    _hasBudget = _supported
+        ? Future.wait<bool>([
+            _check(),
+            Future<bool>.delayed(const Duration(seconds: 3), () => false),
+          ]).then((results) => results.first)
+        : Future.value(false);
   }
 
-  Future<bool> _check() async =>
-      (await (widget.database ?? DatabaseHelper.instance).getUserSettings())
-          .isNotEmpty;
+  Future<bool> _check() async {
+    final db = widget.database ?? DatabaseHelper.instance;
+    if ((await db.getUserSettings()).isNotEmpty) return true;
+    _savedExpenses = await db.loadExpenses(ExpenseCategory.values);
+    return false;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -66,7 +83,7 @@ class _StartupRouterState extends State<StartupRouter> {
           child: Padding(
             padding: EdgeInsets.all(24),
             child: Text(
-              'Monthly Budget Planner currently supports Android, iOS, and macOS. '
+              'Monthly Budget Planner currently supports Android. '
               'Please use one of these platforms to store your budget.',
             ),
           ),
@@ -88,7 +105,10 @@ class _StartupRouterState extends State<StartupRouter> {
         }
         return snapshot.data == true
             ? Home(database: widget.database)
-            : StartUpPage(database: widget.database);
+            : StartUpPage(
+                database: widget.database,
+                initialExpenses: _savedExpenses,
+              );
       },
     );
   }

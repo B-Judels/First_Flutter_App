@@ -8,6 +8,7 @@ import 'package:freeuse_monthly_expense_tracker/models/budget.dart';
 import 'package:freeuse_monthly_expense_tracker/models/user_settings.dart';
 import 'package:freeuse_monthly_expense_tracker/pages/expense_page.dart';
 import 'package:freeuse_monthly_expense_tracker/pages/startup_page.dart';
+import 'package:freeuse_monthly_expense_tracker/pages/loading_page.dart';
 import 'package:freeuse_monthly_expense_tracker/widgets/expense_section.dart';
 import 'package:freeuse_monthly_expense_tracker/custom_tools/budget_progress_bar.dart';
 
@@ -43,6 +44,28 @@ class FakeDatabase extends DatabaseHelper {
 }
 
 void main() {
+  for (final slowDatabase in [false, true]) {
+    testWidgets(
+      'splash lasts three seconds and waits for data (slow: $slowDatabase)',
+      (tester) async {
+        final db = FakeDatabase()..hasSettings = false;
+        if (slowDatabase) db.loading = Completer<void>();
+        await tester.pumpWidget(MyApp(database: db));
+        await tester.pump(const Duration(milliseconds: 2999));
+        expect(find.byType(LoadingPage), findsOneWidget);
+        expect(find.byType(StartUpPage), findsNothing);
+        await tester.pump(const Duration(milliseconds: 1));
+        if (slowDatabase) {
+          expect(find.byType(LoadingPage), findsOneWidget);
+          db.loading!.complete();
+        }
+        await tester.pumpAndSettle();
+        expect(find.byType(LoadingPage), findsNothing);
+        expect(find.byType(StartUpPage), findsOneWidget);
+      },
+    );
+  }
+
   Future<void> tallScreen(WidgetTester tester) async {
     await tester.binding.setSurfaceSize(const Size(900, 1800));
     addTearDown(() => tester.binding.setSurfaceSize(null));
@@ -74,6 +97,43 @@ void main() {
     await tester.tap(find.text('Retry'));
     await tester.pumpAndSettle();
     expect(find.text('Set up your budget'), findsOneWidget);
+  });
+
+  testWidgets(
+    'missing income restores saved expenses instead of a blank setup',
+    (tester) async {
+      final db = FakeDatabase()..hasSettings = false;
+      db.saved = {
+        ExpenseCategory.debitOrders: [
+          const Expense(id: 4, name: 'Existing rent', cost: 500),
+        ],
+      };
+      await tester.pumpWidget(MyApp(database: db));
+      await tester.pumpAndSettle();
+      expect(find.text('Restore your budget'), findsOneWidget);
+      expect(find.text('Existing rent'), findsOneWidget);
+      expect(db.writes, 0);
+    },
+  );
+
+  testWidgets('saving at bottom still validates offscreen income', (
+    tester,
+  ) async {
+    await tester.binding.setSurfaceSize(const Size(390, 700));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+    final db = FakeDatabase();
+    await tester.pumpWidget(MaterialApp(home: StartUpPage(database: db)));
+    await tester.scrollUntilVisible(
+      find.text('Save and Calculate'),
+      400,
+      scrollable: find.byType(Scrollable).first,
+    );
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Save and Calculate'));
+    await tester.pumpAndSettle();
+    expect(db.writes, 0);
+    expect(find.text('Enter a positive, finite income.'), findsOneWidget);
+    expect(find.textContaining('Unable to save.'), findsNothing);
   });
 
   testWidgets(

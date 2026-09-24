@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import '../database/database_helper.dart';
+import '../database/save_error.dart';
 import '../models/budget.dart';
 import '../widgets/draft_guard.dart';
 import '../widgets/expense_section.dart';
 import '../widgets/load_error.dart';
+import '../custom_tools/ui_tools.dart';
 
 class ExpensePage extends StatefulWidget {
   const ExpensePage({
@@ -71,16 +73,12 @@ class _ExpensePageState extends State<ExpensePage> {
         context,
       ).showSnackBar(const SnackBar(content: Text('Expenses updated!')));
       Navigator.pop(context);
-    } catch (_) {
+    } catch (error) {
       if (!mounted) return;
       setState(() => _saving = false);
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text(
-            'Unable to save. Your changes are still here; please retry.',
-          ),
-        ),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(saveErrorMessage(error))));
     }
   }
 
@@ -102,6 +100,7 @@ class _ExpensePageState extends State<ExpensePage> {
             children: [
               for (final category in widget.categories)
                 ExpenseSection(
+                  key: ValueKey(category),
                   category: category,
                   items: _items[category]!,
                   currency: _currency,
@@ -112,6 +111,7 @@ class _ExpensePageState extends State<ExpensePage> {
                   }),
                 ),
               FilledButton(
+                style: const Uitools().updateButtonStyle(),
                 onPressed: _saving ? null : _save,
                 child: Text(_saving ? 'Saving...' : 'Update'),
               ),

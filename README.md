@@ -40,7 +40,7 @@ compatibility flags; review those flags before upgrading either tool.
 Tests use isolated SQLite databases through sqflite_common_ffi and never open the
 application's expense_tracker.db. The SQLite test library uses native build hooks;
 its first run can take longer. Tests cover transaction rollback, migration from
-schema 1 to 2, validation, projections, editing, retry, and unsaved-change handling.
+historical schema 1 and 2 layouts to schema 3, validation, projections, editing, retry, and unsaved-change handling.
 GitHub Actions runs format, analysis, tests, and an unsigned-for-distribution debug
 build on Windows. A debug APK uses the normal Android debug key.
 
@@ -91,9 +91,10 @@ still need project-specific setup on a Mac.
 - lib/models/: legacy typed category adapters used by the dashboard.
 - lib/custom_tools/: shared styling, navigation, and spending bar.
 
-SQLite schema version 2 contains user_settings (id, income, currency) and six
-expense tables (id, name, cost). The version-1 migration adds currency with a
-default of R. Fixes preserve the schema and existing records. Complete initial
+SQLite schema version 3 contains user_settings (id, income, currency) and six
+expense tables (id, name, cost). The upgrade to version 3 adds missing tables and, when absent, currency with a
+default of R. Historical version-1 releases had different layouts, and version-2
+upgrades could still lack habit tables. Existing tables and records are preserved. Complete initial
 budgets and multi-category edits commit in a single transaction. Settings writes
 replace the single settings record rather than appending another one.
 
@@ -112,3 +113,19 @@ the device/platform settings.
   needs an explicit currency/rounding policy and a tested data migration.
 - Existing malformed data is not silently deleted or rewritten. Correct it in
   the editor; investigate unreadable databases rather than resetting automatically.
+
+## Updating existing testers
+
+Use the same application ID and Google Play test track/signing setup, with a
+higher Android version code than the installed build. Do not uninstall or clear
+app storage to apply a database repair: that can erase local budgets.
+
+The database filename remains expense_tracker.db. Schema 3 repairs missing
+tables and columns without deleting existing values. Settings route directly to
+Home. If only expense records remain, Restore your budget preloads those records
+and requests the missing income instead of showing an empty budget.
+
+Save failures now include a support code (for example DB-SCHEMA) without SQL or
+expense values. Record that code if a tester still cannot save after updating.
+Values already removed by uninstalling, clearing app data, or confirming Start
+New cannot be recreated by a schema migration.

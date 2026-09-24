@@ -42,7 +42,7 @@ class DatabaseHelper {
     return await factory.openDatabase(
       path,
       options: OpenDatabaseOptions(
-        version: 2,
+        version: 3,
         onConfigure: (db) async {
           await db.execute('PRAGMA foreign_keys = ON');
         },
@@ -54,7 +54,7 @@ class DatabaseHelper {
 
   Future<void> _createDB(Database db, int version) async {
     await db.execute('''
-      CREATE TABLE user_settings (
+      CREATE TABLE IF NOT EXISTS user_settings (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         income REAL NOT NULL,
         currency TEXT NOT NULL
@@ -62,7 +62,7 @@ class DatabaseHelper {
     ''');
 
     await db.execute('''
-      CREATE TABLE debit_orders (
+      CREATE TABLE IF NOT EXISTS debit_orders (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         name TEXT NOT NULL,
         cost REAL NOT NULL
@@ -70,7 +70,7 @@ class DatabaseHelper {
     ''');
 
     await db.execute('''
-      CREATE TABLE daily_habits (
+      CREATE TABLE IF NOT EXISTS daily_habits (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         name TEXT NOT NULL,
         cost REAL NOT NULL
@@ -78,7 +78,7 @@ class DatabaseHelper {
     ''');
 
     await db.execute('''
-      CREATE TABLE services (
+      CREATE TABLE IF NOT EXISTS services (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         name TEXT NOT NULL,
         cost REAL NOT NULL
@@ -86,7 +86,7 @@ class DatabaseHelper {
     ''');
 
     await db.execute('''
-      CREATE TABLE medical_aid (
+      CREATE TABLE IF NOT EXISTS medical_aid (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         name TEXT NOT NULL,
         cost REAL NOT NULL
@@ -94,7 +94,7 @@ class DatabaseHelper {
     ''');
 
     await db.execute('''
-      CREATE TABLE weekly_habits (
+      CREATE TABLE IF NOT EXISTS weekly_habits (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         name TEXT NOT NULL,
         cost REAL NOT NULL
@@ -102,7 +102,7 @@ class DatabaseHelper {
     ''');
 
     await db.execute('''
-      CREATE TABLE bi_weekly_habits (
+      CREATE TABLE IF NOT EXISTS bi_weekly_habits (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         name TEXT NOT NULL,
         cost REAL NOT NULL
@@ -111,11 +111,12 @@ class DatabaseHelper {
   }
 
   Future<void> _onUpgrade(Database db, int oldVersion, int newVersion) async {
-    if (oldVersion < 2) {
-      await db.execute('''
-      ALTER TABLE user_settings
-      ADD COLUMN currency TEXT NOT NULL DEFAULT 'R'
-    ''');
+    await _createDB(db, newVersion);
+    final columns = await db.rawQuery('PRAGMA table_info(user_settings)');
+    if (!columns.any((column) => column['name'] == 'currency')) {
+      await db.execute(
+        "ALTER TABLE user_settings ADD COLUMN currency TEXT NOT NULL DEFAULT 'R'",
+      );
     }
   }
 
@@ -335,7 +336,6 @@ class DatabaseHelper {
     });
   }
 
-  /// Snapshot and validate before the first await, then commit all categories together.
   Future<void> saveExpenses(
     Map<ExpenseCategory, List<Expense>> categories, {
     UserSettings? settings,
