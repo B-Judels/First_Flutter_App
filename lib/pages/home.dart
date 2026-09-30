@@ -521,8 +521,9 @@ class _HomeState extends State<Home> {
         ),
         backgroundColor: uiTools.appBarColor1(),
       ),
-      body: SingleChildScrollView(
-        child: SafeArea(
+      body: SafeArea(
+        top: false,
+        child: SingleChildScrollView(
           child: Padding(
             padding: const EdgeInsets.all(2.0),
             child: Column(

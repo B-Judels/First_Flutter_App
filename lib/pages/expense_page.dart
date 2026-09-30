@@ -93,29 +93,32 @@ class _ExpensePageState extends State<ExpensePage> {
       saving: _saving,
       child: Scaffold(
         appBar: AppBar(title: const Text('Manage expenses')),
-        body: AbsorbPointer(
-          absorbing: _saving,
-          child: ListView(
-            padding: const EdgeInsets.all(12),
-            children: [
-              for (final category in widget.categories)
-                ExpenseSection(
-                  key: ValueKey(category),
-                  category: category,
-                  items: _items[category]!,
-                  currency: _currency,
-                  days: daysInBudgetMonth(widget.month ?? DateTime.now()),
-                  onChanged: (items) => setState(() {
-                    _items[category] = items;
-                    _dirty = true;
-                  }),
+        body: SafeArea(
+          top: false,
+          child: AbsorbPointer(
+            absorbing: _saving,
+            child: ListView(
+              padding: const EdgeInsets.all(12),
+              children: [
+                for (final category in widget.categories)
+                  ExpenseSection(
+                    key: ValueKey(category),
+                    category: category,
+                    items: _items[category]!,
+                    currency: _currency,
+                    days: daysInBudgetMonth(widget.month ?? DateTime.now()),
+                    onChanged: (items) => setState(() {
+                      _items[category] = items;
+                      _dirty = true;
+                    }),
+                  ),
+                FilledButton(
+                  style: const Uitools().updateButtonStyle(),
+                  onPressed: _saving ? null : _save,
+                  child: Text(_saving ? 'Saving...' : 'Update'),
                 ),
-              FilledButton(
-                style: const Uitools().updateButtonStyle(),
-                onPressed: _saving ? null : _save,
-                child: Text(_saving ? 'Saving...' : 'Update'),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

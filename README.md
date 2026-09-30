@@ -114,6 +114,19 @@ the device/platform settings.
 - Existing malformed data is not silently deleted or rewritten. Correct it in
   the editor; investigate unreadable databases rather than resetting automatically.
 
+## Android edge-to-edge verification
+
+Startup explicitly enables Flutter's edge-to-edge mode. App bars handle the top
+status-bar inset; page bodies use SafeArea for navigation bars and side cutouts.
+Scaffold resizes editor bodies when the keyboard opens. The inset regression
+tests are in test/edge_to_edge_test.dart.
+
+Before a Play release, check Android 14, 15, and 16 with gesture and three-button
+navigation, portrait and landscape, and the keyboard open. Verify the splash,
+Home, setup, category editors, dialogs, and Save/Update buttons remain readable
+and reachable. Widget tests simulate insets but do not verify Android system UI
+or Play Console analysis; recheck the warning after uploading the release bundle.
+
 ## Updating existing testers
 
 Use the same application ID and Google Play test track/signing setup, with a

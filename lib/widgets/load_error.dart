@@ -6,13 +6,16 @@ class LoadError extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Scaffold(
     appBar: AppBar(title: const Text('Monthly Budget Planner')),
-    body: Center(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          const Text('Unable to load saved data. Please try again.'),
-          TextButton(onPressed: onRetry, child: const Text('Retry')),
-        ],
+    body: SafeArea(
+      top: false,
+      child: Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Text('Unable to load saved data. Please try again.'),
+            TextButton(onPressed: onRetry, child: const Text('Retry')),
+          ],
+        ),
       ),
     ),
   );

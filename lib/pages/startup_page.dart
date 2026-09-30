@@ -83,62 +83,67 @@ class _StartUpPageState extends State<StartUpPage> {
       appBar: AppBar(
         title: Text(_recovering ? 'Restore your budget' : 'Set up your budget'),
       ),
-      body: AbsorbPointer(
-        absorbing: _saving,
-        child: Form(
-          key: _form,
-          child: ListView(
-            padding: const EdgeInsets.all(16),
-            children: [
-              Text(
-                _recovering
-                    ? 'Your saved expenses were found, but monthly income is missing. Enter your income to continue; your expenses have been kept.'
-                    : 'Plan your recurring monthly expenses. All amounts are entered manually.',
-              ),
-              const SizedBox(height: 16),
-              DropdownButtonFormField<String>(
-                initialValue: _currency,
-                decoration: const InputDecoration(labelText: 'Currency'),
-                items: const ['R', '\$', '\u20ac', '\u00a3']
-                    .map(
-                      (currency) => DropdownMenuItem(
-                        value: currency,
-                        child: Text(currency),
-                      ),
-                    )
-                    .toList(),
-                onChanged: (value) => setState(() {
-                  _currency = value!;
-                  _dirty = true;
-                }),
-              ),
-              TextFormField(
-                controller: _income,
-                decoration: const InputDecoration(labelText: 'Monthly income'),
-                keyboardType: const TextInputType.numberWithOptions(
-                  decimal: true,
+      body: SafeArea(
+        top: false,
+        child: AbsorbPointer(
+          absorbing: _saving,
+          child: Form(
+            key: _form,
+            child: ListView(
+              padding: const EdgeInsets.all(16),
+              children: [
+                Text(
+                  _recovering
+                      ? 'Your saved expenses were found, but monthly income is missing. Enter your income to continue; your expenses have been kept.'
+                      : 'Plan your recurring monthly expenses. All amounts are entered manually.',
                 ),
-                onChanged: (_) => setState(() => _dirty = true),
-                validator: (value) => amountError(value, income: true),
-              ),
-              const SizedBox(height: 16),
-              for (final category in ExpenseCategory.values)
-                ExpenseSection(
-                  key: ValueKey(category),
-                  category: category,
-                  items: _items[category]!,
-                  currency: _currency,
-                  days: daysInBudgetMonth(DateTime.now()),
-                  onChanged: (items) => setState(() {
-                    _items[category] = items;
+                const SizedBox(height: 16),
+                DropdownButtonFormField<String>(
+                  initialValue: _currency,
+                  decoration: const InputDecoration(labelText: 'Currency'),
+                  items: const ['R', '\$', '\u20ac', '\u00a3']
+                      .map(
+                        (currency) => DropdownMenuItem(
+                          value: currency,
+                          child: Text(currency),
+                        ),
+                      )
+                      .toList(),
+                  onChanged: (value) => setState(() {
+                    _currency = value!;
                     _dirty = true;
                   }),
                 ),
-              FilledButton(
-                onPressed: _saving ? null : _save,
-                child: Text(_saving ? 'Saving...' : 'Save and Calculate'),
-              ),
-            ],
+                TextFormField(
+                  controller: _income,
+                  decoration: const InputDecoration(
+                    labelText: 'Monthly income',
+                  ),
+                  keyboardType: const TextInputType.numberWithOptions(
+                    decimal: true,
+                  ),
+                  onChanged: (_) => setState(() => _dirty = true),
+                  validator: (value) => amountError(value, income: true),
+                ),
+                const SizedBox(height: 16),
+                for (final category in ExpenseCategory.values)
+                  ExpenseSection(
+                    key: ValueKey(category),
+                    category: category,
+                    items: _items[category]!,
+                    currency: _currency,
+                    days: daysInBudgetMonth(DateTime.now()),
+                    onChanged: (items) => setState(() {
+                      _items[category] = items;
+                      _dirty = true;
+                    }),
+                  ),
+                FilledButton(
+                  onPressed: _saving ? null : _save,
+                  child: Text(_saving ? 'Saving...' : 'Save and Calculate'),
+                ),
+              ],
+            ),
           ),
         ),
       ),

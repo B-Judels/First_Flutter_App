@@ -9,8 +9,9 @@ import 'pages/startup_page.dart';
 import 'widgets/load_error.dart';
 import 'custom_tools/ui_tools.dart';
 
-void main() {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
   LicenseRegistry.addLicense(() async* {
     yield LicenseEntryWithLineBreaks([
       'Oswald',
@@ -32,6 +33,10 @@ class MyApp extends StatelessWidget {
       appBarTheme: AppBarTheme(
         backgroundColor: const Uitools().appBarColor(),
         foregroundColor: Colors.white,
+        systemOverlayStyle: SystemUiOverlayStyle.light.copyWith(
+          systemNavigationBarIconBrightness: Brightness.dark,
+          systemNavigationBarColor: Colors.transparent,
+        ),
         surfaceTintColor: Colors.transparent,
         scrolledUnderElevation: 0,
       ),
