@@ -1,7 +1,7 @@
 # First_Flutter_App
 ## About Repo:
 
-This is a simple monthly expense tracking app, but the whole point is to learn flutter practically and to get started with mobile app development and publishing on Play Store for other future projects.
+This is a simple Monthly Budget Planning app, but the whole point of the project was to learn Flutter practically and get started with mobile app development and publishing on the Google Play Store for future projects.
 
 ## Getting Started:
 
@@ -27,4 +27,4 @@ samples, guidance on mobile development, and a full API reference.
 
 
 
-icons created by Magnific - Flaticon
+Credit: icons created by Magnific - Flaticon
