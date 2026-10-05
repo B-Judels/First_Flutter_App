@@ -27,4 +27,4 @@ samples, guidance on mobile development, and a full API reference.
 
 
 
-//<a href="https://www.flaticon.com/free-icons/trash-can" title="trash can icons">Trash can icons created by Magnific - Flaticon</a>
+icons created by Magnific - Flaticon
